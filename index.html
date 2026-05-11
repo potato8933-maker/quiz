@@ -482,8 +482,25 @@ function renderStats(){
 
 function confirmParse(mode){
   if(!parsedTopics)return;
-  if(mode==='add'){topics=[...topics,...parsedTopics];showToast(`논점 ${parsedTopics.length}개 추가됨 ✓`);}
-  else{topics=parsedTopics;showToast(`논점 ${parsedTopics.length}개로 교체됨 ✓`);}
+
+  // 이름 기준으로 기존 통계 이어받기
+  const merged = parsedTopics.map(p => {
+    const existing = topics.find(t => t.name === p.name);
+    if(existing) return {...p, id:existing.id, correctStreak:existing.correctStreak, wrongCount:existing.wrongCount, lastSeen:existing.lastSeen, wrongReasons:existing.wrongReasons};
+    return p;
+  });
+
+  if(mode==='add'){
+    // 기존 논점은 새 내용(checklist 등)으로 업데이트, 없는 논점만 추가
+    const updatedNames = new Set(merged.map(p=>p.name));
+    const kept = topics.filter(t=>!updatedNames.has(t.name));
+    topics = [...merged, ...kept];
+    showToast(`논점 ${merged.length}개 반영됨 ✓`);
+  } else {
+    topics = merged;
+    showToast(`논점 ${merged.length}개로 교체됨 ✓`);
+  }
+
   parsedTopics=null;
   document.getElementById('paste-input').value='';
   document.getElementById('parse-result-box').style.display='none';
@@ -504,13 +521,15 @@ async function loadFromSheets(){
     const res=await fetch(SHEETS_URL+'?action=load');
     const data=await res.json();
     if(data.topics&&data.topics.length>0){
-      topics=JSON.parse(JSON.stringify(TOPIC_DATA)).map(t=>{
-        const saved=data.topics.find(s=>s.id===t.id);
+      // ID 또는 이름 기준으로 통계 병합
+      topics=topics.map(t=>{
+        const saved=data.topics.find(s=>s.id===t.id||s.name===t.name);
         if(saved)return{...t,correctStreak:saved.correctStreak,wrongCount:saved.wrongCount,lastSeen:saved.lastSeen,wrongReasons:saved.wrongReasons};
         return t;
       });
+      // Sheets에만 있는 논점 복원 (이름 중복 제외)
       data.topics.forEach(s=>{
-        if(!topics.find(t=>t.id===s.id)&&s.id.startsWith('p_')){
+        if(!topics.find(t=>t.id===s.id||t.name===s.name)){
           topics.push({...s,checklist:s.checklist||[],keywords:s.keywords||[],doomun:s.doomun||[],connects:s.connects||[]});
         }
       });
