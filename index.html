@@ -78,85 +78,86 @@ textarea:focus { outline: none; border-color: #6366f1; }
 </head>
 <body>
 <div id="app">
-  <div id="toast"></div>
+<div id="toast"></div>
 
-  <!-- HOME -->
-  <div id="screen-home" class="screen active">
-    <div class="label">민사소송법 · 16기</div>
-    <h1>취침 전<br>암기 퀴즈</h1>
-    <div class="sub" id="home-sub"></div>
-    <div class="stats-grid">
-      <div class="stat-item"><div class="stat-val" style="color:#6366f1" id="stat-total">0</div><div class="stat-lbl">전체논점</div></div>
-      <div class="stat-item"><div class="stat-val" style="color:#ef4444" id="stat-weak">0</div><div class="stat-lbl">취약논점</div></div>
-      <div class="stat-item"><div class="stat-val" style="color:#f59e0b" id="stat-new">0</div><div class="stat-lbl">미학습</div></div>
-    </div>
-    <div id="uncovered-alert" class="alert" style="display:none"><span class="alert-title">⚠ 미학습: </span><span id="uncovered-names"></span></div>
-    <div id="weak-section" style="display:none">
-      <div class="weak-label">취약 논점 TOP</div>
-      <div id="weak-list"></div>
-    </div>
-    <button class="btn-primary" onclick="startSession()">퀴즈 시작 (5문제)</button>
-    <div class="btn-grid">
-      <button class="btn-secondary" onclick="showScreen('stats')">📊 통계</button>
-      <button class="btn-secondary" onclick="showScreen('paste')">📋 자료 붙여넣기</button>
-    </div>
+<!-- HOME -->
+<div id="screen-home" class="screen active">
+  <div class="label">민사소송법 · 16기</div>
+  <h1>취침 전<br>암기 퀴즈</h1>
+  <div class="sub" id="home-sub"></div>
+  <div class="stats-grid">
+    <div class="stat-item"><div class="stat-val" style="color:#6366f1" id="stat-total">0</div><div class="stat-lbl">전체논점</div></div>
+    <div class="stat-item"><div class="stat-val" style="color:#ef4444" id="stat-weak">0</div><div class="stat-lbl">취약논점</div></div>
+    <div class="stat-item"><div class="stat-val" style="color:#f59e0b" id="stat-new">0</div><div class="stat-lbl">미학습</div></div>
   </div>
+  <div id="uncovered-alert" class="alert" style="display:none"><span class="alert-title">⚠ 미학습: </span><span id="uncovered-names"></span></div>
+  <div id="weak-section" style="display:none">
+    <div class="weak-label">취약 논점 TOP</div>
+    <div id="weak-list"></div>
+  </div>
+  <button class="btn-primary" onclick="startSession()">퀴즈 시작 (5문제)</button>
+  <div class="btn-grid">
+    <button class="btn-secondary" onclick="showScreen('stats')">📊 통계</button>
+    <button class="btn-secondary" onclick="showScreen('paste')">📋 자료 붙여넣기</button>
+  </div>
+</div>
 
-  <!-- QUIZ -->
-  <div id="screen-quiz" class="screen" style="padding-top:32px">
-    <div class="quiz-header">
-      <div class="quiz-prog" id="quiz-prog">1 / 5</div>
-      <div class="quiz-type-badge" id="quiz-type-badge"></div>
-      <div class="quiz-correct-count" id="quiz-correct-count">0정답</div>
-    </div>
-    <div class="quiz-card" id="quiz-card-el">
-      <div class="quiz-topic" id="quiz-topic-name"></div>
-      <div class="quiz-prompt" id="quiz-prompt"></div>
-      <div class="quiz-hint" id="quiz-hint"></div>
-    </div>
-    <div id="quiz-actions"><button class="reveal-btn" onclick="revealAnswer()">정답 확인</button></div>
+<!-- QUIZ -->
+<div id="screen-quiz" class="screen" style="padding-top:32px">
+  <div class="quiz-header">
+    <div class="quiz-prog" id="quiz-prog">1 / 5</div>
+    <div class="quiz-type-badge" id="quiz-type-badge"></div>
+    <div class="quiz-correct-count" id="quiz-correct-count">0정답</div>
   </div>
+  <div class="quiz-card" id="quiz-card-el">
+    <div class="quiz-topic" id="quiz-topic-name"></div>
+    <div class="quiz-prompt" id="quiz-prompt"></div>
+    <div class="quiz-hint" id="quiz-hint"></div>
+  </div>
+  <div id="quiz-actions"><button class="reveal-btn" onclick="revealAnswer()">정답 확인</button></div>
+</div>
 
-  <!-- RESULT -->
-  <div id="screen-result" class="screen">
-    <div class="result-emoji" id="result-emoji">🎯</div>
-    <div class="result-score" id="result-score"></div>
-    <div class="result-msg" id="result-msg"></div>
-    <div class="result-list" id="result-list"></div>
-    <div id="next-focus-box" class="next-focus" style="display:none">
-      <div class="next-focus-title">다음 세션 집중 논점</div>
-      <div id="next-focus-list"></div>
-    </div>
-    <button class="btn-primary" onclick="startSession()">한 번 더</button>
-    <button class="btn-secondary" style="margin-top:0" onclick="showScreen('home')">홈으로</button>
+<!-- RESULT -->
+<div id="screen-result" class="screen">
+  <div class="result-emoji" id="result-emoji">🎯</div>
+  <div class="result-score" id="result-score"></div>
+  <div class="result-msg" id="result-msg"></div>
+  <div class="result-list" id="result-list"></div>
+  <div id="next-focus-box" class="next-focus" style="display:none">
+    <div class="next-focus-title">다음 세션 집중 논점</div>
+    <div id="next-focus-list"></div>
   </div>
+  <button class="btn-primary" onclick="startSession()">한 번 더</button>
+  <button class="btn-secondary" style="margin-top:0" onclick="showScreen('home')">홈으로</button>
+</div>
 
-  <!-- STATS -->
-  <div id="screen-stats" class="screen">
-    <div class="page-header">
-      <button class="back-btn" onclick="showScreen('home')">←</button>
-      <div class="page-title">논점별 통계</div>
-    </div>
-    <div id="stats-list"></div>
+<!-- STATS -->
+<div id="screen-stats" class="screen">
+  <div class="page-header">
+    <button class="back-btn" onclick="showScreen('home')">←</button>
+    <div class="page-title">논점별 통계</div>
   </div>
+  <div id="stats-list"></div>
+</div>
 
-  <!-- PASTE -->
-  <div id="screen-paste" class="screen">
-    <div class="page-header">
-      <button class="back-btn" onclick="showScreen('home')">←</button>
-      <div class="page-title">자료 붙여넣기</div>
-    </div>
-    <div class="paste-guide">
-      <div class="paste-guide-title">인식 가능한 형식</div>
-      <div>■ 논점명 ★★★</div>
-      <div>· 검토목차1 → 검토목차2</div>
-      <div>두문자: 자·현·권 (의미1/의미2/의미3)</div>
-      <div>判例: "..." → &lt;키워드&gt;</div>
-    </div>
-    <textarea id="paste-input" placeholder="프로젝트2 찌라시를 여기에 붙여넣으세요..."></textarea>
-    <div id="parse-result-box" style="display:none;margin-top:12px"></div>
-    <button class="btn-primary" style="margin-top:12px" id="parse-btn" onclick="handleParse()">✨ 자동 분석 시작</button>
+<!-- PASTE -->
+<div id="screen-paste" class="screen">
+  <div class="page-header">
+    <button class="back-btn" onclick="showScreen('home')">←</button>
+    <div class="page-title">자료 붙여넣기</div>
   </div>
+  <div class="paste-guide">
+    <div class="paste-guide-title">인식 가능한 형식</div>
+    <div>【논점 N】 논점명 ★★★</div>
+    <div>사례형 검토순서: A→B→C→D</div>
+    <div>判 판례내용 &lt;키워드&gt; → 빈칸 퀴즈</div>
+    <div>◆ 개념명(자·현·권) + · 의미1, 의미2, 의미3</div>
+  </div>
+  <textarea id="paste-input" placeholder="프로젝트2 찌라시를 여기에 붙여넣으세요..."></textarea>
+  <div id="parse-result-box" style="display:none;margin-top:12px"></div>
+  <button class="btn-primary" style="margin-top:12px" id="parse-btn" onclick="handleParse()">✨ 자동 분석 시작</button>
+</div>
+
 </div>
 
 <script>
@@ -169,35 +170,185 @@ const WRONG_REASONS = [
   {id:"recall",label:"알았는데 못 떠올려서",icon:"💭",color:"#eab308"},
 ];
 
-// 퀴즈 문제 데이터 (통계와 별도 — Sheets에는 통계만 저장)
 const TOPIC_DATA = [
   {id:"t1",name:"확인의 소",stars:3,
-   checklist:["대상적격(자·현·권)","확인의 이익(법·현·장)","가장 유효·적절한 수단(적·당·이)"],
-   keywords:[{sentence:"확인의 소는 ( )의 ( )의 ( )을 대상으로 한다.",blanks:["자기의","현재의","권리·법률관계"]}],
-   doomun:[{key:"대상적격",letters:"자·현·권",meanings:["자기의","현재의","권리·법률관계"]},{key:"확인의 이익",letters:"법·현·장",meanings:["법률상의 지위","현존하는 불안·위험","가장 유효·적절한 수단"]}],
-   connects:[{q:"확인의 이익이 부정될 때 대신 검토할 소는?",a:"이행의 소 (확인의 소 보충성)"}],
-   correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+    checklist:["대상적격(자·현·권)","확인의 이익(법·현·장)","가장 유효·적절한 수단(적·당·이)"],
+    keywords:[{sentence:"확인의 소는 ( )의 ( )의 ( )을 대상으로 한다.",blanks:["자기의","현재의","권리·법률관계"]}],
+    doomun:[{key:"대상적격",letters:"자·현·권",meanings:["자기의","현재의","권리·법률관계"]},{key:"확인의 이익",letters:"법·현·장",meanings:["법률상의 지위","현존하는 불안·위험","가장 유효·적절한 수단"]}],
+    connects:[{q:"확인의 이익이 부정될 때 대신 검토할 소는?",a:"이행의 소 (확인의 소 보충성)"}],
+    correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
   {id:"t2",name:"이행의 소 - 장래이행",stars:3,
-   checklist:["청구적격(의·장·변·확·예)","미리 청구할 필요","선이행청구 예외(조·개·피·담·즉·기)"],
-   keywords:[{sentence:"장래이행의 소: 의무불이행사유가 ( ) 이행기까지 존속한다는 것을 ( ) 당시에 ( )으로 예정할 수 있어야 한다.",blanks:["장래","변론종결","확정적"]}],
-   doomun:[{key:"청구적격",letters:"의·장·변·확·예",meanings:["의무불이행사유","장래 이행기까지","변론종결 당시","확정적으로","예정할 수 있을 것"]}],
-   connects:[{q:"선이행청구 - 미리 청구할 필요 예외 인정 요건은?",a:"저당권·양도담보에서 피담보채무 액수·담보목적을 다투어 변제 후 등기말소 협력을 기대할 수 없는 경우"}],
-   correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+    checklist:["청구적격(의·장·변·확·예)","미리 청구할 필요","선이행청구 예외(조·개·피·담·즉·기)"],
+    keywords:[{sentence:"장래이행의 소: 의무불이행사유가 ( ) 이행기까지 존속한다는 것을 ( ) 당시에 ( )으로 예정할 수 있어야 한다.",blanks:["장래","변론종결","확정적"]}],
+    doomun:[{key:"청구적격",letters:"의·장·변·확·예",meanings:["의무불이행사유","장래 이행기까지","변론종결 당시","확정적으로","예정할 수 있을 것"]}],
+    connects:[{q:"선이행청구 - 미리 청구할 필요 예외 인정 요건은?",a:"저당권·양도담보에서 피담보채무 액수·담보목적을 다투어 변제 후 등기말소 협력을 기대할 수 없는 경우"}],
+    correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
   {id:"t3",name:"소송 중 당사자 사망",stars:3,
-   checklist:["당사자 지위 당연승계 여부","소송절차 중단 요건","중단의 예외","수계신청","간과판결의 효력","판결정본 송달·판결 확정 및 수계신청 가부"],
-   keywords:[{sentence:"判例: 소송 도중 당사자 일방이 사망한 경우 소송은 ( )와의 관계에서 ( )를 형성하여 존재하게 된다.",blanks:["사망자의 상속인들","대립당사자구조"]}],
-   doomun:[],
-   connects:[{q:"당사자 사망 시 소송절차는 원칙적으로?",a:"중단 (수계신청 있을 때까지)"}],
-   correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+    checklist:["당사자 지위 당연승계 여부","소송절차 중단 요건","중단의 예외","수계신청","간과판결의 효력","판결정본 송달·판결 확정 및 수계신청 가부"],
+    keywords:[{sentence:"判例: 소송 도중 당사자 일방이 사망한 경우 소송은 ( )와의 관계에서 ( )를 형성하여 존재하게 된다.",blanks:["사망자의 상속인들","대립당사자구조"]}],
+    doomun:[],
+    connects:[{q:"당사자 사망 시 소송절차는 원칙적으로?",a:"중단 (수계신청 있을 때까지)"}],
+    correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
 ];
 
-// topics = TOPIC_DATA에 Sheets 통계를 병합한 결과
 let topics = JSON.parse(JSON.stringify(TOPIC_DATA));
 let session={questions:[],current:0};
 let sessionResults=[];
 let currentQ=null;
 let parsedTopics=null;
 
+// ── 로컬 파서 ──────────────────────────────────────────────────
+function localParseTopics(text) {
+  const topicList = [];
+  const lines = text.split('\n');
+  let cur = null;
+  let prevLineWasDoomun = false;
+  let pendingDoomun = null;
+
+  for (let i = 0; i < lines.length; i++) {
+    const ln = lines[i].trim();
+    if (!ln) { prevLineWasDoomun = false; continue; }
+
+    // ── 논점 헤더: 【논점 N】 이름 ★★★ ──
+    const hMatch = ln.match(/【논점\s*[\d~\/]+[^】]*】\s*(.+?)(\s*(★+))?$/);
+    if (hMatch) {
+      if (cur) topicList.push(cur);
+      const name = hMatch[1].replace(/★+/g, '').trim();
+      const stars = hMatch[3] ? hMatch[3].length : 3;
+      cur = makeTopic(name, stars);
+      prevLineWasDoomun = false;
+      continue;
+    }
+
+    // ── ■ 검토순서 소제목 (논점 헤더로도 인식) ──
+    const simMatch = ln.match(/^■\s+(.+?)(\s*(★+))?$/);
+    if (simMatch && !ln.includes('찌라시') && !ln.includes('민사소송법') && !ln.includes('│')) {
+      if (cur) topicList.push(cur);
+      const name = simMatch[1].replace(/★+/g, '').replace(/검토순서.*/, '').trim();
+      if (name.length > 1) {
+        const stars = simMatch[3] ? simMatch[3].length : 3;
+        cur = makeTopic(name, stars);
+      }
+      prevLineWasDoomun = false;
+      continue;
+    }
+
+    if (!cur) continue;
+
+    // ── 검토순서: A→B→C ──
+    if (ln.match(/검토순서|검토목차/)) {
+      const part = ln.includes(':') ? ln.split(':').slice(1).join(':') : ln;
+      const steps = part.split('→').map(s => s.trim()).filter(Boolean);
+      if (steps.length >= 2) cur.checklist = steps;
+      prevLineWasDoomun = false;
+      continue;
+    }
+
+    // ── 판례 키워드: 判 ... <키워드> ──
+    if ((ln.startsWith('判') || ln.startsWith('▶判')) && ln.includes('<')) {
+      const blanks = [...ln.matchAll(/<([^>]+)>/g)].map(m => m[1]);
+      if (blanks.length > 0) {
+        const sentence = ln.replace(/^[▶]?判[例]?[\s:]*/,'').replace(/<([^>]+)>/g,'( )');
+        cur.keywords.push({ sentence, blanks });
+      }
+      prevLineWasDoomun = false;
+      continue;
+    }
+
+    // ── 두문자 헤더: ◆ 개념명(자·현·권) ──
+    const doomH = ln.match(/[◆◇]\s*(.+?)\(([가-힣](?:·[가-힣])+)\)/);
+    if (doomH) {
+      pendingDoomun = { key: doomH[1].trim(), letters: doomH[2] };
+      prevLineWasDoomun = true;
+      continue;
+    }
+
+    // ── 두문자 의미 줄: · <의미1, 의미2, ...> ──
+    if (prevLineWasDoomun && pendingDoomun && (ln.startsWith('·') || ln.startsWith('<'))) {
+      const raw = ln.replace(/^[·<\s]+/, '').replace(/>$/, '');
+      const letterArr = pendingDoomun.letters.split('·');
+      // 쉼표나 슬래시로 분리 시도
+      let meanings = raw.split(/[,，、\/]/).map(s => s.trim()).filter(Boolean);
+      if (meanings.length !== letterArr.length) {
+        // 분리 실패 시 전체를 하나의 의미로
+        meanings = [raw];
+      }
+      cur.doomun.push({ key: pendingDoomun.key, letters: pendingDoomun.letters, meanings });
+      pendingDoomun = null;
+      prevLineWasDoomun = false;
+      continue;
+    }
+
+    // ── 두문자 인라인: 두문자: 자·현·권 (의미1/의미2/의미3) ──
+    const doomInline = ln.match(/두문자:\s*([가-힣](?:·[가-힣])+)\s*\((.+)\)/);
+    if (doomInline) {
+      const letters = doomInline[1];
+      const meanings = doomInline[2].split(/[\/]/).map(s => s.trim());
+      cur.doomun.push({ key: cur.name, letters, meanings });
+      prevLineWasDoomun = false;
+      continue;
+    }
+
+    prevLineWasDoomun = false;
+  }
+
+  if (cur) topicList.push(cur);
+  return topicList;
+}
+
+function makeTopic(name, stars) {
+  return {
+    id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2,6),
+    name, stars,
+    checklist: [], keywords: [], doomun: [], connects: [],
+    correctStreak: 0, wrongCount: 0, lastSeen: null, wrongReasons: []
+  };
+}
+
+// ── 파싱 핸들러 (API 불필요 — 로컬 파싱) ──────────────────────
+function handleParse() {
+  const text = document.getElementById('paste-input').value.trim();
+  if (!text) { showToast('텍스트를 입력해주세요'); return; }
+
+  const btn = document.getElementById('parse-btn');
+  btn.textContent = '⏳ 분석 중...';
+  btn.disabled = true;
+  document.getElementById('parse-result-box').style.display = 'none';
+
+  try {
+    parsedTopics = localParseTopics(text);
+
+    if (!parsedTopics.length) {
+      showToast('논점을 찾을 수 없습니다 — 【논점 N】 형식을 확인해주세요');
+      btn.textContent = '✨ 자동 분석 시작';
+      btn.disabled = false;
+      return;
+    }
+
+    const box = document.getElementById('parse-result-box');
+    box.style.display = 'block';
+    box.innerHTML = `
+      <div class="parse-result">
+        <div class="parse-result-title">✓ 논점 ${parsedTopics.length}개 인식 완료</div>
+        ${parsedTopics.map(t =>
+          `<div class="parse-result-item">· ${t.name} ${'★'.repeat(t.stars)} — 목차 ${t.checklist?.length||0}개 / 판례 ${t.keywords?.length||0}개 / 두문자 ${t.doomun?.length||0}개</div>`
+        ).join('')}
+      </div>
+      <div class="action-grid">
+        <button class="btn-add" onclick="confirmParse('add')">+ 기존에 추가</button>
+        <button class="btn-replace" onclick="confirmParse('replace')">전체 교체</button>
+      </div>`;
+
+    btn.textContent = '✨ 다시 분석';
+    btn.disabled = false;
+  } catch(e) {
+    showToast('파싱 오류: ' + e.message);
+    btn.textContent = '✨ 자동 분석 시작';
+    btn.disabled = false;
+  }
+}
+
+// ── 나머지 로직 (원본과 동일) ─────────────────────────────────
 function getPriority(t){
   let s=t.stars*30+t.wrongCount*20;
   if(t.correctStreak>=3)s-=40;
@@ -327,40 +478,6 @@ function renderStats(){
       </div>
       ${t.wrongReasons.length?`<div style="font-size:11px;color:#444;margin-top:10px">오답원인: ${[...new Set(t.wrongReasons)].map(r=>r==='unknown'?'몰라서':r==='confused'?'헷갈려서':'인출실패').join(', ')}</div>`:''}
     </div>`).join('');
-}
-
-async function handleParse(){
-  const text=document.getElementById('paste-input').value.trim();
-  if(!text){showToast('텍스트를 입력해주세요');return;}
-  const btn=document.getElementById('parse-btn');
-  btn.textContent='⏳ Claude가 분석 중...';btn.disabled=true;
-  document.getElementById('parse-result-box').style.display='none';
-
-  const sys=`너는 변호사시험 수험생의 민사소송법 찌라시 텍스트를 분석해서 퀴즈 데이터로 변환하는 AI야.
-입력된 찌라시에서 다음 규칙으로 JSON을 추출해:
-1. ■ 또는 【 로 시작하는 줄 = 논점명
-2. ★ 갯수 = 중요도 (없으면 1)
-3. 검토 목차 (→ 연결 또는 번호 목록) = checklist 배열
-4. 두문자 패턴 (자·현·권 등) = doomun 배열 (key:개념명, letters:두문자, meanings:의미배열)
-5. 判例: 로 시작하는 줄 = < >를 ( )로 바꾼 sentence + blanks 배열로 keyword 퀴즈 생성
-6. 쟁점 연결관계 = connects 배열 Q/A
-반드시 아래 JSON만 응답. 다른 텍스트 금지:
-{"topics":[{"id":"t1","name":"논점명","stars":3,"checklist":["단계1"],"keywords":[{"sentence":"빈칸문장","blanks":["키워드"]}],"doomun":[{"key":"개념명","letters":"자·현·권","meanings":["의미1","의미2","의미3"]}],"connects":[{"q":"질문","a":"답변"}]}]}`;
-
-  try{
-    const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:sys,messages:[{role:"user",content:text}]})});
-    const data=await res.json();
-    const raw=data.content?.map(c=>c.text||'').join('').trim();
-    const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());
-    parsedTopics=parsed.topics.map((t,i)=>({...t,id:`p_${Date.now()}_${i}`,correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]}));
-    const box=document.getElementById('parse-result-box');
-    box.style.display='block';
-    box.innerHTML=`<div class="parse-result"><div class="parse-result-title">✓ 논점 ${parsedTopics.length}개 인식 완료</div>${parsedTopics.map(t=>`<div class="parse-result-item">· ${t.name} ${'★'.repeat(t.stars)} — 목차 ${t.checklist?.length||0}개 / 판례 ${t.keywords?.length||0}개 / 두문자 ${t.doomun?.length||0}개</div>`).join('')}</div><div class="action-grid"><button class="btn-add" onclick="confirmParse('add')">+ 기존에 추가</button><button class="btn-replace" onclick="confirmParse('replace')">전체 교체</button></div>`;
-    btn.textContent='✨ 다시 분석';btn.disabled=false;
-  }catch(e){
-    showToast('파싱 실패 — 형식을 확인해주세요');
-    btn.textContent='✨ 자동 분석 시작';btn.disabled=false;
-  }
 }
 
 function confirmParse(mode){
