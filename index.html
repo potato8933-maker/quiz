@@ -504,6 +504,7 @@ function confirmParse(mode){
   parsedTopics=null;
   document.getElementById('paste-input').value='';
   document.getElementById('parse-result-box').style.display='none';
+  saveLocal();
   saveToSheets();
   showScreen('home');
 }
@@ -514,30 +515,52 @@ function showToast(msg){
   setTimeout(()=>{el.style.display='none';},2500);
 }
 
+// ── localStorage: 퀴즈 내용 전체 저장 ────────────────────────
+function saveLocal(){
+  try{ localStorage.setItem('quiz_topics_v2', JSON.stringify(topics)); }catch(e){}
+}
+
+function loadLocal(){
+  try{
+    const raw = localStorage.getItem('quiz_topics_v2');
+    if(raw){
+      const saved = JSON.parse(raw);
+      if(saved && saved.length > 0){ topics = saved; return true; }
+    }
+  }catch(e){}
+  return false;
+}
+
 // ── Google Sheets 동기화 ─────────────────────────────────────
 async function loadFromSheets(){
   showSyncStatus('☁️ 통계 불러오는 중...');
+
+  // 1. localStorage에서 퀴즈 내용 먼저 복원
+  const hasLocal = loadLocal();
+
   try{
     const res=await fetch(SHEETS_URL+'?action=load');
     const data=await res.json();
     if(data.topics&&data.topics.length>0){
-      // ID 또는 이름 기준으로 통계 병합
+      // 2. Sheets 통계를 이름 기준으로 현재 topics에 덮어씌우기
       topics=topics.map(t=>{
         const saved=data.topics.find(s=>s.id===t.id||s.name===t.name);
         if(saved)return{...t,correctStreak:saved.correctStreak,wrongCount:saved.wrongCount,lastSeen:saved.lastSeen,wrongReasons:saved.wrongReasons};
         return t;
       });
-      // Sheets에만 있는 논점 복원 (이름 중복 제외)
-      data.topics.forEach(s=>{
-        if(!topics.find(t=>t.id===s.id||t.name===s.name)){
-          topics.push({...s,checklist:s.checklist||[],keywords:s.keywords||[],doomun:s.doomun||[],connects:s.connects||[]});
-        }
-      });
+      // 3. localStorage에도 없고 Sheets에만 있는 논점은 메타만 복원
+      if(!hasLocal){
+        data.topics.forEach(s=>{
+          if(!topics.find(t=>t.id===s.id||t.name===s.name)){
+            topics.push({...s,checklist:s.checklist||[],keywords:s.keywords||[],doomun:s.doomun||[],connects:s.connects||[]});
+          }
+        });
+      }
     }
     hideSyncStatus();
   }catch(e){
     hideSyncStatus();
-    showToast('오프라인 — 로컬 데이터 사용 중');
+    if(!hasLocal) showToast('오프라인 — 로컬 데이터 사용 중');
   }
   renderHome();
 }
@@ -545,12 +568,14 @@ async function loadFromSheets(){
 async function saveToSheets(){
   showSyncStatus('☁️ 저장 중...');
   try{
-    await fetch(SHEETS_URL,{method:'POST',body:JSON.stringify({action:'save',topics:topics.map(t=>({id:t.id,name:t.name,stars:t.stars,correctStreak:t.correctStreak,wrongCount:t.wrongCount,lastSeen:t.lastSeen||'',wrongReasons:t.wrongReasons||[]}))})});
+    await fetch(SHEETS_URL,{method:'POST',body:JSON.stringify({action:'save',topics:topics.map(t=>({id:t.id,name:t.name,stars:t.stars,correctStreak:t.correctStreak,wrongCount:t.wrongCount,lastSeen:t.lastSeen||'',wrongReasons:t.wrongReasons||[],checklist:t.checklist||[],keywords:t.keywords||[],doomun:t.doomun||[],connects:t.connects||[]}))})});
     hideSyncStatus();
+    saveLocal();
     showToast('☁️ 저장됨 ✓');
   }catch(e){
     hideSyncStatus();
-    showToast('저장 실패 — 나중에 다시 시도');
+    saveLocal();
+    showToast('저장 실패 — 로컬 저장됨');
   }
 }
 
