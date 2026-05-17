@@ -591,7 +591,7 @@ function makeTopic(name, stars) {
 }
 
 // ── 저장/불러오기 ─────────────────────────────────────────
-const STORAGE_KEY = "quiz_stats_v3";
+const STORAGE_KEY = "quiz_stats_v2";
 function saveStats() {
   const d = {};
   topics.forEach(t => { d[t.id] = { correctStreak:t.correctStreak, wrongCount:t.wrongCount, lastSeen:t.lastSeen, wrongReasons:t.wrongReasons }; });
@@ -599,7 +599,10 @@ function saveStats() {
 }
 function loadStats() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    // 여러 키 순서로 시도 (기존 데이터 복구용)
+    const keys = [STORAGE_KEY, "quiz_stats_v1", "quiz_stats", "quiz_stats_v3"];
+    let raw = null;
+    for (const k of keys) { raw = localStorage.getItem(k); if (raw) break; }
     if (!raw) return;
     const d = JSON.parse(raw);
     topics.forEach(t => { if (d[t.id]) Object.assign(t, d[t.id]); });
@@ -711,7 +714,6 @@ function startSession() {
   renderQuestion();
 }
 
-let currentQ = null;
 function renderQuestion() {
   const q = session.questions[session.current];
   currentQ = q;
@@ -867,9 +869,7 @@ renderHome();
 
 </script>
 </body>
-</html>[]
-  };
-}
+</html>
 
 // ── 파싱 핸들러 (API 불필요 — 로컬 파싱) ──────────────────────
 function handleParse() {
