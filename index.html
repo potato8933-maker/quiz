@@ -590,6 +590,287 @@ function makeTopic(name, stars) {
   };
 }
 
+// ── 저장/불러오기 ─────────────────────────────────────────
+const STORAGE_KEY = "quiz_stats_v3";
+function saveStats() {
+  const d = {};
+  topics.forEach(t => { d[t.id] = { correctStreak:t.correctStreak, wrongCount:t.wrongCount, lastSeen:t.lastSeen, wrongReasons:t.wrongReasons }; });
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); } catch(e) {}
+}
+function loadStats() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    topics.forEach(t => { if (d[t.id]) Object.assign(t, d[t.id]); });
+  } catch(e) {}
+}
+
+// ── 화면 전환 ─────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  if (id === 'home') renderHome();
+  if (id === 'stats') renderStats();
+}
+
+// ── 홈 렌더링 ─────────────────────────────────────────
+function renderHome() {
+  const total = topics.length;
+  const weak = topics.filter(t => t.wrongCount > 0).length;
+  const newT = topics.filter(t => !t.lastSeen).length;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-weak').textContent = weak;
+  document.getElementById('stat-new').textContent = newT;
+  const d = new Date();
+  document.getElementById('home-sub').textContent = `${d.getMonth()+1}/${d.getDate()} · 총 ${total}개 논점`;
+
+  const uncovered = topics.filter(t => !t.lastSeen);
+  const alertEl = document.getElementById('uncovered-alert');
+  if (uncovered.length > 0) {
+    alertEl.style.display = 'block';
+    document.getElementById('uncovered-names').textContent =
+      uncovered.slice(0,3).map(t=>t.name).join(', ') + (uncovered.length > 3 ? ` 외 ${uncovered.length-3}개` : '');
+  } else { alertEl.style.display = 'none'; }
+
+  const weakTopics = [...topics].filter(t => t.wrongCount > 0).sort((a,b) => b.wrongCount - a.wrongCount).slice(0,3);
+  const weakSection = document.getElementById('weak-section');
+  if (weakTopics.length > 0) {
+    weakSection.style.display = 'block';
+    document.getElementById('weak-list').innerHTML = weakTopics.map(t =>
+      `<div class="weak-item"><span>${t.name}</span><span class="weak-count">오답 ${t.wrongCount}회</span></div>`
+    ).join('');
+  } else { weakSection.style.display = 'none'; }
+}
+
+// ── 퀴즈 세션 ─────────────────────────────────────────
+function selectTopics(n) {
+  const pool = [...topics];
+  const weights = pool.map(t => {
+    let w = t.stars;
+    if (!t.lastSeen) w += 3;
+    w += t.wrongCount * 2;
+    if (t.correctStreak >= 3) w = Math.max(1, w - 2);
+    return Math.max(1, w);
+  });
+  const total = weights.reduce((a,b) => a+b, 0);
+  const selected = [], used = new Set();
+  let tries = 0;
+  while (selected.length < Math.min(n, pool.length) && tries < n*20) {
+    tries++;
+    let r = Math.random() * total;
+    for (let i = 0; i < pool.length; i++) {
+      r -= weights[i];
+      if (r <= 0 && !used.has(i)) { used.add(i); selected.push(pool[i]); break; }
+    }
+  }
+  pool.filter((_,i) => !used.has(i)).forEach(t => { if (selected.length < n) selected.push(t); });
+  return selected;
+}
+
+function makeQuestion(topic) {
+  const types = [];
+  if (topic.checklist && topic.checklist.length >= 2) types.push('CHECKLIST');
+  if (topic.keywords && topic.keywords.length > 0) types.push('KEYWORD');
+  if (topic.doomun && topic.doomun.length > 0) types.push('DOOMUN');
+  if (topic.connects && topic.connects.length > 0) types.push('CONNECT');
+  if (!types.length) types.push('CHECKLIST');
+  const type = types[Math.floor(Math.random() * types.length)];
+  let prompt = '', answer = '', hint = '';
+  if (type === 'CHECKLIST') {
+    const list = topic.checklist;
+    const shuffled = [...list].sort(() => Math.random() - 0.5);
+    prompt = `[${topic.name}]\n\n검토순서(목차)를 올바른 순서로 나열하세요.\n\n${shuffled.map((s,i)=>`  ${i+1}. ${s}`).join('\n')}`;
+    answer = list.map((s,i)=>`${i+1}. ${s}`).join('\n');
+    hint = `총 ${list.length}개 항목`;
+  } else if (type === 'KEYWORD') {
+    const kw = topic.keywords[Math.floor(Math.random()*topic.keywords.length)];
+    prompt = `[${topic.name}]\n\n빈칸을 채우세요:\n\n${kw.sentence}`;
+    answer = kw.blanks.map((b,i)=>`(${i+1}) ${b}`).join('\n');
+    hint = `빈칸 ${kw.blanks.length}개`;
+  } else if (type === 'DOOMUN') {
+    const dm = topic.doomun[Math.floor(Math.random()*topic.doomun.length)];
+    prompt = `[${topic.name}]\n\n두문자 〈${dm.letters}〉의 각 글자가 뜻하는 것은?`;
+    answer = dm.letters.split('·').map((l,i)=>`${l}: ${dm.meanings[i]||'?'}`).join('\n');
+    hint = dm.key;
+  } else {
+    const conn = topic.connects[Math.floor(Math.random()*topic.connects.length)];
+    prompt = `[${topic.name}]\n\n${conn.q}`;
+    answer = conn.a;
+    hint = '쟁점 연결';
+  }
+  return { topic, type, prompt, answer, hint };
+}
+
+function startSession() {
+  const sel = selectTopics(5);
+  session.questions = sel.map(t => makeQuestion(t));
+  session.current = 0;
+  sessionResults = [];
+  showScreen('quiz');
+  renderQuestion();
+}
+
+let currentQ = null;
+function renderQuestion() {
+  const q = session.questions[session.current];
+  currentQ = q;
+  const cur = session.current + 1, total = session.questions.length;
+  document.getElementById('quiz-prog').textContent = `${cur} / ${total}`;
+  const badge = document.getElementById('quiz-type-badge');
+  const typeName = QUIZ_TYPES[q.type] || q.type;
+  badge.textContent = typeName;
+  badge.style.background = TYPE_COLOR[typeName] || '#6366f1';
+  badge.style.color = '#fff';
+  badge.style.borderRadius = '20px';
+  badge.style.padding = '4px 10px';
+  const correctCount = sessionResults.filter(r=>r.isCorrect).length;
+  document.getElementById('quiz-correct-count').textContent = `${correctCount}정답`;
+  document.getElementById('quiz-topic-name').textContent = q.topic.name;
+  document.getElementById('quiz-prompt').textContent = q.prompt;
+  document.getElementById('quiz-hint').textContent = q.hint ? `💡 ${q.hint}` : '';
+  document.getElementById('quiz-actions').innerHTML =
+    `<button class="reveal-btn" onclick="revealAnswer()">정답 확인</button>`;
+}
+
+function revealAnswer() {
+  const q = currentQ;
+  document.getElementById('quiz-actions').innerHTML = `
+    <div class="answer-box"><div class="answer-label">정답</div><div class="answer-text">${q.answer.replace(/\n/g,'<br>')}</div></div>
+    <div class="judge-grid">
+      <button class="btn-correct" onclick="judge(true)">✓ 맞았어요</button>
+      <button class="btn-wrong" onclick="judge(false)">✗ 틀렸어요</button>
+    </div>`;
+}
+
+function judge(isCorrect) {
+  const q = currentQ;
+  q.topic.lastSeen = new Date().toISOString();
+  if (isCorrect) {
+    q.topic.correctStreak = (q.topic.correctStreak||0) + 1;
+    sessionResults.push({ topic:q.topic, type:q.type, isCorrect:true, reason:null });
+    saveStats(); nextQ();
+  } else {
+    q.topic.wrongCount = (q.topic.wrongCount||0) + 1;
+    q.topic.correctStreak = 0;
+    document.getElementById('quiz-actions').innerHTML += `
+      <div style="margin-top:12px">
+        <div class="reason-title">오답 원인이 무엇인가요?</div>
+        ${WRONG_REASONS.map(r=>`<button class="reason-btn" onclick="wrongReason('${r.id}')" style="border-left:3px solid ${r.color}"><span>${r.icon}</span><span>${r.label}</span></button>`).join('')}
+      </div>`;
+  }
+}
+
+function wrongReason(reasonId) {
+  const q = currentQ;
+  if (!q.topic.wrongReasons) q.topic.wrongReasons = [];
+  q.topic.wrongReasons.push(reasonId);
+  sessionResults.push({ topic:q.topic, type:q.type, isCorrect:false, reason:reasonId });
+  saveStats(); nextQ();
+}
+
+function nextQ() {
+  session.current++;
+  if (session.current >= session.questions.length) showResult();
+  else renderQuestion();
+}
+
+// ── 결과 화면 ─────────────────────────────────────────
+function showResult() {
+  showScreen('result');
+  const total = sessionResults.length;
+  const correct = sessionResults.filter(r=>r.isCorrect).length;
+  const pct = Math.round(correct/total*100);
+  document.getElementById('result-emoji').textContent = pct>=80?'🎯':pct>=60?'💪':'📚';
+  document.getElementById('result-score').textContent = `${correct} / ${total}`;
+  document.getElementById('result-msg').textContent = `${pct}% · ${pct>=80?'훌륭해요! 유지하세요':pct>=60?'잘 했어요. 오답 복습!':'복습이 필요해요. 파이팅!'}`;
+  document.getElementById('result-list').innerHTML = sessionResults.map(r=>`
+    <div class="result-item">
+      <div><div class="result-item-name">${r.topic.name}</div><div class="result-item-type">${QUIZ_TYPES[r.type]||r.type}</div></div>
+      <div style="color:${r.isCorrect?'#10b981':'#ef4444'};font-weight:700">${r.isCorrect?'✓':'✗'}</div>
+    </div>`).join('');
+  const wrongItems = [...new Set(sessionResults.filter(r=>!r.isCorrect).map(r=>r.topic))];
+  const focusBox = document.getElementById('next-focus-box');
+  if (wrongItems.length > 0) {
+    focusBox.style.display = 'block';
+    document.getElementById('next-focus-list').innerHTML = wrongItems.map(t=>
+      `<div style="font-size:13px;padding:4px 0;color:#ddd">• ${t.name}</div>`).join('');
+  } else { focusBox.style.display = 'none'; }
+}
+
+// ── 통계 화면 ─────────────────────────────────────────
+function renderStats() {
+  const sorted = [...topics].sort((a,b)=>b.wrongCount-a.wrongCount||b.stars-a.stars);
+  document.getElementById('stats-list').innerHTML = sorted.map(t => {
+    const stars = '★'.repeat(t.stars)+'☆'.repeat(5-t.stars);
+    const seen = t.lastSeen ? new Date(t.lastSeen).toLocaleDateString('ko-KR') : '미학습';
+    const streak = t.correctStreak>0 ? `🔥${t.correctStreak}연속` : '-';
+    return `<div class="stat-card">
+      <div class="stat-card-header"><div class="stat-card-name">${t.name}</div><div class="stat-card-stars">${stars}</div></div>
+      <div class="stat-mini-grid">
+        <div class="stat-mini"><div class="stat-mini-val" style="color:#ef4444">${t.wrongCount}</div><div class="stat-mini-lbl">오답</div></div>
+        <div class="stat-mini"><div class="stat-mini-val" style="color:#10b981;font-size:11px">${streak}</div><div class="stat-mini-lbl">연속정답</div></div>
+        <div class="stat-mini"><div class="stat-mini-val" style="color:#888;font-size:10px">${seen}</div><div class="stat-mini-lbl">최근학습</div></div>
+      </div></div>`;
+  }).join('');
+}
+
+// ── 자료 붙여넣기 ─────────────────────────────────────────
+function handleParse() {
+  const text = document.getElementById('paste-input').value.trim();
+  if (!text) { showToast('텍스트를 붙여넣어 주세요'); return; }
+  parsedTopics = localParseTopics(text);
+  const box = document.getElementById('parse-result-box');
+  if (!parsedTopics.length) {
+    box.style.display = 'block';
+    box.innerHTML = `<div class="parse-result" style="border-color:rgba(239,68,68,0.3)"><div class="parse-result-title" style="color:#ef4444">인식된 논점 없음</div><div class="parse-result-item">【논점 N】 형식을 확인해 주세요</div></div>`;
+    return;
+  }
+  box.style.display = 'block';
+  box.innerHTML = `
+    <div class="parse-result">
+      <div class="parse-result-title">✅ ${parsedTopics.length}개 논점 인식됨</div>
+      ${parsedTopics.map(t=>`<div class="parse-result-item">• ${t.name} (별${t.stars}개)</div>`).join('')}
+    </div>
+    <div class="action-grid" style="margin-top:10px">
+      <button class="btn-add" onclick="addTopics(false)">➕ 추가</button>
+      <button class="btn-replace" onclick="addTopics(true)">🔄 대체</button>
+    </div>`;
+}
+
+function addTopics(replace) {
+  if (!parsedTopics || !parsedTopics.length) return;
+  if (replace) {
+    topics = parsedTopics;
+  } else {
+    const names = new Set(topics.map(t=>t.name));
+    parsedTopics.forEach(t => { if (!names.has(t.name)) topics.push(t); });
+  }
+  saveStats();
+  showToast(`${parsedTopics.length}개 논점 ${replace?'대체':'추가'} 완료!`);
+  document.getElementById('paste-input').value = '';
+  document.getElementById('parse-result-box').style.display = 'none';
+  parsedTopics = null;
+  showScreen('home');
+}
+
+// ── 토스트 ─────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 2200);
+}
+
+// ── 초기화 ─────────────────────────────────────────
+loadStats();
+renderHome();
+
+</script>
+</body>
+</html>[]
+  };
+}
+
 // ── 파싱 핸들러 (API 불필요 — 로컬 파싱) ──────────────────────
 function handleParse() {
   const text = document.getElementById('paste-input').value.trim();
