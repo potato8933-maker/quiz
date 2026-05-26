@@ -67,6 +67,13 @@ h1 { font-size: 26px; font-weight: 900; line-height: 1.2; }
 .paste-guide-title { color: #6366f1; font-weight: 700; margin-bottom: 6px; }
 textarea { width: 100%; min-height: 170px; background: #1a1a24; border: 1px solid #2a2a38; border-radius: 12px; padding: 14px; color: #e8e8f0; font-size: 13px; line-height: 1.8; resize: vertical; font-family: inherit; }
 textarea:focus { outline: none; border-color: #6366f1; }
+.subject-card { background: #1a1a24; border: 2px solid #2a2a38; border-radius: 18px; padding: 28px 22px; margin-bottom: 14px; cursor: pointer; transition: border-color 0.15s, background 0.15s; text-align: left; width: 100%; font-family: inherit; }
+.subject-card:active { background: #22223a; }
+.subject-card-icon { font-size: 32px; margin-bottom: 12px; }
+.subject-card-name { font-size: 18px; font-weight: 900; color: #e8e8f0; margin-bottom: 6px; }
+.subject-card-desc { font-size: 12px; color: #555; }
+.subject-card.minsso { border-color: #6366f1; }
+.subject-card.minbeop { border-color: #10b981; }
 .parse-result { background: rgba(16,185,129,0.07); border: 1px solid rgba(16,185,129,0.22); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; }
 .parse-result-title { font-size: 13px; color: #10b981; font-weight: 700; margin-bottom: 8px; }
 .parse-result-item { font-size: 12px; color: #aaa; margin-bottom: 4px; }
@@ -80,9 +87,28 @@ textarea:focus { outline: none; border-color: #6366f1; }
 <div id="app">
 <div id="toast"></div>
 
+<!-- SUBJECT SELECT -->
+<div id="screen-subject" class="screen active">
+  <div style="padding-top:20px">
+    <div class="label">변호사시험 · 16기</div>
+    <h1>과목 선택</h1>
+    <div class="sub" style="margin-bottom:32px">어떤 과목 퀴즈를 풀까요?</div>
+    <button class="subject-card minsso" onclick="selectSubject('minsso')">
+      <div class="subject-card-icon">⚖️</div>
+      <div class="subject-card-name">민사소송법</div>
+      <div class="subject-card-desc" id="subj-desc-minsso">논점 26~46 · 판례 퀴즈</div>
+    </button>
+    <button class="subject-card minbeop" onclick="selectSubject('minbeop')">
+      <div class="subject-card-icon">📘</div>
+      <div class="subject-card-name">민법</div>
+      <div class="subject-card-desc" id="subj-desc-minbeop">논점 추가 후 퀴즈 가능</div>
+    </button>
+  </div>
+</div>
+
 <!-- HOME -->
-<div id="screen-home" class="screen active">
-  <div class="label">민사소송법 · 16기</div>
+<div id="screen-home" class="screen">
+  <div class="label" id="home-subject-label">민사소송법 · 16기</div>
   <h1>취침 전<br>암기 퀴즈</h1>
   <div class="sub" id="home-sub"></div>
   <div class="stats-grid">
@@ -100,6 +126,7 @@ textarea:focus { outline: none; border-color: #6366f1; }
     <button class="btn-secondary" onclick="showScreen('stats')">📊 통계</button>
     <button class="btn-secondary" onclick="showScreen('paste')">📋 자료 붙여넣기</button>
   </div>
+  <button class="btn-secondary" style="margin-top:10px;color:#6366f1;font-size:12px" onclick="showScreen('subject')">⇄ 과목 전환</button>
 </div>
 
 <!-- QUIZ -->
@@ -476,7 +503,15 @@ const TOPIC_DATA = [
     correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
 ];
 
-let topics = JSON.parse(JSON.stringify(TOPIC_DATA));
+const TOPIC_DATA_MINBEOP = [];  // 민법 논점 — 자료 붙여넣기로 추가
+
+const SUBJECTS = {
+  minsso: { name: '민사소송법', label: '민사소송법 · 16기', data: TOPIC_DATA, storageKey: 'quiz_stats_v2' },
+  minbeop: { name: '민법', label: '민법 · 16기', data: TOPIC_DATA_MINBEOP, storageKey: 'quiz_stats_minbeop_v1' },
+};
+
+let currentSubject = null;
+let topics = [];
 let session={questions:[],current:0};
 let sessionResults=[];
 let currentQ=null;
@@ -591,22 +626,48 @@ function makeTopic(name, stars) {
 }
 
 // ── 저장/불러오기 ─────────────────────────────────────────
-const STORAGE_KEY = "quiz_stats_v2";
 function saveStats() {
+  if (!currentSubject) return;
+  const key = SUBJECTS[currentSubject].storageKey;
   const d = {};
   topics.forEach(t => { d[t.id] = { correctStreak:t.correctStreak, wrongCount:t.wrongCount, lastSeen:t.lastSeen, wrongReasons:t.wrongReasons }; });
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); } catch(e) {}
+  try { localStorage.setItem(key, JSON.stringify(d)); } catch(e) {}
 }
 function loadStats() {
+  if (!currentSubject) return;
   try {
-    // 여러 키 순서로 시도 (기존 데이터 복구용)
-    const keys = [STORAGE_KEY, "quiz_stats_v1", "quiz_stats", "quiz_stats_v3"];
+    const key = SUBJECTS[currentSubject].storageKey;
+    // 민사소송법은 기존 키도 호환
+    const fallbackKeys = currentSubject === 'minsso'
+      ? [key, "quiz_stats_v1", "quiz_stats", "quiz_stats_v3"]
+      : [key];
     let raw = null;
-    for (const k of keys) { raw = localStorage.getItem(k); if (raw) break; }
+    for (const k of fallbackKeys) { raw = localStorage.getItem(k); if (raw) break; }
     if (!raw) return;
     const d = JSON.parse(raw);
     topics.forEach(t => { if (d[t.id]) Object.assign(t, d[t.id]); });
   } catch(e) {}
+}
+
+// ── 과목 선택 ─────────────────────────────────────────
+function selectSubject(id) {
+  currentSubject = id;
+  const subj = SUBJECTS[id];
+  topics = JSON.parse(JSON.stringify(subj.data));
+  loadStats();
+  // 과목별 저장된 추가 논점 불러오기
+  try {
+    const extraKey = subj.storageKey + '_topics';
+    const raw = localStorage.getItem(extraKey);
+    if (raw) {
+      const extra = JSON.parse(raw);
+      const existingIds = new Set(topics.map(t => t.id));
+      extra.forEach(t => { if (!existingIds.has(t.id)) topics.push(t); });
+      loadStats(); // 추가된 논점에도 통계 적용
+    }
+  } catch(e) {}
+  document.getElementById('home-subject-label').textContent = subj.label;
+  showScreen('home');
 }
 
 // ── 화면 전환 ─────────────────────────────────────────
@@ -615,6 +676,27 @@ function showScreen(id) {
   document.getElementById('screen-' + id).classList.add('active');
   if (id === 'home') renderHome();
   if (id === 'stats') renderStats();
+  if (id === 'subject') renderSubjectScreen();
+}
+
+function renderSubjectScreen() {
+  Object.keys(SUBJECTS).forEach(id => {
+    const subj = SUBJECTS[id];
+    const descEl = document.getElementById('subj-desc-' + id);
+    if (!descEl) return;
+    // 저장된 통계에서 논점 수 계산
+    try {
+      const key = subj.storageKey;
+      const raw = localStorage.getItem(key);
+      const extraKey = subj.storageKey + '_topics';
+      const extraRaw = localStorage.getItem(extraKey);
+      const baseCount = subj.data.length;
+      const extraCount = extraRaw ? JSON.parse(extraRaw).length : 0;
+      const total = baseCount + extraCount;
+      if (total > 0) descEl.textContent = `논점 ${total}개`;
+      else descEl.textContent = '논점 추가 후 퀴즈 가능';
+    } catch(e) {}
+  });
 }
 
 // ── 홈 렌더링 ─────────────────────────────────────────
@@ -842,12 +924,19 @@ function handleParse() {
 
 function addTopics(replace) {
   if (!parsedTopics || !parsedTopics.length) return;
+  const baseIds = new Set(SUBJECTS[currentSubject].data.map(t => t.id));
   if (replace) {
     topics = parsedTopics;
   } else {
     const names = new Set(topics.map(t=>t.name));
     parsedTopics.forEach(t => { if (!names.has(t.name)) topics.push(t); });
   }
+  // 추가 논점(기본 데이터 외)을 과목별 로컬스토리지에 저장
+  try {
+    const extraKey = SUBJECTS[currentSubject].storageKey + '_topics';
+    const extra = topics.filter(t => !baseIds.has(t.id));
+    localStorage.setItem(extraKey, JSON.stringify(extra));
+  } catch(e) {}
   saveStats();
   showToast(`${parsedTopics.length}개 논점 ${replace?'대체':'추가'} 완료!`);
   document.getElementById('paste-input').value = '';
@@ -864,8 +953,7 @@ function showToast(msg) {
 }
 
 // ── 초기화 ─────────────────────────────────────────
-loadStats();
-renderHome();
+renderSubjectScreen();
 
 </script>
 </body>
