@@ -189,8 +189,8 @@ textarea:focus { outline: none; border-color: #6366f1; }
 
 <script>
 const SHEETS_URL = "https://script.google.com/macros/s/AKfycbzkZ2uad6YDHpyn6CZJI7nc8a16uRsDB0s45Q6BYbiC_bkNVg-v9efGKhDLVIhr7Rrp/exec";
-const QUIZ_TYPES = { CHECKLIST:"목차순서", KEYWORD:"판례키워드", DOOMUN:"두문자", CONNECT:"쟁점연결" };
-const TYPE_COLOR = { "목차순서":"#6366f1","판례키워드":"#0ea5e9","두문자":"#10b981","쟁점연결":"#f59e0b" };
+const QUIZ_TYPES = { CHECKLIST:"목차순서", KEYWORD:"판례키워드", DOOMUN:"두문자", CONNECT:"쟁점연결", HYEONCHUL:"현출암기" };
+const TYPE_COLOR = { "목차순서":"#6366f1","판례키워드":"#0ea5e9","두문자":"#10b981","쟁점연결":"#f59e0b","현출암기":"#a855f7" };
 const WRONG_REASONS = [
   {id:"unknown",label:"몰라서",icon:"❓",color:"#ef4444"},
   {id:"confused",label:"헷갈려서",icon:"🌀",color:"#f97316"},
@@ -503,7 +503,43 @@ const TOPIC_DATA = [
     correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
 ];
 
-const TOPIC_DATA_MINBEOP = [];  // 민법 논점 — 자료 붙여넣기로 추가
+const TOPIC_DATA_MINBEOP = [
+  {id:"mb_1",name:"관습법 성립요건",section:"Ⅰ. 법원·관습법",stars:3,hyeonchul:"종중: 자연발생적인 종족 집단 → 관습법상 법인격 인정",doomun_hint:"관.법.정.합",correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_2",name:"점유취득시효 (1필 토지)",section:"Ⅰ. 법원·관습법",stars:3,hyeonchul:"판례는 분필되지 않은 1필의 토지에 대해서도 그 부분이 다른 부분과 구분되어, 시효취득자의 점유하에 속한다는 것을 인식하기에 충분한 징표가 있고, 그 징표가 계속하여 존속한다면 취득시효가 인정된다(구.징.계)는 입장",doomun_hint:"구.징.계",correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_3",name:"권리남용 금지",section:"Ⅱ. 신의칙 파생원칙",stars:3,hyeonchul:"권리남용의 원칙: 객관적 요건(권리의 존재 및 행사, 실질적인 사회질서 위반. > 이익형량, 전략적 행동의 유무, 귀책성 종합 고려(이.전.귀)) + 주관적 요건(상대방에게 고통을 주고 손해를 입히려는 목적, 가해의사. 주관적 요건은 권리자의 정당한 이익 결여라는 객관적 요건에 의해 추인될 수 있다)",doomun_hint:"이.전.귀",correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_4",name:"실효의 원칙",section:"Ⅱ. 신의칙 파생원칙",stars:3,hyeonchul:"실효의 원칙: 상당 기간 권리 불행사 + 상대방의 신뢰 + 새삼 권리 행사 기대불가능 + 행사제한 (상.신.기행.)",doomun_hint:"상.신.기행.",correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_5",name:"사정변경의 원칙",section:"Ⅱ. 신의칙 파생원칙",stars:3,hyeonchul:"객관적 사정 + 현저히 변경 + 당초의 내용대로 강제하는 것이 명백하게 부당 + 수정 or 불가능한 경우 해소(객.현.명.수.해)",doomun_hint:"객.현.명.수.해",correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_6",name:"신의칙의 한계",section:"Ⅱ. 신의칙 파생원칙",stars:3,hyeonchul:"신의칙의 적용으로 강행법규의 입법취지를 완전히 몰각시키는 경우 신의칙의 적용은 허용되지 않는다. 합법성의 원칙은 신의성실의 원칙보다 우월한 것",doomun_hint:null,correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_7",name:"태아의 권리능력",section:"Ⅲ. 태아",stars:3,hyeonchul:"불.상.유.인. 사x (불법행위, 상속, 유증, 인지 O 사인증여X 계약이라서) 정지조건설과 해제조건설이 대립하나 판례는 특정한 권리에 있어서 태아가 권리를 취득한다고 하더라도 현행법상 이를 대행할 기관이 없어 태아로 있는 동안은 권리능력을 취득할 수 없다고 하여 정지조건설.",doomun_hint:"불.상.유.인. 사x",correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_8",name:"의사무능력자 판단기준",section:"Ⅳ. 의사무능력자",stars:3,hyeonchul:"구체적, 개별적으로 판단. 행위의 일상적인 의미뿐만 아니라 법률적인 의미나 효과에 대하여도 이해할 수 있을 것을 요한다(판례). 의사무능력자의 법률행위는 무효이고, 제141조 단서는 유추적용된다.",doomun_hint:null,correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_9",name:"제한능력자 제도의 성격",section:"Ⅴ. 제한능력자·미성년자",stars:3,hyeonchul:"판례는 제한능력자제도는 거래의 안전을 희생시키는 것을 감수하면서 제한능력자 본인을 보호하는 데 그 목적을 두고 있는 강행규정으로서 이에 반하는 계약은 효력이 없다고 판시.",doomun_hint:null,correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_10",name:"미성년자 법률행위 (제5조)",section:"Ⅴ. 제한능력자·미성년자",stars:3,hyeonchul:"미성년자가 법률행위를 함에는 법정대리인의 동의를 얻어야 하는바(제5조 1항 본문) 이는 묵시적으로도 가능하나, 미성년자가 동의를 얻지 않고 한 행위는 미성년자 본인 또는 법정대리인이 취소할 수 있다. 묵시적 동의 유무는 1)미성년자의 독자적인 소득의 범위, 2)계약의 내용 등을 고려한다",doomun_hint:null,correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_11",name:"신용카드 계약 취소의 효과",section:"Ⅴ. 제한능력자·미성년자",stars:3,hyeonchul:"미성년자가 신용카드 이용계약을 취소한 경우 매매계약은 유효하게 존속, 반환하여야 할 대상은 면제받은 물품대금채무 상당액",doomun_hint:null,correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_12",name:"친권자의 대리권 (제920조)",section:"Ⅴ. 제한능력자·미성년자",stars:3,hyeonchul:"판례는 행위의 객관적 성질상 친권자와 자 사이에 이해의 대립이 생길 우려가 있는 행위를 의미하며 친권자의 의도나 실질적으로 이해의 대립이 생겼는가는 묻지 않는다고 하여 형식적 판단설의 입장이다(객.이.의.실.형) 법정대리의 경우는 원칙적으로 대리권의 범위에 제한이 없다(제920조).",doomun_hint:"객.이.의.실.형",correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_13",name:"제17조 (속임수) — 취소권 배제",section:"Ⅴ. 제한능력자·미성년자",stars:3,hyeonchul:"제한능력자가 속임수를 써서 자기를 능력자로 믿게 하거나 법정대리인의 동의가 있는 것으로 믿게 한 경우 취소할 수 없으나(민법 제17조), 판례는 적극적인 사기수단을 써야 속임수에 해당한다고 판시하여 협의설의 입장이다. 미성년자가 법정대리인의 동의서를 위조한 사안이므로 학설 대립에 상관없이 제17조 속임수에 해당한다.",doomun_hint:null,correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_14",name:"법인의 권리능력 (제34조)",section:"Ⅵ. 법인",stars:3,hyeonchul:"법인의 권리능력은 정관에서 정한 목적 범위 내로 제한되는바(제34조), 판례는 목적 수행에 필요한지 여부는 행위의 객관적 성질에 따라 추상적으로 판단할 것이지 행위자의 주관적 구체적 의사에 따라 판단할 것은 아니다라고 판시(객.추.주.구)",doomun_hint:"객.추.주.구",correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_15",name:"법인의 불법행위능력 (제35조)",section:"Ⅵ. 법인",stars:3,hyeonchul:"직무에 관한 행위인지 여부는 주관적 구체적으로 판단할 것이 아니라 객관적 추상적으로 판단하여야 하며, 외형상 대표기관의 직무집행행위라고 볼 수 있는 행위를 포함한다고 하여 외형이론의 입장이다. 상대방이 악의거나 중대한 과실이 있는 경우 외형이론이 적용배제된다",doomun_hint:"상대방 악의·중과실 시 외형이론 적용배제",correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_16",name:"자연적 해석",section:"Ⅶ. 법률행위 해석",stars:3,hyeonchul:"(계.형.쌍.진) 계약의 해석에 있어서는 형식적인 문구에만 얽매여서는 아니되고 쌍방 당사자의 진정한 의사가 무엇인가를 탐구하여야 하는 것",doomun_hint:"계.형.쌍.진",correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_17",name:"개별 강행규정 위반과 제103조",section:"Ⅷ. 반사회질서",stars:3,hyeonchul:"판례는 개별 강행규정에 위반하더라도 항상 제103조 위반이 되는 것은 아니라고 보아 구별설.",doomun_hint:null,correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_18",name:"동기의 불법",section:"Ⅷ. 반사회질서",stars:3,hyeonchul:"동기는 의사표시의 구성요소가 아니므로 원칙적으로 제103조에 해당하지 않으나, 판례는 표시되거나 상대방에게 알려진 동기가 반사회질서적인 경우에 제103조 위반이라는 입장이다",doomun_hint:null,correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_19",name:"반사회질서 법률행위의 효과",section:"Ⅷ. 반사회질서",stars:3,hyeonchul:"반사회질서 법률행위의 무효는 이를 주장할 이익이 있는 자는 누구든지 주장할 수 있다. 반사회질서 법률행위로 인한 급부의 경우 제746조의 불법원인급여에 해당하여 반사적 효과로서 상대방에게 그 소유권이 귀속된다. 그러나 불법원인급여를 받은 상대방이 제3자에게 소유권에 기한 물권적 청구권을 행사할 수 있는 것은 아니다",doomun_hint:null,correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_20",name:"이중매매와 반사회질서",section:"Ⅷ. 반사회질서",stars:3,hyeonchul:"판례는 부동산 이중매매는 계약자유의 원칙에 비추어 유효함이 원칙이나 제2매수인이 매도인의 배임행위에 적극 가담한 경우에는 정의관념에 반하는 행위로서 반사회질서 행위로서 무효가 된다고 판시.",doomun_hint:null,correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_21",name:"비진의표시 요건",section:"Ⅸ. 의사표시",stars:3,hyeonchul:"진의의 의미와 관련하여 판례는 특정한 내용의 의사표시를 하고자 하는 표의자의 생각을 말하는 것이지 표의자가 진정으로 마음으로 바라는 사항을 뜻하는 것은 아니다라고 판시(진.마.바). 선의면 충분하고 무과실까지는 요구되지 않는다",doomun_hint:"진.마.바",correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_22",name:"허위표시 제3자의 범위",section:"Ⅸ. 의사표시",stars:3,hyeonchul:"108조 허위표시 자체가 제746조의 불법은 아니다. 제108조 제2항의 제3자는 당사자 및 포괄승계인 이외의 자로서 허위표시에 의하여 외형상 형성된 법률관계를 토대로 1)실질적으로 2)새로운 3)법률상 이해관계를 맺은 자를 말한다(판례) (허.형.실.새.법)",doomun_hint:"허.형.실.새.법",correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_23",name:"착오 요건",section:"Ⅸ. 의사표시",stars:3,hyeonchul:"동기는 의사표시의 구성요소가 아니지만 판례는 동기를 의사표시의 내용으로 삼을 것을 상대방에게 표시하고, 착오를 이유로 계약을 취소할 수 있다고 하여 동기표시설의 입장이다. 동기가 상대방으로부터 제공되거나 유발된 경우 판례는 동기의 표시 여부를 묻지 않고 취소를 인정한다. 판례는 이중적 기준설에 따라 주관적 현저성, 객관적 현저성이 모두 충족되어야 한다고 판시. 상대방이 표의자의 착오를 알고 이용한 경우 > 중대한 과실이 있더라도 취소 가능. 취지가 서로 다르고, 요건과 효과도 구별된다(취.요.효)",doomun_hint:"취.요.효",correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_24",name:"일부무효 요건 (일.분.가)",section:"Ⅹ. 법률행위 효력",stars:3,hyeonchul:"판례는 제137조는 임의규정으로서 원칙적으로 사적자치의 원칙이 지배하는 영역에서 적용되므로, 나머지 부분을 무효로 한다면 당해 효력규정의 취지에 반하는 결과가 초래되는 경우에는 나머지 부분까지 무효로 된다고 할 수는 없다. 일반적으로 토지와 그 지상의 건물은 법률적인 운명을 같이하는 것이 거래의 관행이고 당사자의 의사나 경제상의 관념에도 합치되는 것으로",doomun_hint:"일.분.가.",correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_25",name:"확정적 무효 vs 유동적 무효",section:"Ⅹ. 법률행위 효력",stars:3,hyeonchul:"처음부터 허가를 배제·잠탈하는 내용의 계약인 경우 처음부터 확정적으로 무효인 것으로서 유효로 될 여지가 없다. 제746조는 사회적 타당성이 없는 행위(제103조)를 한 사람은 복구를 그 형식 여하에 불구하고 인정하지 않겠다는 이상을 표현한 것",doomun_hint:null,correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_26",name:"무효행위의 추인 (무.알.새)",section:"Ⅹ. 법률행위 효력",stars:3,hyeonchul:"무권리자의 추인 \"사적자치의 원칙에 비추어 당연하고\" 취소한 법률행위의 추인: 무효행위의 추인(제139조)의 요건과 효과로서 추인",doomun_hint:null,correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_27",name:"취소의 효과 — 원상회복 (소.이.사)",section:"Ⅹ. 법률행위 효력",stars:3,hyeonchul:"쌍무계약이 취소된 경우 선의의 매수인에게 제201조가 적용되어 과실수취권이 인정되는 이상 선의의 매도인에게도 제587조의 유추적용에 의하여 대금의 운용이익 내지 법정이자의 반환을 부정함이 형평에 맞다. 임대인은 임대차계약 존속 중 기한의 이익을 포기하고 임대차보증금반환 채권을 수동채권으로 하여 상계할 수 있고",doomun_hint:"소.이.사",correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_28",name:"소멸시효 기산점",section:"ⅩI. 소멸시효",stars:3,hyeonchul:"소멸시효의 권리를 행사할 수 있는 때는 \"법률상의 장애가 없음을 말하므로 사실상의 장애는 시효의 진행을 막지 못한다\"",doomun_hint:null,correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_29",name:"재판상 청구 — 응소에 의한 시효중단 (채.주.승)",section:"ⅩI. 소멸시효",stars:3,hyeonchul:"\"자신이 권리 위에 잠자는 자가 아님을 표명\" 1)채무자가 제기한 소송에서, 2)응소하여 적극적으로 권리를 주장하여, 3)승소한 경우는 제170조의 재판상 청구에 해당하여 시효가 중단된다(채.주.승). \"담보물의 제3취득자나 물상보증인 등 시효 이익을 원용할 수 있는 지위에 있으나 직접 의무를 부담하지 아니하는 자\"가 제기한 소송에서의 응소는 X",doomun_hint:"채.주.승",correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_30",name:"채권자대위소송과 시효중단",section:"ⅩI. 소멸시효",stars:3,hyeonchul:"시효중단의 효력은 특정승계인에게도 미치는 점(제169조), 원고를 권리 위에 잠자는 자로 볼 수 없는 점에 비추어볼 때 당초의 채권자대위소송으로 인한 시효중단의 효력이 소멸하지 않는다. 소송 중에 채무자가 채권양도의 효력을 인정하는 등의 사정으로 인하여 채권양도인의 청구가 기각된 경우 시효중단의 효력이 없어지나, 이 경우에도 채권양수인이 그로부터 6월 내에 채무자를 상대로 재판상의 청구 등을 하면 채권양도인이 최초의 재판상 청구를 한 때부터 시효가 중단된다.",doomun_hint:null,correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_31",name:"추심채권자와 시효중단",section:"ⅩI. 소멸시효",stars:3,hyeonchul:"채무자가 권리주체의 지위에서 한 시효중단의 효력은 집행법원의 수권에 따라 피압류채권에 대한 추심권능을 부여받아 일종의 추심기관으로서 그 채권을 추심하는 추심채권자에게도 미친다(주.집.수.추)",doomun_hint:"주.집.수.추",correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_32",name:"보증채무와 주채무 시효연장",section:"ⅩI. 소멸시효",stars:3,hyeonchul:"판례는 연장부정설의 입장인바, 보증채무가 주채무에 부종한다 하더라도 양자는 별개의 채무이고, 제440조의 의미는 보증채무의 부종성에 기인한 것이라기보다는 채권자 보호를 위한 특별규정이기에 주채무의 소멸시효기간 연장은 보증채무에 대하여 미치지 않는다. 담보목적물의 제3취득자 또는 물상보증인은 별개의 독립된 채무를 부담하는 것이 아니라 단지 채무자의 채무를 변제할 책임을 부담하므로 주채무의 소멸시효 연장이 담보물권에도 미친다.",doomun_hint:null,correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_33",name:"압류·가압류·가처분에 의한 시효중단",section:"ⅩI. 소멸시효",stars:3,hyeonchul:"판례는 가압류 등은 집행이 되는 것을 전제로 민사소송법 제265조를 유추적용하여 재판상 청구의 소제기와 유사하게 집행을 신청한 때에 소급하여 시효중단의 효력이 발생한다고 한다. 집행에 착수한 이상 집행불능상태가 된 경우에도 시효중단의 효력은 인정된다",doomun_hint:null,correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_34",name:"소멸시효 원용권자",section:"ⅩI. 소멸시효",stars:3,hyeonchul:"채무자에 대한 일반채권자는 채권자의 지위에서 독자적으로 소멸시효의 완성을 주장할 수 없다. 판례에 따르면 대위원용이 허용되나 채무자가 시효이익을 적극적으로 포기한 때에는 채무자에 대한 일반채권자는 다른채권자의 채무자에 대한 채권에 대해 소멸시효를 원용할 수 없게 된다.",doomun_hint:null,correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+  {id:"mb_35",name:"시효이익의 포기 — 전합 추정법리 폐기",section:"ⅩI. 소멸시효",stars:4,hyeonchul:"종래판례는 시효완성후 시효이익을 포기하는 듯한 행위가 있으면 시효완성 사실에 대한 악의를 추정하였으나(추정 법리), 최근 전합은 경험칙에 어긋나고, 관념의 통지에 불과한 채무승인과 의사표시에 해당하는 시효이익의 포기는 법적성질이 구별된다는 점, 법적안정성과 공정성에 어긋난다는 점에서 추정 법리를 폐기하였다(공.법.경.) 판례는 시효이익을 이미 포기한 자와의 법률관계를 통하여 비로소 시효이익을 원용할 이해관계를 형성한 자는 이미 이루어진 시효이익의 포기의 효력을 부정할 수는 없다고 판시",doomun_hint:"공.법.경.",correctStreak:0,wrongCount:0,lastSeen:null,wrongReasons:[]},
+];
 
 const SUBJECTS = {
   minsso: { name: '민사소송법', label: '민사소송법 · 16기', data: TOPIC_DATA, storageKey: 'quiz_stats_v2' },
@@ -677,6 +713,7 @@ function showScreen(id) {
   if (id === 'home') renderHome();
   if (id === 'stats') renderStats();
   if (id === 'subject') renderSubjectScreen();
+  if (id === 'paste') renderPasteGuide();
 }
 
 function renderSubjectScreen() {
@@ -754,6 +791,10 @@ function selectTopics(n) {
 }
 
 function makeQuestion(topic) {
+  // 민법 현출 퀴즈
+  if (topic.hyeonchul) {
+    return { topic, type:'HYEONCHUL', prompt:`${topic.name}\n\n현출 문구를 정확히 떠올려보세요.`, answer:topic.hyeonchul, hint:'' };
+  }
   const types = [];
   if (topic.checklist && topic.checklist.length >= 2) types.push('CHECKLIST');
   if (topic.keywords && topic.keywords.length > 0) types.push('KEYWORD');
@@ -837,12 +878,45 @@ function judge(isCorrect) {
   } else {
     q.topic.wrongCount = (q.topic.wrongCount||0) + 1;
     q.topic.correctStreak = 0;
+
+    // 민법 현출: 두문자 2단계
+    if (q.type === 'HYEONCHUL') {
+      if (q.topic.doomun_hint) {
+        document.getElementById('quiz-actions').innerHTML = `
+          <div class="answer-box" style="background:#12102a;border-color:rgba(168,85,247,0.35);margin-bottom:12px">
+            <div class="answer-label" style="color:#a855f7;letter-spacing:2px">💡 두문자 힌트</div>
+            <div class="answer-text" style="font-size:24px;font-weight:900;letter-spacing:4px;color:#d8b4fe;margin-top:4px">${q.topic.doomun_hint}</div>
+          </div>
+          <div style="font-size:12px;color:#555;text-align:center;margin-bottom:14px">두문자를 보고 전체 문구를 떠올려보세요</div>
+          <div class="judge-grid">
+            <button class="btn-correct" onclick="judgeStage2(true)">✓ 떠올렸어요</button>
+            <button class="btn-wrong" onclick="judgeStage2(false)">✗ 모르겠어요</button>
+          </div>`;
+      } else {
+        if (!q.topic.wrongReasons) q.topic.wrongReasons = [];
+        q.topic.wrongReasons.push('unknown');
+        sessionResults.push({ topic:q.topic, type:q.type, isCorrect:false, reason:'unknown' });
+        saveStats(); nextQ();
+      }
+      return;
+    }
+
+    // 민소법: 오답 원인 선택
     document.getElementById('quiz-actions').innerHTML += `
       <div style="margin-top:12px">
         <div class="reason-title">오답 원인이 무엇인가요?</div>
         ${WRONG_REASONS.map(r=>`<button class="reason-btn" onclick="wrongReason('${r.id}')" style="border-left:3px solid ${r.color}"><span>${r.icon}</span><span>${r.label}</span></button>`).join('')}
       </div>`;
   }
+}
+
+function judgeStage2(canRecall) {
+  const q = currentQ;
+  const reason = canRecall ? 'recall' : 'unknown';
+  if (!q.topic.wrongReasons) q.topic.wrongReasons = [];
+  q.topic.wrongReasons.push(reason);
+  sessionResults.push({ topic:q.topic, type:q.type, isCorrect:false, reason });
+  saveStats(); nextQ();
 }
 
 function wrongReason(reasonId) {
@@ -890,7 +964,7 @@ function renderStats() {
     const seen = t.lastSeen ? new Date(t.lastSeen).toLocaleDateString('ko-KR') : '미학습';
     const streak = t.correctStreak>0 ? `🔥${t.correctStreak}연속` : '-';
     return `<div class="stat-card">
-      <div class="stat-card-header"><div class="stat-card-name">${t.name}</div><div class="stat-card-stars">${stars}</div></div>
+      <div class="stat-card-header"><div class="stat-card-name">${t.name}${t.section?`<div style="font-size:10px;color:#444;font-weight:400;margin-top:2px">${t.section}</div>`:''}</div><div class="stat-card-stars">${stars}</div></div>
       <div class="stat-mini-grid">
         <div class="stat-mini"><div class="stat-mini-val" style="color:#ef4444">${t.wrongCount}</div><div class="stat-mini-lbl">오답</div></div>
         <div class="stat-mini"><div class="stat-mini-val" style="color:#10b981;font-size:11px">${streak}</div><div class="stat-mini-lbl">연속정답</div></div>
@@ -899,11 +973,52 @@ function renderStats() {
   }).join('');
 }
 
+// ── 붙여넣기 가이드 (과목별 분기) ─────────────────────────────
+function renderPasteGuide() {
+  const guideEl = document.querySelector('.paste-guide');
+  if (!guideEl) return;
+  if (currentSubject === 'minbeop') {
+    guideEl.innerHTML = `<div class="paste-guide-title">민법 현출 형식</div>
+<div>【쟁점】 쟁점명 ★★★</div>
+<div>현출: 정확한 현출 문구 (판례 그대로)</div>
+<div>두문자: 두문자힌트 (선택)</div>
+<div style="margin-top:6px;color:#444">※ 두문자 없으면 생략 가능</div>`;
+  } else {
+    guideEl.innerHTML = `<div class="paste-guide-title">인식 가능한 형식</div>
+<div>【논점 N】 논점명 ★★★</div>
+<div>사례형 검토순서: A→B→C→D</div>
+<div>判 판례내용 &lt;키워드&gt; → 빈칸 퀴즈</div>
+<div>◆ 개념명(자·현·권) + · 의미1, 의미2, 의미3</div>`;
+  }
+}
+
 // ── 자료 붙여넣기 ─────────────────────────────────────────
+function localParseMinbeop(text) {
+  const list = [];
+  const blocks = text.split(/(?=【쟁점】)/);
+  for (const block of blocks) {
+    const hm = block.match(/【쟁점】\s*(.+?)(\s*(★+))?\s*\n/);
+    if (!hm) continue;
+    const name = hm[1].trim();
+    const stars = hm[2] ? hm[2].trim().length : 3;
+    const hyeonchulM = block.match(/현출:\s*([^\n]+(?:\n(?!두문자:|【쟁점】)[^\n]+)*)/);
+    const doomun_hint_M = block.match(/두문자:\s*(.+)/);
+    if (!hyeonchulM) continue;
+    list.push({
+      id: 'mb_p_' + Date.now() + '_' + Math.random().toString(36).substr(2,5),
+      name, stars,
+      hyeonchul: hyeonchulM[1].trim().replace(/\n/g,' '),
+      doomun_hint: doomun_hint_M ? doomun_hint_M[1].trim() : null,
+      correctStreak:0, wrongCount:0, lastSeen:null, wrongReasons:[]
+    });
+  }
+  return list;
+}
+
 function handleParse() {
   const text = document.getElementById('paste-input').value.trim();
   if (!text) { showToast('텍스트를 붙여넣어 주세요'); return; }
-  parsedTopics = localParseTopics(text);
+  parsedTopics = currentSubject === 'minbeop' ? localParseMinbeop(text) : localParseTopics(text);
   const box = document.getElementById('parse-result-box');
   if (!parsedTopics.length) {
     box.style.display = 'block';
