@@ -1003,6 +1003,8 @@ function showResult() {
     document.getElementById('next-focus-list').innerHTML = wrongItems.map(t=>
       `<div style="font-size:13px;padding:4px 0;color:#ddd">• ${t.name}</div>`).join('');
   } else { focusBox.style.display = 'none'; }
+  // 통계 저장 (민법 HYEONCHUL 퀴즈 완료 시)
+  saveToSheets();
 }
 
 // ── 통계 화면 ─────────────────────────────────────────
