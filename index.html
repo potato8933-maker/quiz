@@ -80,6 +80,9 @@ textarea:focus { outline: none; border-color: #6366f1; }
 .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .btn-add { padding: 14px; background: #6366f1; border: none; border-radius: 12px; color: #fff; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
 .btn-replace { padding: 14px; background: #1a1a24; border: 1px solid #3a3a50; border-radius: 12px; color: #aaa; font-size: 13px; cursor: pointer; font-family: inherit; }
+.size-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.size-btn { padding: 11px; background: #1a1a24; border: 1px solid #2a2a38; border-radius: 11px; color: #888; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.size-btn.sel { border-color: #6366f1; color: #6366f1; background: rgba(99,102,241,0.08); }
 #toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #6366f1; color: #fff; padding: 10px 22px; border-radius: 20px; font-size: 13px; z-index: 999; box-shadow: 0 4px 20px rgba(99,102,241,0.4); display: none; white-space: nowrap; }
 </style>
 </head>
@@ -121,7 +124,12 @@ textarea:focus { outline: none; border-color: #6366f1; }
     <div class="weak-label">취약 논점 TOP</div>
     <div id="weak-list"></div>
   </div>
-  <button class="btn-primary" onclick="startSession()">퀴즈 시작 (5문제)</button>
+  <div class="size-grid">
+    <button class="size-btn" id="size-5" onclick="setSessionSize(5)">5문제</button>
+    <button class="size-btn" id="size-10" onclick="setSessionSize(10)">10문제</button>
+    <button class="size-btn" id="size-20" onclick="setSessionSize(20)">20문제</button>
+  </div>
+  <button class="btn-primary" id="start-btn" onclick="startSession()">퀴즈 시작</button>
   <div class="btn-grid">
     <button class="btn-secondary" onclick="showScreen('stats')">📊 통계</button>
     <button class="btn-secondary" onclick="showScreen('paste')">📋 자료 붙여넣기</button>
@@ -154,6 +162,7 @@ textarea:focus { outline: none; border-color: #6366f1; }
     <div class="next-focus-title">다음 세션 집중 논점</div>
     <div id="next-focus-list"></div>
   </div>
+  <button class="btn-primary" id="retry-wrong-btn" style="display:none;background:#ef4444;box-shadow:0 8px 28px rgba(239,68,68,0.35)" onclick="startWrongSession()">✗ 오답만 다시 풀기</button>
   <button class="btn-primary" onclick="startSession()">한 번 더</button>
   <button class="btn-secondary" style="margin-top:0" onclick="showScreen('home')">홈으로</button>
 </div>
@@ -163,6 +172,7 @@ textarea:focus { outline: none; border-color: #6366f1; }
   <div class="page-header">
     <button class="back-btn" onclick="showScreen('home')">←</button>
     <div class="page-title">논점별 통계</div>
+    <button class="btn-secondary" style="width:auto;padding:8px 14px;margin-left:auto;font-size:12px" onclick="exportStats()">📋 복사</button>
   </div>
   <div id="stats-list"></div>
 </div>
@@ -734,6 +744,23 @@ function loadStats() {
   } catch(e) {}
 }
 
+// ── Google Sheets 통계 전송 (일방향: 앱 → Sheets, 실패해도 로컬 통계는 안전) ──
+async function saveToSheets() {
+  if (!currentSubject) return;
+  try {
+    await fetch(SHEETS_URL, { method:'POST', body: JSON.stringify({
+      action: 'save',
+      subject: SUBJECTS[currentSubject].name,
+      topics: topics.map(t => ({
+        id: t.id, name: t.name, stars: t.stars, section: t.section || '',
+        correctStreak: t.correctStreak || 0, wrongCount: t.wrongCount || 0,
+        lastSeen: t.lastSeen || '', wrongReasons: (t.wrongReasons || []).join(',')
+      }))
+    })});
+    showToast('☁️ 통계 전송됨');
+  } catch(e) { /* 오프라인 — localStorage에는 이미 저장됨 */ }
+}
+
 // ── 과목 선택 ─────────────────────────────────────────
 function selectSubject(id) {
   currentSubject = id;
@@ -812,17 +839,24 @@ function renderHome() {
       `<div class="weak-item"><span>${t.name}</span><span class="weak-count">오답 ${t.wrongCount}회</span></div>`
     ).join('');
   } else { weakSection.style.display = 'none'; }
+  renderSizeButtons();
 }
 
 // ── 퀴즈 세션 ─────────────────────────────────────────
+// 간격반복: 연속정답 횟수에 따라 복습 주기 증가 (0회→0.5일, 1회→1일, 2회→3일, 3회→7일, 4회→14일, 5회+→30일)
+function dueFactor(t) {
+  if (!t.lastSeen) return 2.5; // 미학습 최우선
+  const days = (Date.now() - new Date(t.lastSeen).getTime()) / 86400000;
+  const interval = [0.5, 1, 3, 7, 14, 30][Math.min(t.correctStreak || 0, 5)];
+  const r = days / interval;
+  return r >= 1 ? Math.min(3, 1 + r * 0.5)  // 복습 시점 도래·경과 → 가중치 증가
+                : 0.25 + 0.75 * r;          // 아직 주기 미도래 → 가중치 감소
+}
 function selectTopics(n) {
   const pool = [...topics];
   const weights = pool.map(t => {
-    let w = t.stars;
-    if (!t.lastSeen) w += 3;
-    w += t.wrongCount * 2;
-    if (t.correctStreak >= 3) w = Math.max(1, w - 2);
-    return Math.max(1, w);
+    const base = t.stars + (t.wrongCount || 0) * 2 + 1;
+    return Math.max(0.1, base * dueFactor(t));
   });
   const total = weights.reduce((a,b) => a+b, 0);
   const selected = [], used = new Set();
@@ -877,9 +911,35 @@ function makeQuestion(topic) {
   return { topic, type, prompt, answer, hint };
 }
 
+// ── 세션 크기 (기본 5문제, 새 키 사용 — 기존 통계 키와 무관) ──
+let sessionSize = 5;
+try { sessionSize = parseInt(localStorage.getItem('quiz_session_size')) || 5; } catch(e) {}
+function setSessionSize(n) {
+  sessionSize = n;
+  try { localStorage.setItem('quiz_session_size', String(n)); } catch(e) {}
+  renderSizeButtons();
+}
+function renderSizeButtons() {
+  [5, 10, 20].forEach(n => {
+    const el = document.getElementById('size-' + n);
+    if (el) el.classList.toggle('sel', n === sessionSize);
+  });
+}
+
 function startSession() {
-  const sel = selectTopics(5);
+  const sel = selectTopics(sessionSize);
   session.questions = sel.map(t => makeQuestion(t));
+  session.current = 0;
+  sessionResults = [];
+  showScreen('quiz');
+  renderQuestion();
+}
+
+// ── 오답만 다시 풀기 ─────────────────────────────────────
+let lastWrongTopics = [];
+function startWrongSession() {
+  if (!lastWrongTopics.length) return;
+  session.questions = lastWrongTopics.map(t => makeQuestion(t));
   session.current = 0;
   sessionResults = [];
   showScreen('quiz');
@@ -1003,6 +1063,9 @@ function showResult() {
     document.getElementById('next-focus-list').innerHTML = wrongItems.map(t=>
       `<div style="font-size:13px;padding:4px 0;color:#ddd">• ${t.name}</div>`).join('');
   } else { focusBox.style.display = 'none'; }
+  lastWrongTopics = wrongItems;
+  const retryBtn = document.getElementById('retry-wrong-btn');
+  if (retryBtn) retryBtn.style.display = wrongItems.length > 0 ? 'block' : 'none';
   // 통계 저장 (민법 HYEONCHUL 퀴즈 완료 시)
   saveToSheets();
 }
@@ -1022,6 +1085,36 @@ function renderStats() {
         <div class="stat-mini"><div class="stat-mini-val" style="color:#888;font-size:10px">${seen}</div><div class="stat-mini-lbl">최근학습</div></div>
       </div></div>`;
   }).join('');
+}
+
+// ── 통계 내보내기 (클립보드 복사 → 퀴즈통계.txt 갱신용) ──────────
+function exportStats() {
+  if (!currentSubject) return;
+  const d = new Date();
+  const date = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const REASON_KO = { unknown:'몰라서', confused:'헷갈려서', recall:'인출실패' };
+  const lines = [
+    `■ 퀴즈통계 [${date}] 과목: ${SUBJECTS[currentSubject].name}`,
+    `논점명\t별\t오답\t연속정답\t최근학습\t오답원인`
+  ];
+  [...topics].sort((a,b)=>(b.wrongCount||0)-(a.wrongCount||0)).forEach(t => {
+    const cnt = {};
+    (t.wrongReasons||[]).forEach(r => { cnt[r] = (cnt[r]||0)+1; });
+    const rs = Object.entries(cnt).map(([k,v]) => `${REASON_KO[k]||k}${v}`).join('/') || '-';
+    const seen = t.lastSeen ? new Date(t.lastSeen).toLocaleDateString('ko-KR') : '미학습';
+    lines.push(`${t.name}\t${t.stars}\t${t.wrongCount||0}\t${t.correctStreak||0}\t${seen}\t${rs}`);
+  });
+  const text = lines.join('\n');
+  const fallback = () => {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); ta.remove();
+    showToast('📋 통계 복사 완료');
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(
+      () => showToast('📋 통계 복사 완료 — 퀴즈통계.txt에 붙여넣으세요'), fallback);
+  } else { fallback(); }
 }
 
 // ── 붙여넣기 가이드 (과목별 분기) ─────────────────────────────
@@ -1121,292 +1214,6 @@ function showToast(msg) {
 // ── 초기화 ─────────────────────────────────────────
 renderSubjectScreen();
 
-</script>
-</body>
-</html>
-
-// ── 파싱 핸들러 (API 불필요 — 로컬 파싱) ──────────────────────
-function handleParse() {
-  const text = document.getElementById('paste-input').value.trim();
-  if (!text) { showToast('텍스트를 입력해주세요'); return; }
-
-  const btn = document.getElementById('parse-btn');
-  btn.textContent = '⏳ 분석 중...';
-  btn.disabled = true;
-  document.getElementById('parse-result-box').style.display = 'none';
-
-  try {
-    parsedTopics = localParseTopics(text);
-
-    if (!parsedTopics.length) {
-      showToast('논점을 찾을 수 없습니다 — 【논점 N】 형식을 확인해주세요');
-      btn.textContent = '✨ 자동 분석 시작';
-      btn.disabled = false;
-      return;
-    }
-
-    const box = document.getElementById('parse-result-box');
-    box.style.display = 'block';
-    box.innerHTML = `
-      <div class="parse-result">
-        <div class="parse-result-title">✓ 논점 ${parsedTopics.length}개 인식 완료</div>
-        ${parsedTopics.map(t =>
-          `<div class="parse-result-item">· ${t.name} ${'★'.repeat(t.stars)} — 목차 ${t.checklist?.length||0}개 / 판례 ${t.keywords?.length||0}개 / 두문자 ${t.doomun?.length||0}개</div>`
-        ).join('')}
-      </div>
-      <div class="action-grid">
-        <button class="btn-add" onclick="confirmParse('add')">+ 기존에 추가</button>
-        <button class="btn-replace" onclick="confirmParse('replace')">전체 교체</button>
-      </div>`;
-
-    btn.textContent = '✨ 다시 분석';
-    btn.disabled = false;
-  } catch(e) {
-    showToast('파싱 오류: ' + e.message);
-    btn.textContent = '✨ 자동 분석 시작';
-    btn.disabled = false;
-  }
-}
-
-// ── 나머지 로직 (원본과 동일) ─────────────────────────────────
-function getPriority(t){
-  let s=t.stars*30+t.wrongCount*20;
-  if(t.correctStreak>=3)s-=40;
-  else if(t.correctStreak>=2)s-=20;
-  if(!t.lastSeen)s+=50;
-  return s;
-}
-
-function pickQuestion(){
-  const sorted=[...topics].sort((a,b)=>getPriority(b)-getPriority(a));
-  const top=sorted.slice(0,Math.min(3,sorted.length));
-  const topic=top[Math.floor(Math.random()*top.length)];
-  const avail=[];
-  if(topic.checklist?.length)avail.push(QUIZ_TYPES.CHECKLIST);
-  if(topic.keywords?.length)avail.push(QUIZ_TYPES.KEYWORD);
-  if(topic.doomun?.length)avail.push(QUIZ_TYPES.DOOMUN);
-  if(topic.connects?.length)avail.push(QUIZ_TYPES.CONNECT);
-  return{topic,type:avail[Math.floor(Math.random()*avail.length)]};
-}
-
-function buildQuestion(topic,type){
-  if(type===QUIZ_TYPES.CHECKLIST)return{type,topicName:topic.name,prompt:`"${topic.name}" 논점의\n검토 목차를 순서대로 말하시오.`,answer:topic.checklist.join(" → "),hint:`총 ${topic.checklist.length}단계`};
-  if(type===QUIZ_TYPES.KEYWORD&&topic.keywords?.length){const kw=topic.keywords[Math.floor(Math.random()*topic.keywords.length)];return{type,topicName:topic.name,prompt:kw.sentence,answer:kw.blanks.join(" / "),hint:`빈칸 ${kw.blanks.length}개`};}
-  if(type===QUIZ_TYPES.DOOMUN&&topic.doomun?.length){const dm=topic.doomun[Math.floor(Math.random()*topic.doomun.length)];return{type,topicName:topic.name,prompt:`[${topic.name}]\n${dm.key}: ${dm.letters}\n→ 각 글자가 뜻하는 것은?`,answer:dm.meanings.join(" / "),hint:`${dm.letters.split("·").length}가지`};}
-  if(type===QUIZ_TYPES.CONNECT&&topic.connects?.length){const cn=topic.connects[Math.floor(Math.random()*topic.connects.length)];return{type,topicName:topic.name,prompt:cn.q,answer:cn.a,hint:"쟁점 연결"};}
-  return null;
-}
-
-function showScreen(name){
-  document.querySelectorAll('.screen').forEach(s=>{s.style.display='none';s.classList.remove('active');});
-  const el=document.getElementById('screen-'+name);
-  el.style.display='block';el.classList.add('active');
-  if(name==='home')renderHome();
-  if(name==='stats')renderStats();
-}
-
-function renderHome(){
-  const uncovered=topics.filter(t=>!t.lastSeen);
-  const weak=topics.filter(t=>t.wrongCount>0).sort((a,b)=>b.wrongCount-a.wrongCount).slice(0,3);
-  document.getElementById('home-sub').textContent=`총 ${topics.length}개 논점 · 미학습 ${uncovered.length}개`;
-  document.getElementById('stat-total').textContent=topics.length;
-  document.getElementById('stat-weak').textContent=weak.length;
-  document.getElementById('stat-new').textContent=uncovered.length;
-  const alertEl=document.getElementById('uncovered-alert');
-  if(uncovered.length){alertEl.style.display='block';document.getElementById('uncovered-names').textContent=uncovered.map(t=>t.name).join(', ');}
-  else alertEl.style.display='none';
-  const weakSec=document.getElementById('weak-section');
-  if(weak.length){weakSec.style.display='block';document.getElementById('weak-list').innerHTML=weak.map(t=>`<div class="weak-item"><span>${t.name}</span><span class="weak-count">오답 ${t.wrongCount}회</span></div>`).join('');}
-  else weakSec.style.display='none';
-}
-
-function startSession(){
-  session.questions=Array.from({length:5},()=>pickQuestion());
-  session.current=0;sessionResults=[];
-  showScreen('quiz');loadQuestion();
-}
-
-function loadQuestion(){
-  const q=session.questions[session.current];
-  currentQ=buildQuestion(q.topic,q.type);
-  if(!currentQ){nextQuestion();return;}
-  document.getElementById('quiz-prog').textContent=`${session.current+1} / ${session.questions.length}`;
-  const badge=document.getElementById('quiz-type-badge');
-  badge.textContent=currentQ.type;badge.style.background=TYPE_COLOR[currentQ.type]+'22';badge.style.color=TYPE_COLOR[currentQ.type];
-  document.getElementById('quiz-correct-count').textContent=sessionResults.filter(r=>r.correct).length+'정답';
-  document.getElementById('quiz-topic-name').textContent=currentQ.topicName;
-  document.getElementById('quiz-prompt').textContent=currentQ.prompt;
-  document.getElementById('quiz-hint').textContent=currentQ.hint?'힌트: '+currentQ.hint:'';
-  document.getElementById('quiz-card-el').style.border=`1px solid ${TYPE_COLOR[currentQ.type]}33`;
-  document.getElementById('quiz-actions').innerHTML=`<button class="reveal-btn" onclick="revealAnswer()">정답 확인</button>`;
-}
-
-function revealAnswer(){
-  document.getElementById('quiz-actions').innerHTML=`
-    <div class="answer-box"><div class="answer-label">정답</div><div class="answer-text">${currentQ.answer}</div></div>
-    <div class="judge-grid"><button class="btn-correct" onclick="handleCorrect()">✓ 맞았어요</button><button class="btn-wrong" onclick="handleWrongClick()">✗ 틀렸어요</button></div>`;
-}
-
-function handleCorrect(){
-  const q=session.questions[session.current];
-  topics=topics.map(t=>t.id===q.topic.id?{...t,correctStreak:t.correctStreak+1,lastSeen:new Date().toISOString()}:t);
-  sessionResults.push({topic:q.topic.name,type:q.type,correct:true});
-  nextQuestion();
-}
-
-function handleWrongClick(){
-  document.getElementById('quiz-actions').innerHTML=`
-    <div class="reason-title">왜 틀렸나요?</div>
-    ${WRONG_REASONS.map(r=>`<button class="reason-btn" style="border:1px solid ${r.color}44" onclick="handleReason('${r.id}')"><span style="font-size:18px">${r.icon}</span><span style="color:${r.color};font-weight:600">${r.label}</span></button>`).join('')}`;
-}
-
-function handleReason(reasonId){
-  const q=session.questions[session.current];
-  topics=topics.map(t=>t.id===q.topic.id?{...t,correctStreak:0,wrongCount:t.wrongCount+1,lastSeen:new Date().toISOString(),wrongReasons:[...t.wrongReasons,reasonId]}:t);
-  sessionResults.push({topic:q.topic.name,type:q.type,correct:false,reason:reasonId});
-  nextQuestion();
-}
-
-function nextQuestion(){
-  if(session.current+1>=session.questions.length){renderResult();showScreen('result');saveToSheets();return;}
-  session.current++;loadQuestion();
-}
-
-function renderResult(){
-  const correct=sessionResults.filter(r=>r.correct).length;
-  const total=sessionResults.length;
-  document.getElementById('result-emoji').textContent=correct>=4?'🎯':correct>=2?'📚':'💪';
-  document.getElementById('result-score').textContent=`${correct} / ${total}`;
-  document.getElementById('result-msg').textContent=correct===total?'완벽합니다!':correct>=3?'잘 하고 있어요':'복습이 필요해요';
-  document.getElementById('result-list').innerHTML=sessionResults.map(r=>`
-    <div class="result-item"><div><div class="result-item-name">${r.topic}</div><div class="result-item-type">${r.type}</div></div>
-    <div style="font-size:12px;font-weight:700;color:${r.correct?'#10b981':'#ef4444'}">${r.correct?'✓':'✗ '+(r.reason==='unknown'?'몰라서':r.reason==='confused'?'헷갈려서':'인출실패')}</div></div>`).join('');
-  const weak=topics.filter(t=>t.wrongCount>0).sort((a,b)=>b.wrongCount-a.wrongCount).slice(0,3);
-  const fb=document.getElementById('next-focus-box');
-  if(weak.length){fb.style.display='block';document.getElementById('next-focus-list').innerHTML=weak.map(t=>`<div style="font-size:13px;color:#bbb;margin-bottom:4px">· ${t.name} (오답 ${t.wrongCount}회)</div>`).join('');}
-  else fb.style.display='none';
-}
-
-function renderStats(){
-  document.getElementById('stats-list').innerHTML=topics.map(t=>`
-    <div class="stat-card" style="border:1px solid ${t.wrongCount>1?'rgba(239,68,68,0.25)':'transparent'}">
-      <div class="stat-card-header"><div class="stat-card-name">${t.name}</div><div class="stat-card-stars">${'★'.repeat(t.stars)}</div></div>
-      <div class="stat-mini-grid">
-        <div class="stat-mini"><div class="stat-mini-val" style="color:#10b981">${t.correctStreak}</div><div class="stat-mini-lbl">연속정답</div></div>
-        <div class="stat-mini"><div class="stat-mini-val" style="color:#ef4444">${t.wrongCount}</div><div class="stat-mini-lbl">누적오답</div></div>
-        <div class="stat-mini"><div class="stat-mini-val" style="color:${t.lastSeen?'#6366f1':'#555'}">${t.lastSeen?'완료':'미학습'}</div><div class="stat-mini-lbl">학습</div></div>
-      </div>
-      ${t.wrongReasons.length?`<div style="font-size:11px;color:#444;margin-top:10px">오답원인: ${[...new Set(t.wrongReasons)].map(r=>r==='unknown'?'몰라서':r==='confused'?'헷갈려서':'인출실패').join(', ')}</div>`:''}
-    </div>`).join('');
-}
-
-function confirmParse(mode){
-  if(!parsedTopics)return;
-
-  // 이름 기준으로 기존 통계 이어받기
-  const merged = parsedTopics.map(p => {
-    const existing = topics.find(t => t.name === p.name);
-    if(existing) return {...p, id:existing.id, correctStreak:existing.correctStreak, wrongCount:existing.wrongCount, lastSeen:existing.lastSeen, wrongReasons:existing.wrongReasons};
-    return p;
-  });
-
-  if(mode==='add'){
-    // 기존 논점은 새 내용(checklist 등)으로 업데이트, 없는 논점만 추가
-    const updatedNames = new Set(merged.map(p=>p.name));
-    const kept = topics.filter(t=>!updatedNames.has(t.name));
-    topics = [...merged, ...kept];
-    showToast(`논점 ${merged.length}개 반영됨 ✓`);
-  } else {
-    topics = merged;
-    showToast(`논점 ${merged.length}개로 교체됨 ✓`);
-  }
-
-  parsedTopics=null;
-  document.getElementById('paste-input').value='';
-  document.getElementById('parse-result-box').style.display='none';
-  saveLocal();
-  saveToSheets();
-  showScreen('home');
-}
-
-function showToast(msg){
-  const el=document.getElementById('toast');
-  el.textContent=msg;el.style.display='block';
-  setTimeout(()=>{el.style.display='none';},2500);
-}
-
-// ── localStorage: 퀴즈 내용 전체 저장 ────────────────────────
-function saveLocal(){
-  try{ localStorage.setItem('quiz_topics_v2', JSON.stringify(topics)); }catch(e){}
-}
-
-function loadLocal(){
-  try{
-    const raw = localStorage.getItem('quiz_topics_v2');
-    if(raw){
-      const saved = JSON.parse(raw);
-      if(saved && saved.length > 0){ topics = saved; return true; }
-    }
-  }catch(e){}
-  return false;
-}
-
-// ── Google Sheets 동기화 ─────────────────────────────────────
-async function loadFromSheets(){
-  showSyncStatus('☁️ 통계 불러오는 중...');
-
-  // 1. localStorage에서 퀴즈 내용 먼저 복원
-  const hasLocal = loadLocal();
-
-  try{
-    const res=await fetch(SHEETS_URL+'?action=load');
-    const data=await res.json();
-    if(data.topics&&data.topics.length>0){
-      // 2. Sheets 통계를 이름 기준으로 현재 topics에 덮어씌우기
-      topics=topics.map(t=>{
-        const saved=data.topics.find(s=>s.id===t.id||s.name===t.name);
-        if(saved)return{...t,correctStreak:saved.correctStreak,wrongCount:saved.wrongCount,lastSeen:saved.lastSeen,wrongReasons:saved.wrongReasons};
-        return t;
-      });
-      // 3. localStorage에도 없고 Sheets에만 있는 논점은 메타만 복원
-      if(!hasLocal){
-        data.topics.forEach(s=>{
-          if(!topics.find(t=>t.id===s.id||t.name===s.name)){
-            topics.push({...s,checklist:s.checklist||[],keywords:s.keywords||[],doomun:s.doomun||[],connects:s.connects||[]});
-          }
-        });
-      }
-    }
-    hideSyncStatus();
-  }catch(e){
-    hideSyncStatus();
-    if(!hasLocal) showToast('오프라인 — 로컬 데이터 사용 중');
-  }
-  renderHome();
-}
-
-async function saveToSheets(){
-  showSyncStatus('☁️ 저장 중...');
-  try{
-    await fetch(SHEETS_URL,{method:'POST',body:JSON.stringify({action:'save',topics:topics.map(t=>({id:t.id,name:t.name,stars:t.stars,correctStreak:t.correctStreak,wrongCount:t.wrongCount,lastSeen:t.lastSeen||'',wrongReasons:t.wrongReasons||[],checklist:t.checklist||[],keywords:t.keywords||[],doomun:t.doomun||[],connects:t.connects||[]}))})});
-    hideSyncStatus();
-    saveLocal();
-    showToast('☁️ 저장됨 ✓');
-  }catch(e){
-    hideSyncStatus();
-    saveLocal();
-    showToast('저장 실패 — 로컬 저장됨');
-  }
-}
-
-function showSyncStatus(msg){
-  let el=document.getElementById('sync-status');
-  if(!el){el=document.createElement('div');el.id='sync-status';el.style.cssText='position:fixed;bottom:20px;right:16px;background:#1a1a24;border:1px solid #2a2a38;border-radius:20px;padding:8px 14px;font-size:12px;color:#888;z-index:998;';document.body.appendChild(el);}
-  el.textContent=msg;el.style.display='block';
-}
-function hideSyncStatus(){const el=document.getElementById('sync-status');if(el)el.style.display='none';}
-
-loadFromSheets();
 </script>
 </body>
 </html>
