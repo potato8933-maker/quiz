@@ -224,7 +224,7 @@ $('#statCards').innerHTML = cards.map(c=>`<div class="card"><h2>${c.t}</h2><div 
 // 신호등 그리드
 $('#lightGrid').innerHTML = M.subjects.map((s,i)=>{
   const [c]=SC[s.status]||["#64748b"];
-  return `<div class="light" onclick="showTab('tabMatrix');setTimeout(()=>{const r=document.querySelector('#metaCards .mcard[onclick*=\'(${i})\']');if(r){r.scrollIntoView({block:'center'});r.style.outline='3px solid var(--accent)';setTimeout(()=>r.style.outline='',2500);}},120)">
+  return `<div class="light" onclick="showTab('tabMatrix');setTimeout(()=>{const r=document.getElementById('mcard-${i}');if(r){r.scrollIntoView({block:'center'});r.style.outline='3px solid var(--accent)';setTimeout(()=>r.style.outline='',2500);}},120)">
     <span class="dot" style="background:${c}"></span>${s.name}</div>`;
 }).join('');
 $('#metaSummary').innerHTML = Object.entries(SC).filter(([k])=>cnt[k]).map(([k,[c,l]])=>`<span style="color:${c};font-weight:700;margin-left:8px">${l} ${cnt[k]}</span>`).join('');
@@ -453,7 +453,7 @@ INIT.tabMatrix=function(){
         }
         const sarHtml=s.sarye?`<div class="mc-row">사례·기록 <b class="${rateCls(Math.round(s.sarye.last/s.sarye.outof*100))}">${Math.round(s.sarye.last/s.sarye.outof*100)}%</b></div>`:'';
         const nx=(s.next||[])[0];
-        return `<div class="mcard" style="border-left:6px solid ${color}" onclick="openSubjectModal(${i})">
+        return `<div class="mcard" id="mcard-${i}" style="border-left:6px solid ${color}" onclick="openSubjectModal(${i})">
           <div class="mc-top"><b style="font-size:13.5px">${s.name}</b><span style="color:${color};font-weight:800;font-size:12px">${slabel}</span></div>
           ${objHtml}${sarHtml}
           <div class="mc-row">진도 <b>${pp.pct||0}%</b><div class="bar"><div style="width:${pp.pct||0}%;background:${(pp.pct||0)<30?'#dc2626':(pp.pct||0)<70?'#d97706':'#16a34a'}"></div></div></div>
