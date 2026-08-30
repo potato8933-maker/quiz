@@ -1,6 +1,6 @@
 {
  "_설명": "운동 프로그램 정의 + 누적 세션 로그. 세션 기록은 대시보드 운동탭(localStorage 'wo|날짜')에서 이뤄지며 GAS 시트로 자동 동기화되고, pipeline이 갱신 시 sessions에 병합한다. Claude 연결 불필요.",
- "updated": "2026-08-29",
+ "updated": "2026-08-30",
  "profile": {
   "name": "박세직",
   "age": 29,
