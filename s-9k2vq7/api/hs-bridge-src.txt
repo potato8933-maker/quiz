@@ -1,0 +1,251 @@
+/**
+ * Health Sync(삼성헬스) → 구글 드라이브 CSV → 학습 대시보드 자동 연동
+ * ────────────────────────────────────────────────────────────────
+ * 하는 일: 지정한 드라이브 폴더의 CSV를 읽어 날짜별 수면·걸음·활동칼로리를 뽑아
+ *          기존 동기화 시트(대시보드동기화)에 'hs|YYYY-MM-DD' 행으로 병합한다.
+ *          대시보드와 브릿지 JSON이 이 값을 그대로 읽는다.
+ *
+ * 안전장치: 기존 행(msg| wo| bg| ht| ...)을 전부 읽어서 그대로 다시 쓴다.
+ *          읽기가 실패하거나 0건이면 쓰지 않고 중단한다(데이터 유실 방지).
+ *
+ * 설치: ① script.google.com → 새 프로젝트 → 이 코드 전체 붙여넣기
+ *      ② listFolders() 실행 → 권한 승인 → CSV가 들어 있는 폴더 확인
+ *      ③ ★dumpHeaders() 실행 → 나온 로그를 그대로 복사해 클로드에게 전달 (파서 확정용)
+ *      ④ testParse() 로 날짜별 값이 제대로 나오는지 확인
+ *      ⑤ 시계 아이콘(트리거) → 트리거 추가 → run / 시간 기반 / 일 단위 / 오전 4~5시
+ */
+
+// ══════════ 설정 ══════════
+// Health Sync는 데이터 유형마다 "Health Sync 걸음", "Health Sync 수면" 처럼
+// 폴더를 스스로 만든다. 그래서 폴더 하나가 아니라 패턴으로 전부 훑는다.
+var FOLDER_PATTERN = /^health\s*sync/i;  // 이 패턴에 맞는 드라이브 폴더 전부
+var FOLDER_NAMES   = [];                 // 추가로 포함할 폴더 이름 (선택)
+var FOLDER_IDS     = [];                 // 추가로 포함할 폴더 ID  (선택)
+var DAYS_BACK      = 45;                 // 최근 며칠치만 반영
+var QUIZ_URL       = 'https://script.google.com/macros/s/AKfycbzkZ2uad6YDHpyn6CZJI7nc8a16uRsDB0s45Q6BYbiC_bkNVg-v9efGKhDLVIhr7Rrp/exec';
+var SUBJECT        = '대시보드동기화';
+// ═════════════════════════
+
+function run() {
+  var recs = collectFromDrive_();
+  var keys = Object.keys(recs);
+  if (!keys.length) { Logger.log('CSV에서 얻은 날짜가 없습니다. testParse로 형식을 확인하세요.'); return; }
+  Logger.log('수집: ' + keys.length + '일 (' + keys.sort()[0] + ' ~ ' + keys.sort().slice(-1)[0] + ')');
+  mergeIntoSheet_(recs);
+}
+
+/** ★★설치 2단계 — 이걸 실행해서 나온 로그를 그대로 복사해 클로드에게 주세요.
+ *  각 폴더의 CSV 파일 이름과 첫 3줄(열 이름)을 찍습니다. 이걸 봐야 파서를 정확히 맞출 수 있습니다. */
+function dumpHeaders() {
+  var folders = findFolders_();
+  if (!folders.length) { Logger.log('조건에 맞는 폴더가 없습니다. listFolders() 를 먼저 실행하세요.'); return; }
+  Logger.log('대상 폴더 ' + folders.length + '개');
+  folders.forEach(function (folder) {
+    var files = listCsv_(folder);
+    Logger.log('');
+    Logger.log('■ 폴더: ' + folder.getName() + '  (CSV ' + files.length + '개)');
+    files.sort(function (a, b) { return b.getLastUpdated() - a.getLastUpdated(); });
+    files.slice(0, 12).forEach(function (f, i) {
+      Logger.log('   · ' + f.getName());
+      if (i < 2) {
+        var txt = f.getBlob().getDataAsString('UTF-8');
+        txt.split(/\r?\n/).slice(0, 3).forEach(function (ln, j) {
+          Logger.log('       [' + j + '] ' + ln.slice(0, 300));
+        });
+      }
+    });
+  });
+}
+
+/** 파싱 결과만 확인 — 시트에 쓰지 않는다. dumpHeaders 다음에 실행. */
+function testParse() {
+  var recs = collectFromDrive_();
+  var ks = Object.keys(recs).sort();
+  Logger.log('파싱된 날짜 ' + ks.length + '일');
+  ks.slice(-14).forEach(function (k) { Logger.log('  ' + k + ' → ' + JSON.stringify(recs[k])); });
+  if (!ks.length) Logger.log('하나도 못 읽었습니다. dumpHeaders() 로그를 클로드에게 주세요.');
+}
+
+/** ★폴더 이름을 모를 때 먼저 실행 — CSV가 들어 있는 드라이브 폴더를 전부 찾아 로그에 찍는다. */
+function listFolders() {
+  var files = DriveApp.getFilesByType(MimeType.CSV);
+  var seen = {}, n = 0;
+  while (files.hasNext() && n < 400) {
+    n++;
+    var f = files.next(), ps = f.getParents();
+    var where = ps.hasNext() ? ps.next() : null;
+    var key = where ? (where.getName() + ' ||| ' + where.getId()) : '(내 드라이브 최상위) ||| root';
+    if (!seen[key]) seen[key] = [];
+    if (seen[key].length < 3) seen[key].push(f.getName());
+  }
+  var keys = Object.keys(seen);
+  if (!keys.length) { Logger.log('CSV 파일이 하나도 없습니다. Health Sync 내보내기가 아직 실행되지 않았을 수 있습니다.'); return; }
+  Logger.log('── CSV가 들어 있는 폴더 ' + keys.length + '곳 ──');
+  keys.forEach(function (k) {
+    var p = k.split(' ||| ');
+    Logger.log('FOLDER_NAME = "' + p[0] + '"   (FOLDER_ID = "' + p[1] + '")');
+    Logger.log('    예시 파일: ' + seen[k].join(' , '));
+  });
+  Logger.log('위에서 맞는 줄의 값을 코드 맨 위 설정에 복사하세요.');
+}
+
+// ── 드라이브 ──
+function findFolders_() {
+  var out = [], seen = {};
+  var add = function (f) { if (f && !seen[f.getId()]) { seen[f.getId()] = 1; out.push(f); } };
+  FOLDER_IDS.forEach(function (id) { try { add(DriveApp.getFolderById(id)); } catch (e) { Logger.log('ID 접근 실패 ' + id + ': ' + e); } });
+  FOLDER_NAMES.forEach(function (nm) { var it = DriveApp.getFoldersByName(nm); while (it.hasNext()) add(it.next()); });
+  if (FOLDER_PATTERN) {
+    var all = DriveApp.getFolders(), n = 0;
+    while (all.hasNext() && n < 2000) { n++; var f = all.next(); if (FOLDER_PATTERN.test(f.getName())) add(f); }
+  }
+  return out;
+}
+function listCsv_(folder, depth) {
+  depth = depth || 0;
+  var out = [], fi = folder.getFiles();
+  while (fi.hasNext()) {
+    var f = fi.next();
+    if (/\.csv$/i.test(f.getName())) out.push(f);
+  }
+  if (depth < 3) {
+    var di = folder.getFolders();
+    while (di.hasNext()) out = out.concat(listCsv_(di.next(), depth + 1));
+  }
+  return out;
+}
+
+// ── CSV → {날짜: {sl, st, ac}} ──
+function collectFromDrive_() {
+  var folders = findFolders_();
+  if (!folders.length) return {};
+  var minDate = ymd_(new Date(Date.now() - DAYS_BACK * 86400000));
+  var out = {};
+  folders.forEach(function (folder) {
+    listCsv_(folder).forEach(function (f) {
+      try { parseCsv_(folder.getName() + '/' + f.getName(), f.getBlob().getDataAsString('UTF-8'), minDate, out); }
+      catch (e) { Logger.log('파싱 실패 ' + f.getName() + ': ' + e); }
+    });
+  });
+  return out;
+}
+
+function parseCsv_(fname, text, minDate, out) {
+  var rows = Utilities.parseCsv(text);
+  if (!rows || rows.length < 2) return;
+  // 헤더 행 탐색 (앞 5줄 중 날짜 컬럼이 있는 줄)
+  var hi = -1;
+  for (var i = 0; i < Math.min(5, rows.length); i++) {
+    if (rows[i].some(function (c) { return /date|day|time|날짜|일자|시작/i.test(String(c)); })) { hi = i; break; }
+  }
+  if (hi < 0) hi = 0;
+  var head = rows[hi].map(function (c) { return String(c).trim().toLowerCase(); });
+  var idx = function (re) { for (var j = 0; j < head.length; j++) if (re.test(head[j])) return j; return -1; };
+
+  var iDate = idx(/^(date|day|날짜|일자)$/) ;
+  if (iDate < 0) iDate = idx(/date|날짜|일자|start|시작/);
+  var iSleep = idx(/sleep.*(dur|hour|min|time)|(dur|hour|min).*sleep|수면.*(시간|분)|총수면|asleep/);
+  if (iSleep < 0) iSleep = idx(/sleep|수면/);
+  var iStep  = idx(/step|걸음/);
+  var iAct   = idx(/active.*(cal|kcal|energy)|활동.*칼로리|calorie|kcal/);
+  var iW     = idx(/weight|무게|체중|kg/);
+  var fn = String(fname).toLowerCase();
+  // 주간·월간 요약 파일은 합계값이라 일별로 쓰면 오염된다 — 건너뛴다
+  if (/week|month|주간|월간|weekly|monthly/.test(fn) && !/30|rolling|롤링/.test(fn)) return;
+  // 폴더 이름이 유형 힌트: "Health Sync 수면" 안의 숫자열은 수면으로 본다
+  var hintSleep = /수면|sleep/.test(fn), hintStep = /걸음|step/.test(fn), hintW = /무게|체중|weight/.test(fn);
+
+  for (var r = hi + 1; r < rows.length; r++) {
+    var row = rows[r]; if (!row || !row.length) continue;
+    var d = iDate >= 0 ? normDate_(row[iDate]) : null;
+    if (!d) { // 날짜 컬럼을 못 찾으면 어느 칸이든 날짜처럼 생긴 값을 쓴다
+      for (var j = 0; j < row.length && !d; j++) d = normDate_(row[j]);
+    }
+    if (!d || d < minDate) continue;
+    var o = out[d] || (out[d] = { d: d });
+    if (iSleep >= 0) { var h = toHours_(row[iSleep]); if (h !== null && h > 0 && h < 24) o.sl = round1_(h); }
+    else if (hintSleep) {
+      for (var j2 = 0; j2 < row.length; j2++) { var h2 = toHours_(row[j2]); if (h2 !== null && h2 > 1 && h2 < 16) { o.sl = round1_(h2); break; } }
+    }
+    if (iStep >= 0) { var st = toNum_(row[iStep]); if (st !== null && st >= 0 && st < 100000) o.st = Math.round(st); }
+    else if (hintStep) {
+      for (var j3 = 0; j3 < row.length; j3++) { var s3 = toNum_(row[j3]); if (s3 !== null && s3 >= 100 && s3 < 100000) { o.st = Math.round(s3); break; } }
+    }
+    if (iAct >= 0)  { var ac = toNum_(row[iAct]);  if (ac !== null && ac > 0 && ac < 10000) o.ac = Math.round(ac); }
+    if (iW >= 0)    { var wv = toNum_(row[iW]);    if (wv !== null && wv > 30 && wv < 250) o.bw = round1_(wv); }
+    else if (hintW) {
+      for (var j4 = 0; j4 < row.length; j4++) { var w4 = toNum_(row[j4]); if (w4 !== null && w4 > 30 && w4 < 250) { o.bw = round1_(w4); break; } }
+    }
+    o.src = 'HealthSync';
+  }
+}
+
+function normDate_(v) {
+  if (v instanceof Date) return ymd_(v);
+  var s = String(v == null ? '' : v).trim();
+  var m = s.match(/(20\d{2})[-.\/](\d{1,2})[-.\/](\d{1,2})/);
+  if (m) return m[1] + '-' + p2_(m[2]) + '-' + p2_(m[3]);
+  m = s.match(/(\d{1,2})[-.\/](\d{1,2})[-.\/](20\d{2})/);
+  if (m) return m[3] + '-' + p2_(m[2]) + '-' + p2_(m[1]);   // dd/mm/yyyy 가정
+  m = s.match(/^(20\d{2})(\d{2})(\d{2})$/);
+  if (m) return m[1] + '-' + m[2] + '-' + m[3];
+  return null;
+}
+/** "7:32" → 7.5 / "452"(분) → 7.5 / "7.5" → 7.5 / "7h 32m" → 7.5 */
+function toHours_(v) {
+  var s = String(v == null ? '' : v).trim(); if (!s) return null;
+  var m = s.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
+  if (m) return Number(m[1]) + Number(m[2]) / 60;
+  m = s.match(/(\d+)\s*h\D+(\d+)\s*m/i);
+  if (m) return Number(m[1]) + Number(m[2]) / 60;
+  var n = toNum_(s); if (n === null) return null;
+  if (n > 60) return n / 60;        // 분 단위로 간주
+  if (n > 24) return n / 60;
+  return n;                          // 시간 단위
+}
+function toNum_(v) {
+  var s = String(v == null ? '' : v).replace(/[, ]/g, '');
+  if (!/^-?\d+(\.\d+)?$/.test(s)) return null;
+  return Number(s);
+}
+function p2_(n) { return ('0' + n).slice(-2); }
+function ymd_(d) { return Utilities.formatDate(d, 'Asia/Seoul', 'yyyy-MM-dd'); }
+function round1_(x) { return Math.round(x * 10) / 10; }
+
+// ── 시트 병합 (읽기 → 합치기 → 통째로 쓰기) ──
+function mergeIntoSheet_(recs) {
+  var res = UrlFetchApp.fetch(QUIZ_URL + '?subject=' + encodeURIComponent(SUBJECT), { muteHttpExceptions: true });
+  if (res.getResponseCode() !== 200) { Logger.log('시트 읽기 실패 ' + res.getResponseCode() + ' — 쓰지 않고 중단'); return; }
+  var data = JSON.parse(res.getContentText());
+  var rows = data[SUBJECT] || [];
+  if (!rows.length) { Logger.log('시트가 비어 있음 — 덮어쓰기 위험이 있어 중단합니다.'); return; }
+
+  var map = {};
+  rows.forEach(function (t) {
+    var k = String(t.id || t.name || ''); if (!k) return;
+    var raw = t.wrongReasons;
+    map[k] = Array.isArray(raw) ? raw.join(',') : String(raw == null ? '' : raw);
+  });
+
+  var n = 0;
+  Object.keys(recs).forEach(function (d) {
+    var key = 'hs|' + d, cur = {};
+    try { cur = JSON.parse(map[key] || '{}'); } catch (e) { cur = {}; }
+    if (cur.src === '수동') return;               // 세직이 손으로 넣은 값은 덮지 않는다
+    var v = recs[d];
+    var nv = { d: d, sl: v.sl != null ? v.sl : cur.sl, st: v.st != null ? v.st : cur.st,
+               ac: v.ac != null ? v.ac : cur.ac, src: 'HealthSync', u: Date.now() };
+    var s = JSON.stringify(nv);
+    if (s !== map[key]) { map[key] = s; n++; }
+  });
+  if (!n) { Logger.log('변경 없음 — 쓰지 않습니다.'); return; }
+
+  var topics = Object.keys(map).map(function (k) {
+    return { id: k, name: k, stars: 0, section: '', correctStreak: 0, wrongCount: 0, lastSeen: '', wrongReasons: map[k] };
+  });
+  var out = UrlFetchApp.fetch(QUIZ_URL, {
+    method: 'post', contentType: 'application/json',
+    payload: JSON.stringify({ subject: SUBJECT, topics: topics }), muteHttpExceptions: true
+  });
+  Logger.log('갱신 ' + n + '일 / 전체 ' + topics.length + '행 저장 → ' + out.getContentText().slice(0, 120));
+}
