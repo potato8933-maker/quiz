@@ -22,6 +22,7 @@ h1 .dday{color:var(--red);font-size:32px;font-weight:800}
 .big{font-size:25px;font-weight:800}
 .big small{font-size:12px;color:var(--sub);font-weight:400}
 .tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;margin:1px}
+button.tag{color:var(--ink);font-weight:600}
 .tag.ok{background:#e7f6ec;color:var(--green)}.tag.warn{background:#fdf1e2;color:var(--amber)}.tag.bad{background:#fdeaea;color:var(--red)}.tag.info{background:#e8f0fe;color:var(--accent)}
 table{width:100%;border-collapse:collapse;font-size:12.5px}
 th,td{padding:6px 8px;text-align:left;border-bottom:1px solid var(--line)}
@@ -126,6 +127,7 @@ canvas{max-height:270px}
   <button class="tabbtn" data-t="tabScore">📊 성적</button>
   <button class="tabbtn" data-t="tabQuiz">🧠 퀴즈</button>
   <button class="tabbtn" data-t="tabTime">⏱ 공부시간</button>
+  <button class="tabbtn" data-t="tabDiet">🥗 식단·체중</button>
   <button class="tabbtn" data-t="tabGym">🏋 운동</button>
   <button class="tabbtn" data-t="tabBudget">💰 가계부</button>
   <button class="tabbtn" data-t="tabDocs">📁 자료함</button>
@@ -310,6 +312,86 @@ canvas{max-height:270px}
   </div>
 </div>
 
+<div id="tabDiet" class="tabsec">
+  <div id="dtCut"></div>
+
+  <!-- ① 단백질 = 1순위 지표 (히어로) -->
+  <div class="card" style="background:linear-gradient(135deg,#f0fdf4 0%,#fff 55%);border-left:5px solid #16a34a">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">
+      <div>
+        <div class="sub" style="font-size:12px;letter-spacing:.3px">오늘 단백질 <b style="color:#16a34a">1순위 지표</b> — 감량 중 근손실 방지</div>
+        <div id="dtProBig" style="font-size:52px;font-weight:800;line-height:1.05;margin-top:2px">–</div>
+        <div id="dtProSub" class="sub" style="margin-top:4px"></div>
+      </div>
+      <div id="dtSideKpi" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start"></div>
+    </div>
+    <div id="dtProBar" style="margin-top:12px"></div>
+    <div id="dtProWk" style="margin-top:12px"></div>
+  </div>
+
+  <!-- ② 붙여넣기 한 줄 (마찰 최소화) -->
+  <div class="card" style="margin-top:12px;border-left:4px solid #2563eb">
+    <h2>📋 한 줄 붙여넣기 <span class="sub" style="font-weight:400">— 건강 프로젝트 클로드가 준 텍스트를 그대로 붙이고 Ctrl+Enter</span></h2>
+    <textarea id="dtPaste" rows="2" placeholder="#식단 오늘 체중 96.4 단백질 142 칼로리 1780 컨디션 4 메모 닭가슴살 2쪽, 그릭요거트, 계란 3개" style="width:100%;padding:10px 12px;border:2px solid var(--line);border-radius:10px;font-size:13.5px;font-family:inherit;resize:vertical"></textarea>
+    <div style="margin-top:7px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+      <button id="dtPasteGo" style="padding:9px 20px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer">저장</button>
+      <span class="sub" style="font-size:11.5px">여러 줄을 한 번에 붙여도 됩니다 (하루 = 한 줄). <code>#메뉴 닭가슴살100g 단백질 31 칼로리 165</code> = 메뉴 등록</span>
+    </div>
+    <div id="dtPasteLog" style="margin-top:8px"></div>
+  </div>
+
+  <!-- ③ 자주 먹는 메뉴 + 수동 입력 -->
+  <div class="card" style="margin-top:12px">
+    <h2>⚡ 빠른 입력 <span class="sub" style="font-weight:400">— 버튼을 누르면 아래 값에 더해집니다</span></h2>
+    <div id="dtFav" style="margin-bottom:10px"></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px">
+      <input id="dtW" type="number" step="0.1" inputmode="decimal" placeholder="공복 체중 kg" style="padding:11px 12px;border:2px solid var(--line);border-radius:10px;font-size:16px;font-weight:700;text-align:right">
+      <input id="dtP" type="number" inputmode="numeric" placeholder="단백질 g" style="padding:11px 12px;border:2px solid #86efac;border-radius:10px;font-size:16px;font-weight:700;text-align:right">
+      <input id="dtC" type="number" inputmode="numeric" placeholder="칼로리 kcal" style="padding:11px 12px;border:2px solid var(--line);border-radius:10px;font-size:16px;font-weight:700;text-align:right">
+      <select id="dtCd" style="padding:11px 12px;border:2px solid var(--line);border-radius:10px;font-size:13px;background:#fff">
+        <option value="">컨디션</option><option value="5">5 최상</option><option value="4">4 좋음</option><option value="3">3 보통</option><option value="2">2 나쁨</option><option value="1">1 최악</option>
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr auto auto;gap:8px;margin-top:8px">
+      <input id="dtM" placeholder="식단 메모 (쉼표로 구분하면 자주 먹는 메뉴로 축적)" style="padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px">
+      <input id="dtD" type="date" style="padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px">
+      <button id="dtSave" style="padding:10px 22px;background:#16a34a;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer">저장</button>
+    </div>
+    <div class="sub" style="margin-top:6px">브라우저에 즉시 저장 → 폰↔PC 자동 동기화. 빈 칸은 기존 값을 지우지 않습니다.</div>
+  </div>
+
+  <!-- ④ 조회 -->
+  <div class="grid cols2" style="margin-top:12px">
+    <div class="card">
+      <h2>체중 추이 <span class="sub" style="font-weight:400">— 목표선 대비</span></h2>
+      <canvas id="chartDtW"></canvas>
+      <div id="dtWNote" style="margin-top:9px"></div>
+    </div>
+    <div class="card">
+      <h2>단백질 · 칼로리 (최근 21일)</h2>
+      <canvas id="chartDtPC"></canvas>
+      <div id="dtPCNote" style="margin-top:9px"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:12px">
+    <h2>😴 수면 · 활동 <span class="sub" style="font-weight:400">— Health Sync(삼성헬스) 자동 수집</span></h2>
+    <div id="dtSleep"></div>
+  </div>
+
+  <div class="card" style="margin-top:12px">
+    <h2>📅 기록 <span class="sub" style="font-weight:400">— 최근 21일 · 행을 클릭하면 위 입력칸으로 불러옵니다</span></h2>
+    <div style="overflow-x:auto"><table id="tblDt" style="font-size:12.5px;min-width:640px"><thead><tr>
+      <th>날짜</th><th style="text-align:right">체중</th><th style="text-align:right">단백질</th><th style="text-align:right">칼로리</th><th style="text-align:right">수면</th><th style="text-align:center">컨디션</th><th>메모</th><th></th>
+    </tr></thead><tbody></tbody></table></div>
+    <div style="margin-top:9px;display:flex;gap:6px;flex-wrap:wrap">
+      <button id="dtSetup" class="tag" style="cursor:pointer;border:1px solid var(--line);background:#fff">⚙ 목표 설정</button>
+      <button id="dtCsv" class="tag" style="cursor:pointer;border:1px solid var(--line);background:#fff">⬇ CSV 내보내기</button>
+      <button id="dtAsk" class="tag" style="cursor:pointer;border:1px solid var(--line);background:#fff">🤖 최근 14일 분석 요청</button>
+    </div>
+  </div>
+</div>
+
 <div id="tabGym" class="tabsec">
   <div class="wo-nav">
     <button class="wo-nb on" data-g="gToday">🏋 오늘</button>
@@ -440,6 +522,162 @@ const QUIZ_URL = "https://script.google.com/macros/s/AKfycbzkZ2uad6YDHpyn6CZJI7n
 const $ = s => document.querySelector(s);
 const today = new Date(); today.setHours(0,0,0,0);
 const isoLocal = d => {const x=new Date(d); x.setMinutes(x.getMinutes()-x.getTimezoneOffset()); return x.toISOString().slice(0,10);};
+
+/* ═══════════ 식단·체중 공용 헬퍼 (탭을 열지 않아도 운동탭·메인이 참조) ═══════════ */
+const HT_DEF={wStart:97.1,wGoal:92,wGoalDate:'2026-11-30',maintDate:'2026-12-15',pGoal:150,cGoal:1800,tdee:null};
+function isoAdd(iso,n){const d=new Date(iso+'T00:00:00');d.setDate(d.getDate()+n);return isoLocal(d);}
+function htCfg(){try{return Object.assign({},HT_DEF,JSON.parse(localStorage.getItem('htCfg')||'{}'));}catch(e){return Object.assign({},HT_DEF);}}
+function htSetCfg(o){const v=Object.assign(htCfg(),o);v.u=Date.now();localStorage.setItem('htCfg',JSON.stringify(v));if(window.syncPush)syncPush();}
+function _htScan(pfx){const a=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);
+  if(!k||!k.startsWith(pfx))continue;
+  try{const v=JSON.parse(localStorage.getItem(k));if(v&&v.d)a.push(v);}catch(e){}}
+  a.sort((x,y)=>x.d<y.d?-1:1);return a;}
+function htAll(){return _htScan('ht|');}          // 세직 입력: 체중·단백질·칼로리·메모·컨디션
+function hsAll(){return _htScan('hs|');}          // Health Sync 자동: 수면·걸음·활동칼로리
+function htFav(){try{const v=JSON.parse(localStorage.getItem('htFav')||'[]');return Array.isArray(v)?v:[];}catch(e){return [];}}
+function htSetFav(a){localStorage.setItem('htFav',JSON.stringify(a.slice(0,60)));if(window.syncPush)syncPush();}
+function htGet(d){try{return JSON.parse(localStorage.getItem('ht|'+d)||'null');}catch(e){return null;}}
+function htSave(v){v.u=Date.now();localStorage.setItem('ht|'+v.d,JSON.stringify(v));if(window.syncPush)syncPush();}
+const htNum=x=>(typeof x==='number'&&isFinite(x))?x:null;
+
+/* 체중 추세 — 최소제곱 기울기 (kg/주). 표본 4일 미만이면 null */
+function htSlope(days){
+  const cut=isoAdd(isoLocal(new Date()),-(days||21));
+  const s=htAll().filter(x=>htNum(x.w)!==null&&x.d>=cut);
+  if(s.length<4)return null;
+  const t0=new Date(s[0].d+'T00:00:00').getTime();
+  const xs=s.map(x=>(new Date(x.d+'T00:00:00').getTime()-t0)/86400000),ys=s.map(x=>x.w);
+  const n=xs.length,mx=xs.reduce((a,b)=>a+b,0)/n,my=ys.reduce((a,b)=>a+b,0)/n;
+  let num=0,den=0;for(let i=0;i<n;i++){num+=(xs[i]-mx)*(ys[i]-my);den+=(xs[i]-mx)*(xs[i]-mx);}
+  if(!den)return null;
+  return Math.round(num/den*7*1000)/1000;
+}
+/* 유지 칼로리(TDEE) — 신장·나이 없이 체중변화(7700kcal/kg)로 역산해 자기보정 */
+function htTdee(){
+  const cut=isoAdd(isoLocal(new Date()),-28);
+  const rc=htAll().filter(x=>htNum(x.c)&&x.d>=cut);
+  const wc=htAll().filter(x=>htNum(x.w)&&x.d>=cut);
+  if(rc.length>=10&&wc.length>=6){
+    const days=(new Date(wc[wc.length-1].d)-new Date(wc[0].d))/86400000;
+    if(days>=10){
+      const dW=wc[wc.length-1].w-wc[0].w;
+      const meanC=rc.reduce((a,b)=>a+b.c,0)/rc.length;
+      const est=Math.round(meanC-(dW*7700/days));
+      if(est>1300&&est<4500)return {v:est,src:'실측 역산 '+rc.length+'일',est:true};
+    }
+  }
+  const c=htCfg();
+  if(c.tdee)return {v:Number(c.tdee),src:'수동 설정',est:false};
+  return null;
+}
+/* 감량 모드 판정 — 5/3/1·볼륨 정체를 '실패'로 표시하지 않기 위한 스위치 */
+function htCut(){
+  const sl=htSlope(21);
+  if(sl!==null&&sl<=-0.2)return {on:true,slope:sl,why:'최근 3주 체중 '+sl.toFixed(2)+'kg/주 감소'};
+  const t=htTdee(),r=htAll().filter(x=>htNum(x.c)).slice(-10);
+  if(t&&r.length>=7){
+    const m=r.reduce((a,b)=>a+b.c,0)/r.length;
+    if(m<=t.v-300)return {on:true,slope:sl,why:'최근 섭취 평균 '+Math.round(m)+'kcal (유지 '+t.v+'kcal 대비 -'+Math.round(t.v-m)+')'};
+  }
+  const c=htCfg();
+  if(c.forceCut)return {on:true,slope:sl,why:'수동 지정'};
+  return {on:false,slope:sl,why:''};
+}
+function htCutBanner(){
+  const c=htCut();if(!c.on)return '';
+  return '<div style="background:#eef4ff;border:1px solid #c7d7fb;border-left:4px solid #2563eb;border-radius:8px;padding:9px 12px;margin-bottom:11px;font-size:12.5px;line-height:1.8">'
+    +'🔻 <b>감량 모드</b> — '+c.why+'.<br>감량기에는 <b>근력 유지가 곧 성공</b>입니다. TM 정체 · 마지막 세트 rep 1~2회 하락 · 주간 볼륨 소폭 감소는 <b>정상 범위</b>이며 프로그램 실패가 아닙니다. '
+    +'이 구간의 성공 지표는 e1RM 상승이 아니라 <b>제지방 보존</b>(단백질 '+htCfg().pGoal+'g/일 + 주 1~2회 자극 유지)입니다.</div>';
+}
+/* 일자 → 통합 레코드 (ht| + hs| 병합) */
+function htMerged(){
+  const m={};
+  htAll().forEach(v=>{m[v.d]=Object.assign({},v);});
+  hsAll().forEach(v=>{m[v.d]=Object.assign({},m[v.d]||{d:v.d},{sl:htNum(v.sl),st:htNum(v.st),ac:htNum(v.ac)});});
+  return Object.values(m).sort((a,b)=>a.d<b.d?-1:1);
+}
+window.htCfg=htCfg;window.htAll=htAll;window.hsAll=hsAll;window.htMerged=htMerged;
+window.htSlope=htSlope;window.htTdee=htTdee;window.htCut=htCut;window.htCutBanner=htCutBanner;
+
+/* ═══ 붙여넣기 한 줄 파서 — 건강 프로젝트 클로드가 주는 텍스트를 그대로 저장 ═══ */
+function htParseLine(raw){
+  let s=String(raw||'').trim();
+  if(!s)return null;
+  const isMenu=/^#?\s*(메뉴|menu)(\s|[:=]|$)/i.test(s);
+  s=s.replace(/^#?\s*(식단|건강|diet|health|메뉴|menu)\s*/i,'').trim();
+  if(!s)return null;
+  const p2=n=>String(n).padStart(2,'0');
+  const grab=re=>{const m=s.match(re);if(!m)return null;s=s.replace(m[0],' ');return parseFloat(String(m[1]).replace(/,/g,''));};
+
+  if(isMenu){
+    // #메뉴 닭가슴살100g 단백질 31 칼로리 165
+    const p=grab(/(?:단백질|프로틴|protein)\s*[:=]?\s*(\d{1,3}(?:\.\d+)?)\s*g?/i);
+    const c=grab(/(?:칼로리|열량|kcal)\s*[:=]?\s*(\d{2,5}(?:\.\d+)?)/i);
+    const t=s.replace(/\s+/g,' ').trim();
+    if(!t)return null;
+    return {kind:'menu',t:t,p:p,c:c};
+  }
+  // ── ① 명시적 날짜 / 상대일 (숫자 항목보다 먼저) ──
+  let d=null,m;
+  if((m=s.match(/(20\d{2})[-.\/](\d{1,2})[-.\/](\d{1,2})/))){d=m[1]+'-'+p2(m[2])+'-'+p2(m[3]);s=s.replace(m[0],' ');}
+  else if(/그저께|그제/.test(s)){d=isoAdd(isoLocal(new Date()),-2);s=s.replace(/그저께|그제/,' ');}
+  else if(/어제/.test(s)){d=isoAdd(isoLocal(new Date()),-1);s=s.replace(/어제/,' ');}
+  else if(/오늘/.test(s)){d=isoLocal(new Date());s=s.replace(/오늘/,' ');}
+  // ── ② 메모(줄 끝까지) ──
+  let memo=null;
+  const mm=s.match(/(?:메모|식단|메뉴|먹은것|memo|menu)\s*[:=]?\s*(.+)$/);
+  if(mm){memo=mm[1].trim();s=s.slice(0,mm.index)+' ';}
+  // ── ③ 라벨 붙은 숫자 항목 (여기서 소비해야 아래 날짜 추정이 오작동하지 않음) ──
+  const w =grab(/(?:공복\s*)?(?:체중|몸무게|weight|bw)\s*[:=]?\s*(\d{2,3}(?:\.\d+)?)\s*(?:kg)?/i);
+  const p =grab(/(?:단백질|프로틴|protein)\s*[:=]?\s*(\d{1,3}(?:\.\d+)?)\s*g?/i);
+  const c =grab(/(?:칼로리|열량|섭취|kcal)\s*[:=]?\s*(\d{3,5}(?:\.\d+)?)/i);
+  const cd=grab(/(?:컨디션|컨디숀|condition|cond)\s*[:=]?\s*([1-5])/i);
+  const sl=grab(/(?:수면|잠|sleep)\s*[:=]?\s*(\d{1,2}(?:\.\d+)?)\s*(?:h|시간)?/i);
+  // ── ④ 남은 텍스트에서 M/D 형태 날짜 ──
+  if(d===null&&(m=s.match(/(?:^|\s)(\d{1,2})[-.\/](\d{1,2})(?=\s|$)/))){
+    const mo=Number(m[1]),dy=Number(m[2]);
+    if(mo>=1&&mo<=12&&dy>=1&&dy<=31){d=String(new Date().getFullYear())+'-'+p2(mo)+'-'+p2(dy);s=s.replace(m[0],' ');}
+  }
+  if(d===null)d=isoLocal(new Date());
+  if(w===null&&p===null&&c===null&&cd===null&&sl===null&&!memo)return null;
+  return {kind:'day',d:d,w:w,p:p,c:c,cd:cd,sl:sl,m:memo};
+}
+/* 여러 줄 붙여넣기 → 저장. 반환: {days:n, menus:n, log:[...]} */
+function htApplyText(text){
+  const lines=String(text||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+  const log=[];let nd=0,nm=0;
+  const favs=htFav();
+  lines.forEach(ln=>{
+    const r=htParseLine(ln);
+    if(!r){log.push('✕ 인식 실패: '+ln.slice(0,40));return;}
+    if(r.kind==='menu'){
+      const i=favs.findIndex(f=>f.t===r.t);
+      if(i>=0){favs[i].p=(r.p!==null?r.p:favs[i].p);favs[i].c=(r.c!==null?r.c:favs[i].c);}
+      else favs.push({t:r.t,n:1,p:r.p,c:r.c});
+      nm++;log.push('🍽 메뉴 등록: '+r.t+(r.p!==null?' (P'+r.p+'g)':''));
+      return;
+    }
+    const cur=htGet(r.d)||{d:r.d};
+    ['w','p','c','cd','m'].forEach(k=>{if(r[k]!==null&&r[k]!==undefined)cur[k]=r[k];});
+    htSave(cur);
+    if(r.sl!==null&&r.sl!==undefined){ // 수면은 hs| 쪽에 수동 보정으로 기록
+      let h={};try{h=JSON.parse(localStorage.getItem('hs|'+r.d)||'{}');}catch(e){}
+      h.d=r.d;h.sl=r.sl;h.src='수동';h.u=Date.now();
+      localStorage.setItem('hs|'+r.d,JSON.stringify(h));
+    }
+    if(r.m)String(r.m).split(/[,、·・|/]+/).map(x=>x.trim()).filter(x=>x.length>1&&x.length<24).forEach(t=>{
+      const i=favs.findIndex(f=>f.t===t);
+      if(i>=0)favs[i].n=(favs[i].n||0)+1;else favs.push({t:t,n:1,p:null,c:null});
+    });
+    nd++;log.push('✓ '+r.d+' 저장'+(r.w!==null?' · 체중 '+r.w+'kg':'')+(r.p!==null?' · 단백질 '+r.p+'g':'')+(r.c!==null?' · '+r.c+'kcal':''));
+  });
+  favs.sort((a,b)=>(b.n||0)-(a.n||0));
+  htSetFav(favs);
+  if(window.syncPush)syncPush();
+  return {days:nd,menus:nm,log:log};
+}
+window.htApplyText=htApplyText;window.htParseLine=htParseLine;
+
 const dd = Math.round((new Date(DATA.exam_date+'T00:00:00') - today) / 86400000);
 const _exams=(((DATA.schedule||{}).items)||[]).filter(i=>i.exam&&new Date(i.start+'T00:00:00')>=today).sort((a,b)=>a.start<b.start?-1:1);
 const _nx=_exams[0];
@@ -746,7 +984,7 @@ function lsAll(){
   const o={};
   for(let i=0;i<localStorage.length;i++){
     const k=localStorage.key(i);
-    if(k.startsWith('ci|')||k.startsWith('rv|')||k.startsWith('pd|')||k.startsWith('msg|')||k.startsWith('wo|')||k.startsWith('bg|')||k==='wo531'||k==='woSlump'||k==='bgBudget') o[k]=localStorage.getItem(k);
+    if(k.startsWith('ci|')||k.startsWith('rv|')||k.startsWith('pd|')||k.startsWith('msg|')||k.startsWith('wo|')||k.startsWith('bg|')||k.startsWith('ht|')||k.startsWith('hs|')||k==='wo531'||k==='woSlump'||k==='bgBudget'||k==='htCfg'||k==='htFav') o[k]=localStorage.getItem(k);
   }
   return o;
 }
@@ -765,13 +1003,24 @@ async function syncPull(){
     const rows=(d[SYNC_SUBJECT]||[]);
     let changed=false;
     rows.forEach(t=>{
-      const k=t.id; if(!k||!(String(k).startsWith('ci|')||String(k).startsWith('rv|')||String(k).startsWith('pd|')||String(k).startsWith('msg|')||String(k).startsWith('wo|')||String(k).startsWith('bg|')||String(k)==='wo531'||String(k)==='woSlump'||String(k)==='bgBudget')) return;
+      const k=t.id; if(!k||!(String(k).startsWith('ci|')||String(k).startsWith('rv|')||String(k).startsWith('pd|')||String(k).startsWith('msg|')||String(k).startsWith('wo|')||String(k).startsWith('bg|')||String(k).startsWith('ht|')||String(k).startsWith('hs|')||String(k)==='wo531'||String(k)==='woSlump'||String(k)==='bgBudget'||String(k)==='htCfg'||String(k)==='htFav')) return;
       const remote=Array.isArray(t.wrongReasons)?t.wrongReasons.join(','):String(t.wrongReasons||'');
       const local=localStorage.getItem(k);
       if(String(k).startsWith('msg|')){
         if(remote&&!local){localStorage.setItem(k,remote);changed=true;}
       } else if(String(k).startsWith('rv|')||String(k).startsWith('pd|')){
         if(remote&&!local){localStorage.setItem(k,'1');changed=true;}
+      } else if(String(k)==='htFav'){
+        try{
+          const rv=JSON.parse(remote)||[], lv=local?(JSON.parse(local)||[]):[];
+          const mp={};
+          lv.concat(rv).forEach(x=>{ if(!x||!x.t)return;
+            const e=mp[x.t]||(mp[x.t]={t:x.t,n:0,p:null,c:null});
+            e.n=Math.max(e.n||0,x.n||0);
+            if(x.p!=null)e.p=x.p; if(x.c!=null)e.c=x.c; });
+          const out=JSON.stringify(Object.values(mp).sort((a,b)=>(b.n||0)-(a.n||0)));
+          if(out!==local){localStorage.setItem(k,out);changed=true;}
+        }catch(e){}
       } else {
         try{
           const rv=JSON.parse(remote);
@@ -781,6 +1030,7 @@ async function syncPull(){
       }
     });
     if(changed){
+      if(window._renderDiet)window._renderDiet();
       if(window._renderCi)window._renderCi();
       if(window._renderRv)window._renderRv();
       if(window._renderBrief)window._renderBrief();
@@ -1103,6 +1353,234 @@ INIT.tabDocs=function(){
 };
 
 /* ── 💰가계부 탭 ── */
+
+/* ═══════════════ 🥗 식단·체중 탭 ═══════════════ */
+INIT.tabDiet=function(){
+  let chW=null,chPC=null;
+  const cfgD=()=>htCfg();
+  const T=()=>isoLocal(new Date());
+  const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const n1=x=>Math.round(x*10)/10;
+
+  function pushMsg(t){
+    localStorage.setItem('msg|'+Date.now(),JSON.stringify({t:t,d:T(),ts:Date.now()}));
+    if(window.syncPush)syncPush();
+    if(window._renderInbox)window._renderInbox();
+  }
+
+  /* ── 히어로: 단백질 ── */
+  function renderHero(){
+    const c=cfgD(),rows=htMerged(),td=htGet(T())||{},t=htTdee();
+    const p=htNum(td.p),w=htNum(td.w),kc=htNum(td.c);
+    const pct=p!==null?Math.min(150,Math.round(p/c.pGoal*100)):0;
+    const col=p===null?'#94a3b8':p>=c.pGoal?'#16a34a':p>=c.pGoal*0.8?'#d97706':'#dc2626';
+    $('#dtProBig').innerHTML=(p!==null?p:'–')+'<span style="font-size:22px;font-weight:700;color:var(--sub)">g / '+c.pGoal+'g</span>';
+    $('#dtProBig').style.color=col;
+    $('#dtProSub').innerHTML=p===null?'오늘 아직 기록이 없습니다 — 위 붙여넣기 한 줄이면 끝납니다.'
+      :p>=c.pGoal?'✅ 목표 달성. 감량기 근손실 방어선을 지켰습니다.'
+      :'남은 단백질 <b style="color:'+col+'">'+Math.max(0,Math.round(c.pGoal-p))+'g</b> — 닭가슴살 100g ≈ 31g · 그릭요거트 1개 ≈ 10g · 계란 1개 ≈ 6g';
+    $('#dtProBar').innerHTML='<div style="background:#e9edf4;border-radius:99px;height:14px;overflow:hidden">'
+      +'<div style="width:'+Math.min(100,pct)+'%;height:100%;background:'+col+';border-radius:99px;transition:width .3s"></div></div>'
+      +'<div class="sub" style="margin-top:5px;font-size:11.5px">목표 대비 '+pct+'%'+(t?' · 유지 칼로리 추정 <b>'+t.v+'kcal</b> ('+t.src+')':' · 유지 칼로리는 기록 10일 이상 쌓이면 자동 역산됩니다')+'</div>';
+
+    // 사이드 KPI — 체중은 단백질보다 작게
+    const ws=rows.filter(x=>htNum(x.w)!==null);
+    const cur=ws.length?ws[ws.length-1]:null;
+    const sl=htSlope(21);
+    const left=cur?n1(cur.w-c.wGoal):null;
+    const dGoal=Math.round((new Date(c.wGoalDate+'T00:00:00')-new Date(T()+'T00:00:00'))/86400000);
+    const need=(left!==null&&dGoal>0)?n1(left/(dGoal/7)):null;
+    const box=(v,l,cl)=>'<div style="background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 13px;min-width:96px">'
+      +'<div style="font-size:20px;font-weight:800;line-height:1.15'+(cl?';color:'+cl:'')+'">'+v+'</div>'
+      +'<div class="sub" style="font-size:11px;margin-top:2px">'+l+'</div></div>';
+    $('#dtSideKpi').innerHTML=
+      box(cur?cur.w+'kg':'–','공복 체중'+(cur?' ('+cur.d.slice(5).replace('-','/')+')':''))
+      +box(left!==null?left+'kg':'–','목표('+c.wGoal+'kg)까지')
+      +box(sl!==null?(sl>0?'+':'')+sl.toFixed(2):'–','최근 추세 kg/주',sl===null?'':sl<=-0.2?'#16a34a':sl>=0.1?'#dc2626':'#d97706')
+      +box(kc!==null?kc+'':'–','오늘 섭취 kcal')
+      +(need!==null?box((need>0?'-':'+')+Math.abs(need)+'kg','필요 속도 kg/주 (D-'+dGoal+')',''):'');
+
+    // 주간 단백질 달성률
+    const last7=[];for(let i=6;i>=0;i--)last7.push(isoAdd(T(),-i));
+    const cells=last7.map(d=>{const r=htGet(d),pv=r?htNum(r.p):null;
+      const ok=pv!==null&&pv>=c.pGoal;
+      const bg=pv===null?'#eef1f6':ok?'#16a34a':pv>=c.pGoal*0.8?'#fbbf24':'#f87171';
+      return '<div style="flex:1;text-align:center"><div style="height:34px;border-radius:7px;background:'+bg+';display:flex;align-items:center;justify-content:center;color:'+(pv===null?'#9aa4b2':'#fff')+';font-size:12px;font-weight:700">'+(pv===null?'·':Math.round(pv))+'</div>'
+        +'<div class="sub" style="font-size:10.5px;margin-top:3px">'+d.slice(5).replace('-','/')+'</div></div>';}).join('');
+    const hit=last7.filter(d=>{const r=htGet(d);return r&&htNum(r.p)!==null&&r.p>=c.pGoal;}).length;
+    $('#dtProWk').innerHTML='<div class="sub" style="margin-bottom:5px;font-size:11.5px">최근 7일 단백질 — 목표 달성 <b>'+hit+'/7일</b></div>'
+      +'<div style="display:flex;gap:5px">'+cells+'</div>';
+    $('#dtCut').innerHTML=htCutBanner();
+  }
+
+  /* ── 자주 먹는 메뉴 ── */
+  function renderFav(){
+    const f=htFav().filter(x=>x.t).slice(0,14);
+    if(!f.length){$('#dtFav').innerHTML='<div class="sub">메모에 쉼표로 항목을 적으면 여기에 버튼으로 쌓입니다. <code>#메뉴 이름 단백질 31 칼로리 165</code> 로 등록하면 버튼이 값까지 채웁니다.</div>';return;}
+    $('#dtFav').innerHTML=f.map((x,i)=>'<button class="tag" data-fav="'+i+'" style="cursor:pointer;border:1px solid var(--line);background:#fff;margin:0 5px 5px 0;padding:6px 11px;font-size:12.5px">'
+      +esc(x.t)+(x.p!=null?' <b style="color:#16a34a">P'+x.p+'</b>':'')+(x.c!=null?' <span class="sub">'+x.c+'k</span>':'')+'</button>').join('');
+    document.querySelectorAll('#dtFav [data-fav]').forEach(b=>b.onclick=()=>{
+      const x=f[+b.dataset.fav];
+      if(x.p!=null)$('#dtP').value=Math.round((parseFloat($('#dtP').value)||0)+x.p);
+      if(x.c!=null)$('#dtC').value=Math.round((parseFloat($('#dtC').value)||0)+x.c);
+      const m=$('#dtM');m.value=m.value?m.value.replace(/\s*$/,'')+', '+x.t:x.t;
+    });
+  }
+
+  /* ── 차트 ── */
+  function renderCharts(){
+    const c=cfgD(),rows=htMerged();
+    const ws=rows.filter(x=>htNum(x.w)!==null).slice(-70);
+    if(chW){chW.destroy();chW=null;}
+    if(ws.length>=2){
+      $('#chartDtW').style.display='block';
+      const labels=ws.map(x=>x.d.slice(5).replace('-','/'));
+      // 목표선: 시작일→목표일 선형
+      const d0=new Date(ws[0].d+'T00:00:00'),dG=new Date(c.wGoalDate+'T00:00:00');
+      const span=Math.max(1,(dG-d0)/86400000);
+      const line=ws.map(x=>{const t=(new Date(x.d+'T00:00:00')-d0)/86400000;
+        return n1(ws[0].w+(c.wGoal-ws[0].w)*Math.min(1,t/span));});
+      chW=new Chart($('#chartDtW'),{type:'line',data:{labels:labels,datasets:[
+        {label:'공복 체중',data:ws.map(x=>x.w),borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.08)',fill:true,tension:.25,pointRadius:2},
+        {label:'목표 경로',data:line,borderColor:'#16a34a',borderDash:[5,4],pointRadius:0,fill:false,tension:0}]},
+        options:{plugins:{legend:{labels:{boxWidth:10,font:{size:11}}}},scales:{y:{title:{display:true,text:'kg'}}}}});
+      const sl=htSlope(21),cur=ws[ws.length-1].w,gap=n1(cur-line[line.length-1]);
+      const dGoal=Math.round((dG-new Date(T()+'T00:00:00'))/86400000);
+      const need=dGoal>0?n1((cur-c.wGoal)/(dGoal/7)):null;
+      $('#dtWNote').innerHTML='<div class="sub" style="line-height:1.85">현재 <b>'+cur+'kg</b> · 목표 경로 대비 <b style="color:'+(gap<=0?'#16a34a':'#dc2626')+'">'+(gap>0?'+':'')+gap+'kg</b>'
+        +(sl!==null?' · 실측 추세 <b>'+(sl>0?'+':'')+sl.toFixed(2)+'kg/주</b>':'')
+        +(need!==null?'<br>'+c.wGoalDate.slice(5).replace('-','/')+'까지 '+dGoal+'일 — 필요 속도 <b>'+need+'kg/주</b>':'')
+        +(sl!==null&&sl<=-0.9?'<br><span style="color:#dc2626">주 0.9kg 이상 감량은 제지방 손실 구간입니다. 수험 컨디션·집중력이 먼저 깎입니다 — 섭취를 올리세요.</span>':'')
+        +'</div>';
+    }else{$('#chartDtW').style.display='none';$('#dtWNote').innerHTML='<div class="sub">체중 2일 이상 기록되면 그래프가 그려집니다.</div>';}
+
+    const pc=[];for(let i=20;i>=0;i--){const d=isoAdd(T(),-i);const r=htGet(d);pc.push({d:d,p:r?htNum(r.p):null,c:r?htNum(r.c):null});}
+    if(chPC){chPC.destroy();chPC=null;}
+    const t=htTdee();
+    chPC=new Chart($('#chartDtPC'),{data:{labels:pc.map(x=>x.d.slice(5).replace('-','/')),datasets:[
+      {type:'bar',label:'단백질(g)',data:pc.map(x=>x.p),backgroundColor:pc.map(x=>x.p==null?'#e5e7eb':x.p>=c.pGoal?'#16a34a':'#fbbf24'),yAxisID:'y'},
+      {type:'line',label:'칼로리(kcal)',data:pc.map(x=>x.c),borderColor:'#dc2626',backgroundColor:'#dc2626',tension:.25,pointRadius:2,yAxisID:'y2'}
+      ].concat(t?[{type:'line',label:'유지 칼로리',data:pc.map(()=>t.v),borderColor:'#94a3b8',borderDash:[4,4],pointRadius:0,yAxisID:'y2'}]:[])},
+      options:{plugins:{legend:{labels:{boxWidth:10,font:{size:11}}}},
+        scales:{y:{title:{display:true,text:'g'},suggestedMax:c.pGoal*1.4},y2:{position:'right',grid:{display:false},title:{display:true,text:'kcal'}}}}});
+    const ps=pc.map(x=>x.p).filter(x=>x!=null),cs=pc.map(x=>x.c).filter(x=>x!=null);
+    const av=a=>a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):null;
+    const def=(t&&cs.length)?t.v-av(cs):null;
+    $('#dtPCNote').innerHTML='<div class="sub" style="line-height:1.85">기록 '+ps.length+'일 · 단백질 평균 <b>'+(av(ps)||'–')+'g</b>'
+      +(cs.length?' · 섭취 평균 <b>'+av(cs)+'kcal</b>':'')
+      +(def!==null?' · 일 평균 적자 <b style="color:'+(def>900?'#dc2626':'#16a34a')+'">'+Math.round(def)+'kcal</b> (≈ 주 '+n1(def*7/7700)+'kg)':'')
+      +(av(ps)!==null&&av(ps)<c.pGoal*0.85?'<br><span style="color:#dc2626">단백질이 목표의 85% 미만입니다. 감량기에 이 상태가 이어지면 체중은 줄어도 <b>줄어드는 쪽이 근육</b>입니다.</span>':'')
+      +'</div>';
+  }
+
+  /* ── 수면·활동 ── */
+  function renderSleep(){
+    const hs=hsAll().slice(-21);
+    if(!hs.length){
+      $('#dtSleep').innerHTML='<div class="sub" style="line-height:1.85">아직 Health Sync 데이터가 없습니다.<br>구글 드라이브에 CSV가 쌓이기 시작하면 Apps Script가 매일 새벽 자동으로 읽어 여기에 채웁니다. 수동으로는 붙여넣기 줄에 <code>수면 7.2</code>를 넣으면 됩니다.</div>';return;}
+    const sl=hs.map(x=>htNum(x.sl)).filter(x=>x!=null);
+    const av=sl.length?Math.round(sl.reduce((a,b)=>a+b,0)/sl.length*10)/10:null;
+    const bars=hs.slice(-14).map(x=>{const v=htNum(x.sl);
+      const h=v==null?4:Math.max(6,Math.min(56,v*7));
+      const col=v==null?'#e5e7eb':v>=7?'#16a34a':v>=6?'#fbbf24':'#f87171';
+      return '<div style="flex:1;text-align:center"><div style="height:60px;display:flex;align-items:flex-end;justify-content:center"><div style="width:70%;height:'+h+'px;background:'+col+';border-radius:4px 4px 0 0"></div></div>'
+        +'<div class="sub" style="font-size:10px;margin-top:3px">'+(v==null?'·':v)+'</div>'
+        +'<div class="sub" style="font-size:9.5px">'+x.d.slice(5).replace('-','/')+'</div></div>';}).join('');
+    const st=hs.map(x=>htNum(x.st)).filter(x=>x!=null);
+    $('#dtSleep').innerHTML='<div class="wo-kpi"><div><b>'+(av||'–')+'h</b><span>최근 평균 수면</span></div>'
+      +'<div><b>'+(sl.filter(x=>x<6.5).length)+'일</b><span>6.5h 미만</span></div>'
+      +(st.length?'<div><b>'+Math.round(st.reduce((a,b)=>a+b,0)/st.length).toLocaleString()+'</b><span>평균 걸음</span></div>':'')
+      +'<div><b>'+hs.length+'일</b><span>수집된 기록</span></div></div>'
+      +'<div style="display:flex;gap:4px;margin-top:12px">'+bars+'</div>'
+      +(av!==null&&av<6.5?'<div style="background:#fdeaea;border-radius:8px;padding:9px 12px;margin-top:10px;font-size:12.5px;line-height:1.8;color:#a02c2c">평균 수면 '+av+'시간 — 수면 부족은 <b>기억 공고화와 감량기 근보존을 동시에</b> 깎습니다. 감량 중에는 수면 부족이 근손실을 가속시킨다는 것이 반복 확인된 결과입니다.</div>':'');
+  }
+
+  /* ── 표 ── */
+  function renderTable(){
+    const rows=[];for(let i=0;i<21;i++){const d=isoAdd(T(),-i);const r=htGet(d)||{};let h={};
+      try{h=JSON.parse(localStorage.getItem('hs|'+d)||'{}');}catch(e){}
+      if(htNum(r.w)!=null||htNum(r.p)!=null||htNum(r.c)!=null||r.m||htNum(h.sl)!=null)rows.push({d:d,r:r,h:h});}
+    const tb=$('#tblDt').querySelector('tbody');
+    if(!rows.length){tb.innerHTML='<tr><td colspan="8" class="sub" style="padding:14px">아직 기록이 없습니다.</td></tr>';return;}
+    const CD=['','😵','🙁','😐','🙂','😃'];
+    tb.innerHTML=rows.map(x=>'<tr data-d="'+x.d+'" style="cursor:pointer">'
+      +'<td>'+x.d.slice(5).replace('-','/')+'</td>'
+      +'<td style="text-align:right">'+(htNum(x.r.w)!=null?x.r.w+'':'–')+'</td>'
+      +'<td style="text-align:right;font-weight:700;color:'+(htNum(x.r.p)!=null&&x.r.p>=cfgD().pGoal?'#16a34a':'inherit')+'">'+(htNum(x.r.p)!=null?x.r.p+'g':'–')+'</td>'
+      +'<td style="text-align:right">'+(htNum(x.r.c)!=null?Number(x.r.c).toLocaleString():'–')+'</td>'
+      +'<td style="text-align:right">'+(htNum(x.h.sl)!=null?x.h.sl+'h':'–')+'</td>'
+      +'<td style="text-align:center">'+(htNum(x.r.cd)!=null?CD[x.r.cd]:'')+'</td>'
+      +'<td class="sub">'+esc(x.r.m||'')+'</td>'
+      +'<td style="text-align:right"><span data-del="'+x.d+'" style="color:#c62828;font-size:11px">✕</span></td></tr>').join('');
+    tb.querySelectorAll('tr[data-d]').forEach(tr=>tr.onclick=e=>{
+      if(e.target.dataset.del){
+        if(!confirm(e.target.dataset.del+' 기록을 지울까요?'))return;
+        localStorage.removeItem('ht|'+e.target.dataset.del);if(window.syncPush)syncPush();renderAll();return;}
+      const r=htGet(tr.dataset.d)||{};
+      $('#dtD').value=tr.dataset.d;$('#dtW').value=r.w!=null?r.w:'';$('#dtP').value=r.p!=null?r.p:'';
+      $('#dtC').value=r.c!=null?r.c:'';$('#dtM').value=r.m||'';$('#dtCd').value=r.cd!=null?r.cd:'';
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+  }
+
+  function renderAll(){renderHero();renderFav();renderCharts();renderSleep();renderTable();}
+  window._renderDiet=renderAll;
+
+  /* ── 이벤트 ── */
+  $('#dtD').value=T();
+  $('#dtPasteGo').onclick=()=>{
+    const v=$('#dtPaste').value.trim();if(!v)return;
+    const r=htApplyText(v);
+    $('#dtPasteLog').innerHTML='<div style="background:'+(r.days||r.menus?'#f0fdf4':'#fdeaea')+';border-radius:8px;padding:8px 11px;font-size:12px;line-height:1.75">'
+      +r.log.map(esc).join('<br>')+'</div>';
+    if(r.days||r.menus)$('#dtPaste').value='';
+    renderAll();
+  };
+  $('#dtPaste').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter')$('#dtPasteGo').click();});
+  $('#dtSave').onclick=()=>{
+    const d=$('#dtD').value||T();
+    const cur=htGet(d)||{d:d};
+    const set=(k,el,f)=>{const v=el.value.trim();if(v!=='')cur[k]=f(v);};
+    set('w',$('#dtW'),parseFloat);set('p',$('#dtP'),parseFloat);set('c',$('#dtC'),parseFloat);
+    set('cd',$('#dtCd'),Number);
+    if($('#dtM').value.trim()!=='')cur.m=$('#dtM').value.trim();
+    cur.d=d;htSave(cur);
+    if(cur.m){const favs=htFav();String(cur.m).split(/[,、·・|/]+/).map(x=>x.trim()).filter(x=>x.length>1&&x.length<24)
+      .forEach(t=>{const i=favs.findIndex(f=>f.t===t);if(i>=0)favs[i].n=(favs[i].n||0)+1;else favs.push({t:t,n:1,p:null,c:null});});
+      favs.sort((a,b)=>(b.n||0)-(a.n||0));htSetFav(favs);}
+    ['#dtW','#dtP','#dtC','#dtM'].forEach(s=>$(s).value='');$('#dtCd').value='';
+    renderAll();
+  };
+  ['#dtW','#dtP','#dtC','#dtM'].forEach(s=>$(s).addEventListener('keydown',e=>{if(e.key==='Enter')$('#dtSave').click();}));
+  $('#dtSetup').onclick=()=>{
+    const c=cfgD();
+    const p=prompt('단백질 목표 (g/일)',c.pGoal);if(p===null)return;
+    const w=prompt('목표 체중 (kg)',c.wGoal);if(w===null)return;
+    const dt=prompt('목표 도달일 (YYYY-MM-DD)',c.wGoalDate);if(dt===null)return;
+    const kc=prompt('칼로리 목표 (kcal/일, 비우면 유지)',c.cGoal);
+    const td=prompt('유지 칼로리를 직접 지정하려면 숫자 (비우면 실측 역산 사용)',c.tdee||'');
+    htSetCfg({pGoal:Number(p)||c.pGoal,wGoal:Number(w)||c.wGoal,wGoalDate:dt||c.wGoalDate,
+      cGoal:Number(kc)||c.cGoal,tdee:td?Number(td):null});
+    renderAll();
+  };
+  $('#dtCsv').onclick=()=>{
+    const rows=htMerged();
+    const csv='date,weight_kg,protein_g,kcal,sleep_h,condition,memo\n'+rows.map(x=>[x.d,x.w||'',x.p||'',x.c||'',x.sl||'',x.cd||'','"'+String(x.m||'').replace(/"/g,'""')+'"'].join(',')).join('\n');
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv'}));
+    a.download='식단체중_'+T()+'.csv';a.click();
+  };
+  $('#dtAsk').onclick=()=>{
+    const rows=htMerged().slice(-14),t=htTdee(),c=htCut();
+    const txt='[식단·체중 분석요청] 최근 14일 기록입니다. 감량 속도·단백질·수면과 학습 컨디션 관점에서 코칭해 주세요.\n'
+      +(t?'유지 칼로리 추정 '+t.v+'kcal ('+t.src+')\n':'')
+      +(c.on?'감량 모드 ON — '+c.why+'\n':'')
+      +rows.map(x=>x.d+' 체중'+(x.w||'-')+' 단백질'+(x.p||'-')+' 칼로리'+(x.c||'-')+' 수면'+(x.sl||'-')+' 컨디션'+(x.cd||'-')+(x.m?' / '+x.m:'')).join('\n');
+    pushMsg(txt);
+    alert('메시지함으로 보냈습니다. 채팅에서 "대시보드 갱신해줘"라고 하시면 읽고 답변합니다.');
+  };
+  renderAll();
+};
+
 INIT.tabBudget=function(){
   let chartPie=null, chartDay=null, filterMonth='', filterCat='', filterType='', curType='e', editKey=null;
   const CATS_E=['식비','카페','교재/인강','특강/수업','교통/이동','의료/약','운동/헬스','여자친구','여가/오프','기타'];
@@ -2742,7 +3220,7 @@ INIT.tabTime=function(){
     const P=plan531();
     if(!P){ $('#g531').innerHTML='<div class="sub">5/3/1 설정이 없습니다.</div>'; return; }
     const amraps=amrapHist(), best=bestAmrap();
-    $('#g531').innerHTML=`<div class="wo-kpi">
+    $('#g531').innerHTML=`${(typeof htCutBanner==='function')?htCutBanner():''}<div class="wo-kpi">
       <div><b>${P.st.cycle}</b><span>사이클</span></div>
       <div><b>${P.st.week}주차</b><span>${P.wk.label}</span></div>
       <div><b>${P.st.tm}kg</b><span>Training Max</span></div>
@@ -2911,6 +3389,75 @@ INIT.tabTime=function(){
           수면 7시간 미만이 이어지면 기억 공고화가 직접 손상됩니다. 컨디션이 3주 연속 하락하면 학습 슬럼프가 뒤따르는 것이 과거 패턴입니다.
           ${bwCh!==null&&Math.abs(bwCh)>=2?`<br>체중이 ${bwCh>0?'증가':'감소'} ${Math.abs(bwCh)}kg — 같은 중량이어도 상대강도가 달라집니다. 수험 기간 급격한 체중 변화는 컨디션 변수로 관리하세요.`:''}</div></div>`);
     }
+
+    // ══ 3축: 칼로리 적자 ↔ 공부시간 ↔ 운동 볼륨 ══
+    (function(){
+      const cutS=(typeof htCut==='function')?htCut():{on:false};
+      const t=(typeof htTdee==='function')?htTdee():null;
+      const HM=(typeof htMerged==='function')?htMerged():[];
+      const ent=((DATA.study_time||{}).entries)||[];
+      const stMap={};ent.forEach(e=>{stMap[e.date]=e.minutes;});
+      const volMap={};done.forEach(s=>{volMap[s.d]=(volMap[s.d]||0)+volOf(s);});
+      const days=HM.filter(x=>typeof x.c==='number'&&x.c>0&&stMap[x.d]!=null);
+      const head='<div style="border-top:1px solid var(--line);margin-top:13px;padding-top:11px"><h3 style="font-size:13.5px;margin-bottom:8px">🔺 3축 분석 — 칼로리 적자 ↔ 공부시간 ↔ 운동 볼륨</h3>';
+      if(!t||days.length<8){
+        h.push(head+'<div class="sub" style="line-height:1.85">칼로리·공부시간이 함께 기록된 날이 <b>'+days.length+'일</b>입니다. '
+          +(!t?'유지 칼로리가 아직 산출되지 않았습니다 — 체중·칼로리를 10일 이상 기록하면 체중 변화로 자동 역산됩니다. ':'')
+          +'8일 이상 쌓이면 적자 구간별 학습량·볼륨을 자동 비교합니다.</div></div>');
+        return;
+      }
+      const bandOf=d=>{const def=t.v-d.c;return def<300?0:def<=700?1:2;};
+      const B=[{n:'적자 &lt;300kcal',c:'#94a3b8'},{n:'적자 300~700',c:'#16a34a'},{n:'적자 &gt;700',c:'#dc2626'}];
+      const g=[[],[],[]],gv=[[],[],[]],gc=[[],[],[]];
+      days.forEach(d=>{const b=bandOf(d);g[b].push(stMap[d.d]);
+        if(volMap[d.d])gv[b].push(volMap[d.d]);
+        if(typeof d.cd==='number')gc[b].push(d.cd);});
+      const av=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
+      const fmh=m=>m==null?'–':Math.floor(m/60)+'h'+fm2(Math.round(m%60));
+      let rows=B.map((b,i)=>{
+        const n=g[i].length,s=av(g[i]),v=av(gv[i]),cd=av(gc[i]);
+        return '<tr><td style="padding:5px 0"><span style="display:inline-block;width:9px;height:9px;border-radius:3px;background:'+b.c+';margin-right:6px"></span>'+b.n+'</td>'
+          +'<td style="text-align:right">'+n+'일</td>'
+          +'<td style="text-align:right;font-weight:700">'+fmh(s)+'</td>'
+          +'<td style="text-align:right">'+(v!=null?(v/1000).toFixed(1)+'t':'–')+'</td>'
+          +'<td style="text-align:right">'+(cd!=null?cd.toFixed(1):'–')+'</td></tr>';}).join('');
+      const lo=av(g[0]),mid=av(g[1]),hi=av(g[2]);
+      let verdict='';
+      if(hi!=null&&mid!=null&&g[2].length>=3&&g[1].length>=3){
+        const dm=Math.round(hi-mid);
+        verdict=dm<=-45
+          ? '▸ <b>깊은 적자(700kcal 초과)에서 공부시간이 '+Math.abs(dm)+'분 줄어듭니다.</b> 감량 속도가 학습을 갉아먹는 구간입니다 — 적자를 400~600kcal로 낮추고, 줄인 만큼은 단백질로 채우세요. 변시가 1순위입니다.'
+          : dm>=45 ? '▸ 깊은 적자일에 오히려 학습량이 많습니다. 다만 이건 인과가 아니라 <b>바쁜 날에 덜 먹은 것</b>일 가능성이 큽니다 — 체중 추세와 함께 보세요.'
+          : '▸ 적자 깊이와 공부시간 사이에 뚜렷한 차이는 없습니다. 현재 감량 속도는 학습을 침해하지 않고 있습니다.';
+      }else if(mid!=null&&lo!=null&&g[1].length>=3&&g[0].length>=3){
+        const dm=Math.round(mid-lo);
+        verdict='▸ 완만한 적자(300~700)일의 공부시간은 저적자일 대비 '+(dm>0?'+':'')+dm+'분입니다.'
+          +(dm<=-45?' 이 정도 적자에서도 학습이 눌린다면 감량 자체를 늦추는 편이 총점에 유리합니다.':' 현재 속도는 유지 가능합니다.');
+      }else verdict='▸ 구간별 표본이 각 3일 이상 쌓이면 판정 문장이 나옵니다.';
+      // 운동 볼륨 × 감량
+      const wOn=days.filter(d=>volMap[d.d]),wOff=days.filter(d=>!volMap[d.d]);
+      let volLine='';
+      if(wOn.length>=3&&wOff.length>=3){
+        const so=av(wOn.map(d=>stMap[d.d])),sf=av(wOff.map(d=>stMap[d.d]));
+        const co=av(wOn.map(d=>t.v-d.c)),cf=av(wOff.map(d=>t.v-d.c));
+        volLine='<br>▸ 운동일 평균 적자 <b>'+Math.round(co)+'kcal</b> / 비운동일 <b>'+Math.round(cf)+'kcal</b>'
+          +(co-cf>250?' — 운동한 날 적자가 더 깊습니다. 감량기에는 <b>훈련일에 오히려 더 먹는 것</b>이 근보존에 유리합니다.':'')
+          +'<br>▸ 운동일 공부 '+fmh(so)+' / 비운동일 '+fmh(sf)+' (적자 조건을 통제한 표본)';
+      }
+      const prot=HM.filter(x=>typeof x.p==='number').slice(-14);
+      const pAv=av(prot.map(x=>x.p)),pG=(typeof htCfg==='function')?htCfg().pGoal:150;
+      const protLine=pAv!=null?'<br>▸ 최근 단백질 평균 <b>'+Math.round(pAv)+'g</b> (목표 '+pG+'g)'
+        +(pAv<pG*0.85?' — <span style="color:var(--red)">감량 중 이 수치면 줄어드는 무게의 상당 부분이 근육입니다. 볼륨보다 단백질이 먼저입니다.</span>':' — 근보존 방어선은 지키고 있습니다.'):'';
+      h.push(head
+        +(cutS.on?'<div style="background:#eef4ff;border-radius:8px;padding:8px 11px;margin-bottom:9px;font-size:12.5px;line-height:1.75">🔻 <b>감량 모드</b>('+cutS.why+') — 아래 볼륨·근력 정체는 <b>정상</b>으로 판정합니다.</div>':'')
+        +'<table style="width:100%;font-size:12.5px"><thead><tr class="sub">'
+        +'<th style="text-align:left">적자 구간</th><th style="text-align:right">일수</th><th style="text-align:right">평균 공부</th><th style="text-align:right">평균 볼륨</th><th style="text-align:right">컨디션</th>'
+        +'</tr></thead><tbody>'+rows+'</tbody></table>'
+        +'<div style="background:#f4f7fd;border-radius:8px;padding:9px 12px;margin-top:10px;font-size:12.5px;line-height:1.85">'
+        +verdict+volLine+protLine
+        +'<br><span class="sub">유지 칼로리 '+t.v+'kcal ('+t.src+') 기준. 적자는 섭취 기록이 있는 날만 계산합니다.</span></div></div>');
+    })();
+
     $('#gDeep').innerHTML=h.join('');
     renderCoach();
   }
