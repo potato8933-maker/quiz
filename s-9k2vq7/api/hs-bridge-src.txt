@@ -120,20 +120,34 @@ function collectFromDrive_() {
   var folders = findFolders_();
   if (!folders.length) return {};
   var minDate = ymd_(new Date(Date.now() - DAYS_BACK * 86400000));
-  var out = {};
+  var acc = {};   // 날짜 → {stSum, acSum, slSum, bwFirst, ...}
   folders.forEach(function (folder) {
     listCsv_(folder).forEach(function (f) {
-      try { parseCsv_(folder.getName() + '/' + f.getName(), f.getBlob().getDataAsString('UTF-8'), minDate, out); }
+      try { parseCsv_(folder.getName() + '/' + f.getName(), f.getBlob().getDataAsString('UTF-8'), minDate, acc); }
       catch (e) { Logger.log('파싱 실패 ' + f.getName() + ': ' + e); }
     });
+  });
+  // 누적값 → 최종 레코드
+  var out = {};
+  Object.keys(acc).forEach(function (d) {
+    var a = acc[d], o = { d: d, src: 'HealthSync' };
+    if (a.stSum != null && a.stSum > 0 && a.stSum < 100000) o.st = Math.round(a.stSum);
+    if (a.acSum != null && a.acSum > 0 && a.acSum < 10000) o.ac = Math.round(a.acSum);
+    if (a.slSum != null && a.slSum > 0 && a.slSum <= 24) o.sl = round1_(a.slSum);
+    if (a.bwFirst != null) o.bw = round1_(a.bwFirst);
+    if (o.st != null || o.ac != null || o.sl != null || o.bw != null) out[d] = o;
   });
   return out;
 }
 
-function parseCsv_(fname, text, minDate, out) {
+function parseCsv_(fname, text, minDate, acc) {
   var rows = Utilities.parseCsv(text);
   if (!rows || rows.length < 2) return;
-  // 헤더 행 탐색 (앞 5줄 중 날짜 컬럼이 있는 줄)
+  var fn = String(fname).toLowerCase();
+  // 주간·월간 요약 파일은 합계값이라 일별로 쓰면 오염된다 — 건너뛴다 (30일 롤링은 일별이라 허용)
+  if (/week|month|주간|월간|weekly|monthly/.test(fn) && !/30|rolling|롤링/.test(fn)) return;
+
+  // 헤더 행 탐색
   var hi = -1;
   for (var i = 0; i < Math.min(5, rows.length); i++) {
     if (rows[i].some(function (c) { return /date|day|time|날짜|일자|시작/i.test(String(c)); })) { hi = i; break; }
@@ -142,47 +156,56 @@ function parseCsv_(fname, text, minDate, out) {
   var head = rows[hi].map(function (c) { return String(c).trim().toLowerCase(); });
   var idx = function (re) { for (var j = 0; j < head.length; j++) if (re.test(head[j])) return j; return -1; };
 
-  var iDate = idx(/^(date|day|날짜|일자)$/) ;
+  var iDate  = idx(/^(date|day|날짜|일자)$/);
   if (iDate < 0) iDate = idx(/date|날짜|일자|start|시작/);
-  var iSleep = idx(/sleep.*(dur|hour|min|time)|(dur|hour|min).*sleep|수면.*(시간|분)|총수면|asleep/);
-  if (iSleep < 0) iSleep = idx(/sleep|수면/);
-  var iStep  = idx(/step|걸음/);
-  var iAct   = idx(/active.*(cal|kcal|energy)|활동.*칼로리|calorie|kcal/);
-  var iW     = idx(/weight|무게|체중|kg/);
-  var fn = String(fname).toLowerCase();
-  // Health Sync 파일명 규칙: "걸음 2026.09.05 Health Connect.csv" — 날짜가 파일 이름에 있다
+  var iStep  = idx(/^(걸음|steps?)$/); if (iStep < 0) iStep = idx(/step|걸음/);
+  var iSleep = idx(/sleep.*(dur|hour|min|time)|(dur|hour|min).*sleep|수면.*(시간|분)|총수면|asleep|^수면$/);
+  if (iSleep < 0 && /수면|sleep/.test(fn)) iSleep = idx(/수면|sleep|기간|duration/);
+  var iAct   = idx(/active.*(cal|kcal|energy)|활동.*칼로리|^칼로리$|kcal/);
+  var iW     = idx(/^(무게|체중|weight)$/); if (iW < 0) iW = idx(/무게|체중|weight|\bkg\b/);
+
+  // 파일명 규칙: "걸음 2026.09.05 Health Connect.csv" — 날짜가 파일 이름에 있다
   var fnDate = null;
   var fm = String(fname).match(/(20\d{2})[.\-\/](\d{1,2})[.\-\/](\d{1,2})/);
   if (fm) fnDate = fm[1] + '-' + p2_(fm[2]) + '-' + p2_(fm[3]);
-  // 주간·월간 요약 파일은 합계값이라 일별로 쓰면 오염된다 — 건너뛴다
-  if (/week|month|주간|월간|weekly|monthly/.test(fn) && !/30|rolling|롤링/.test(fn)) return;
-  // 폴더 이름이 유형 힌트: "Health Sync 수면" 안의 숫자열은 수면으로 본다
-  var hintSleep = /수면|sleep/.test(fn), hintStep = /걸음|step/.test(fn), hintW = /무게|체중|weight/.test(fn);
 
+  // ① 이 파일의 (날짜 → 값 배열) 을 먼저 모은다
+  var byDate = {};
   for (var r = hi + 1; r < rows.length; r++) {
     var row = rows[r]; if (!row || !row.length) continue;
     var d = iDate >= 0 ? normDate_(row[iDate]) : null;
-    if (!d) { // 날짜 컬럼을 못 찾으면 어느 칸이든 날짜처럼 생긴 값을 쓴다
-      for (var j = 0; j < row.length && !d; j++) d = normDate_(row[j]);
-    }
-    if (!d) d = fnDate;          // 그래도 없으면 파일 이름의 날짜
+    if (!d) { for (var j = 0; j < row.length && !d; j++) d = normDate_(row[j]); }
+    if (!d) d = fnDate;
     if (!d || d < minDate) continue;
-    var o = out[d] || (out[d] = { d: d });
-    if (iSleep >= 0) { var h = toHours_(row[iSleep]); if (h !== null && h > 0 && h < 24) o.sl = round1_(h); }
-    else if (hintSleep) {
-      for (var j2 = 0; j2 < row.length; j2++) { var h2 = toHours_(row[j2]); if (h2 !== null && h2 > 1 && h2 < 16) { o.sl = round1_(h2); break; } }
-    }
-    if (iStep >= 0) { var st = toNum_(row[iStep]); if (st !== null && st >= 0 && st < 100000) o.st = Math.round(st); }
-    else if (hintStep) {
-      for (var j3 = 0; j3 < row.length; j3++) { var s3 = toNum_(row[j3]); if (s3 !== null && s3 >= 100 && s3 < 100000) { o.st = Math.round(s3); break; } }
-    }
-    if (iAct >= 0)  { var ac = toNum_(row[iAct]);  if (ac !== null && ac > 0 && ac < 10000) o.ac = Math.round(ac); }
-    if (iW >= 0)    { var wv = toNum_(row[iW]);    if (wv !== null && wv > 30 && wv < 250) o.bw = round1_(wv); }
-    else if (hintW) {
-      for (var j4 = 0; j4 < row.length; j4++) { var w4 = toNum_(row[j4]); if (w4 !== null && w4 > 30 && w4 < 250) { o.bw = round1_(w4); break; } }
-    }
-    o.src = 'HealthSync';
+    var b = byDate[d] || (byDate[d] = { st: [], ac: [], sl: [], bw: [] });
+    if (iStep  >= 0) { var v1 = toNum_(row[iStep]);  if (v1 !== null && v1 >= 0) b.st.push(v1); }
+    if (iAct   >= 0) { var v2 = toNum_(row[iAct]);   if (v2 !== null && v2 >= 0) b.ac.push(v2); }
+    if (iSleep >= 0) { var v3 = toHours_(row[iSleep]); if (v3 !== null && v3 > 0 && v3 <= 24) b.sl.push(v3); }
+    if (iW     >= 0) { var v4 = toNum_(row[iW]);     if (v4 !== null && v4 > 30 && v4 < 250) b.bw.push(v4); }
   }
+
+  // ② 날짜별로 합산 규칙을 적용해 누적 버퍼에 넣는다
+  Object.keys(byDate).forEach(function (d) {
+    var b = byDate[d], a = acc[d] || (acc[d] = {});
+    if (b.st.length) { var st = aggCount_(b.st); a.stSum = (a.stSum || 0) + st; }
+    if (b.ac.length) { var ac = aggCount_(b.ac); a.acSum = (a.acSum || 0) + ac; }
+    if (b.sl.length) {
+      // 수면은 구간 길이의 합. 단, 이미 하루 총합 한 줄이면 그 값이 곧 합계.
+      var slSum = b.sl.reduce(function (x, y) { return x + y; }, 0);
+      if (slSum > 24) slSum = Math.max.apply(null, b.sl);
+      a.slSum = Math.max(a.slSum || 0, slSum);
+    }
+    if (b.bw.length && a.bwFirst == null) a.bwFirst = b.bw[0];  // 그날 첫 측정 = 공복 체중
+  });
+}
+
+/** 걸음·활동칼로리 합산 — 누적치(단조증가)면 최댓값, 구간별 증분이면 합계 */
+function aggCount_(arr) {
+  var mono = true;
+  for (var i = 1; i < arr.length; i++) if (arr[i] < arr[i - 1]) { mono = false; break; }
+  var mx = Math.max.apply(null, arr);
+  if (mono && arr.length >= 5 && mx > 500) return mx;   // 누적 카운터로 판단
+  return arr.reduce(function (x, y) { return x + y; }, 0);
 }
 
 function normDate_(v) {
