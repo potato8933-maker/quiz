@@ -1,6 +1,6 @@
 {
  "schema": "sejik-study-health-bridge/1",
- "generated_at": "2026-09-05T16:31:14.702+09:00",
+ "generated_at": "2026-09-05T16:55:15.886+09:00",
  "timezone": "Asia/Seoul",
  "note": "변시 학습 대시보드의 읽기 전용 스냅샷. 본인이 deploy_now.bat 을 실행할 때 갱신됨. 의료 일정 제목은 의도적으로 가려져 있음.",
  "exam": {
@@ -971,7 +971,16 @@
   }
  },
  "health": {
-  "daily_90d": [],
+  "daily_90d": [
+   {
+    "date": "2026-09-05",
+    "weight_kg": 97.1,
+    "protein_g": null,
+    "kcal": null,
+    "condition": null,
+    "memo": null
+   }
+  ],
   "targets": {
    "weight_goal_kg": 92,
    "weight_goal_date": "2026-11-30",
@@ -981,10 +990,10 @@
    "kcal_goal": 1800
   },
   "current": {
-   "weight_kg": null,
-   "weight_date": null,
+   "weight_kg": 97.1,
+   "weight_date": "2026-09-05",
    "weight_slope_kg_per_week": null,
-   "required_slope_kg_per_week": null,
+   "required_slope_kg_per_week": 0.4,
    "recent_mean_kcal": null,
    "tdee_estimate": null,
    "cut_mode": false,
@@ -992,7 +1001,7 @@
   },
   "menu_library": [],
   "records_count": {
-   "entries": 0,
+   "entries": 1,
    "sleep": 0
   }
  },
