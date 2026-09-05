@@ -1,6 +1,6 @@
 {
  "schema": "sejik-study-health-bridge/1",
- "generated_at": "2026-09-05T16:55:15.886+09:00",
+ "generated_at": "2026-09-05T19:55:43.751+09:00",
  "timezone": "Asia/Seoul",
  "note": "변시 학습 대시보드의 읽기 전용 스냅샷. 본인이 deploy_now.bat 을 실행할 때 갱신됨. 의료 일정 제목은 의도적으로 가려져 있음.",
  "exam": {
@@ -973,12 +973,28 @@
  "health": {
   "daily_90d": [
    {
+    "date": "2026-09-04",
+    "weight_kg": null,
+    "protein_g": null,
+    "kcal": null,
+    "condition": null,
+    "memo": null,
+    "sleep_h": null,
+    "steps": 7420,
+    "active_kcal": null,
+    "sleep_source": "HealthSync"
+   },
+   {
     "date": "2026-09-05",
     "weight_kg": 97.1,
     "protein_g": null,
     "kcal": null,
     "condition": null,
-    "memo": null
+    "memo": null,
+    "sleep_h": null,
+    "steps": 5337,
+    "active_kcal": null,
+    "sleep_source": "HealthSync"
    }
   ],
   "targets": {
@@ -1002,7 +1018,7 @@
   "menu_library": [],
   "records_count": {
    "entries": 1,
-   "sleep": 0
+   "sleep": 2
   }
  },
  "exams_history": [
