@@ -150,6 +150,10 @@ function parseCsv_(fname, text, minDate, out) {
   var iAct   = idx(/active.*(cal|kcal|energy)|활동.*칼로리|calorie|kcal/);
   var iW     = idx(/weight|무게|체중|kg/);
   var fn = String(fname).toLowerCase();
+  // Health Sync 파일명 규칙: "걸음 2026.09.05 Health Connect.csv" — 날짜가 파일 이름에 있다
+  var fnDate = null;
+  var fm = String(fname).match(/(20\d{2})[.\-\/](\d{1,2})[.\-\/](\d{1,2})/);
+  if (fm) fnDate = fm[1] + '-' + p2_(fm[2]) + '-' + p2_(fm[3]);
   // 주간·월간 요약 파일은 합계값이라 일별로 쓰면 오염된다 — 건너뛴다
   if (/week|month|주간|월간|weekly|monthly/.test(fn) && !/30|rolling|롤링/.test(fn)) return;
   // 폴더 이름이 유형 힌트: "Health Sync 수면" 안의 숫자열은 수면으로 본다
@@ -161,6 +165,7 @@ function parseCsv_(fname, text, minDate, out) {
     if (!d) { // 날짜 컬럼을 못 찾으면 어느 칸이든 날짜처럼 생긴 값을 쓴다
       for (var j = 0; j < row.length && !d; j++) d = normDate_(row[j]);
     }
+    if (!d) d = fnDate;          // 그래도 없으면 파일 이름의 날짜
     if (!d || d < minDate) continue;
     var o = out[d] || (out[d] = { d: d });
     if (iSleep >= 0) { var h = toHours_(row[iSleep]); if (h !== null && h > 0 && h < 24) o.sl = round1_(h); }
