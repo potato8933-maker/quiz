@@ -540,10 +540,22 @@ function htGet(d){try{return JSON.parse(localStorage.getItem('ht|'+d)||'null');}
 function htSave(v){v.u=Date.now();localStorage.setItem('ht|'+v.d,JSON.stringify(v));if(window.syncPush)syncPush();}
 const htNum=x=>(typeof x==='number'&&isFinite(x))?x:null;
 
+/* 일자 → 통합 레코드 (ht| + hs| 병합). 체중은 손입력이 없으면 Health Sync 값을 쓴다 */
+function htMerged(){
+  const m={};
+  htAll().forEach(v=>{m[v.d]=Object.assign({},v);});
+  hsAll().forEach(v=>{
+    const o=m[v.d]||(m[v.d]={d:v.d});
+    o.sl=htNum(v.sl); o.st=htNum(v.st); o.ac=htNum(v.ac);
+    if(htNum(o.w)===null&&htNum(v.bw)!==null){o.w=htNum(v.bw); o.wAuto=true;}
+  });
+  return Object.values(m).sort((a,b)=>a.d<b.d?-1:1);
+}
+
 /* 체중 추세 — 최소제곱 기울기 (kg/주). 표본 4일 미만이면 null */
 function htSlope(days){
   const cut=isoAdd(isoLocal(new Date()),-(days||21));
-  const s=htAll().filter(x=>htNum(x.w)!==null&&x.d>=cut);
+  const s=htMerged().filter(x=>htNum(x.w)!==null&&x.d>=cut);
   if(s.length<4)return null;
   const t0=new Date(s[0].d+'T00:00:00').getTime();
   const xs=s.map(x=>(new Date(x.d+'T00:00:00').getTime()-t0)/86400000),ys=s.map(x=>x.w);
@@ -555,8 +567,9 @@ function htSlope(days){
 /* 유지 칼로리(TDEE) — 신장·나이 없이 체중변화(7700kcal/kg)로 역산해 자기보정 */
 function htTdee(){
   const cut=isoAdd(isoLocal(new Date()),-28);
-  const rc=htAll().filter(x=>htNum(x.c)&&x.d>=cut);
-  const wc=htAll().filter(x=>htNum(x.w)&&x.d>=cut);
+  const M=htMerged();
+  const rc=M.filter(x=>htNum(x.c)&&x.d>=cut);
+  const wc=M.filter(x=>htNum(x.w)&&x.d>=cut);
   if(rc.length>=10&&wc.length>=6){
     const days=(new Date(wc[wc.length-1].d)-new Date(wc[0].d))/86400000;
     if(days>=10){
@@ -574,7 +587,7 @@ function htTdee(){
 function htCut(){
   const sl=htSlope(21);
   if(sl!==null&&sl<=-0.2)return {on:true,slope:sl,why:'최근 3주 체중 '+sl.toFixed(2)+'kg/주 감소'};
-  const t=htTdee(),r=htAll().filter(x=>htNum(x.c)).slice(-10);
+  const t=htTdee(),r=htMerged().filter(x=>htNum(x.c)).slice(-10);
   if(t&&r.length>=7){
     const m=r.reduce((a,b)=>a+b.c,0)/r.length;
     if(m<=t.v-300)return {on:true,slope:sl,why:'최근 섭취 평균 '+Math.round(m)+'kcal (유지 '+t.v+'kcal 대비 -'+Math.round(t.v-m)+')'};
@@ -588,13 +601,6 @@ function htCutBanner(){
   return '<div style="background:#eef4ff;border:1px solid #c7d7fb;border-left:4px solid #2563eb;border-radius:8px;padding:9px 12px;margin-bottom:11px;font-size:12.5px;line-height:1.8">'
     +'🔻 <b>감량 모드</b> — '+c.why+'.<br>감량기에는 <b>근력 유지가 곧 성공</b>입니다. TM 정체 · 마지막 세트 rep 1~2회 하락 · 주간 볼륨 소폭 감소는 <b>정상 범위</b>이며 프로그램 실패가 아닙니다. '
     +'이 구간의 성공 지표는 e1RM 상승이 아니라 <b>제지방 보존</b>(단백질 '+htCfg().pGoal+'g/일 + 주 1~2회 자극 유지)입니다.</div>';
-}
-/* 일자 → 통합 레코드 (ht| + hs| 병합) */
-function htMerged(){
-  const m={};
-  htAll().forEach(v=>{m[v.d]=Object.assign({},v);});
-  hsAll().forEach(v=>{m[v.d]=Object.assign({},m[v.d]||{d:v.d},{sl:htNum(v.sl),st:htNum(v.st),ac:htNum(v.ac)});});
-  return Object.values(m).sort((a,b)=>a.d<b.d?-1:1);
 }
 window.htCfg=htCfg;window.htAll=htAll;window.hsAll=hsAll;window.htMerged=htMerged;
 window.htSlope=htSlope;window.htTdee=htTdee;window.htCut=htCut;window.htCutBanner=htCutBanner;
@@ -1497,7 +1503,8 @@ INIT.tabDiet=function(){
 
   /* ── 표 ── */
   function renderTable(){
-    const rows=[];for(let i=0;i<21;i++){const d=isoAdd(T(),-i);const r=htGet(d)||{};let h={};
+    const MG={};htMerged().forEach(x=>{MG[x.d]=x;});
+    const rows=[];for(let i=0;i<21;i++){const d=isoAdd(T(),-i);const r=MG[d]||htGet(d)||{};let h={};
       try{h=JSON.parse(localStorage.getItem('hs|'+d)||'{}');}catch(e){}
       if(htNum(r.w)!=null||htNum(r.p)!=null||htNum(r.c)!=null||r.m||htNum(h.sl)!=null)rows.push({d:d,r:r,h:h});}
     const tb=$('#tblDt').querySelector('tbody');
@@ -1505,7 +1512,7 @@ INIT.tabDiet=function(){
     const CD=['','😵','🙁','😐','🙂','😃'];
     tb.innerHTML=rows.map(x=>'<tr data-d="'+x.d+'" style="cursor:pointer">'
       +'<td>'+x.d.slice(5).replace('-','/')+'</td>'
-      +'<td style="text-align:right">'+(htNum(x.r.w)!=null?x.r.w+'':'–')+'</td>'
+      +'<td style="text-align:right"'+(x.r.wAuto?' title="Health Sync 자동"':'')+'>'+(htNum(x.r.w)!=null?x.r.w+(x.r.wAuto?'<span class="sub" style="font-size:9.5px"> 자동</span>':''):'–')+'</td>'
       +'<td style="text-align:right;font-weight:700;color:'+(htNum(x.r.p)!=null&&x.r.p>=cfgD().pGoal?'#16a34a':'inherit')+'">'+(htNum(x.r.p)!=null?x.r.p+'g':'–')+'</td>'
       +'<td style="text-align:right">'+(htNum(x.r.c)!=null?Number(x.r.c).toLocaleString():'–')+'</td>'
       +'<td style="text-align:right">'+(htNum(x.h.sl)!=null?x.h.sl+'h':'–')+'</td>'
