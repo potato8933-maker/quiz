@@ -1,30 +1,24 @@
 {
  "schema": "sejik-study-health-bridge/1",
- "generated_at": "2026-09-06T03:54:52.071+09:00",
+ "generated_at": "2026-09-09T19:24:30.634+09:00",
  "timezone": "Asia/Seoul",
  "note": "변시 학습 대시보드의 읽기 전용 스냅샷. 본인이 deploy_now.bat 을 실행할 때 갱신됨. 의료 일정 제목은 의도적으로 가려져 있음.",
  "exam": {
   "name": "제16회 변호사시험",
   "date": "2027-01-12",
-  "dday": 128
+  "dday": 125
  },
  "schedule": {
   "current_phase": [
-   {
-    "start": "2026-09-06",
-    "end": "2026-09-06",
-    "title": "[6h] ★★마커③ 오늘 확정 — 원안 9/11 대비 5일 조기. 형사 최판 잔여 2강(≈2h)이면 13강 전량 종결. ★남는 4h는 전부 객관식(902~ 채각, ≈280지문 목표). 근거: ①9/4·9/5 연속 0으로 구간 목표 630지문이 2일치 적자 ②워터파크 3일 오프가 내일부터라 새 과목 착수는 감쇠로 전액 손실 — 객관식은 오프에 감쇠가 가장 적",
-    "group": "PhaseA 최판+선행회독"
-   }
-  ],
-  "final_start": "2026-11-10",
-  "upcoming": [
    {
     "start": "2026-09-07",
     "end": "2026-09-09",
     "title": "★★여자친구 2주년 — 워터파크 2박3일 완전 오프 (본인 확정 8/26). 컷 금지. 8/31 오프를 여기로 이동한 것이며, 민사 블록 3일 조기 종료(8/29)가 재원",
     "group": "휴식"
-   },
+   }
+  ],
+  "final_start": "2026-11-10",
+  "upcoming": [
    {
     "start": "2026-09-10",
     "end": "2026-09-11",
@@ -66,13 +60,19 @@
     "end": "2026-09-27",
     "title": "휴식 (주1회)",
     "group": "휴식"
+   },
+   {
+    "start": "2026-10-04",
+    "end": "2026-10-04",
+    "title": "휴식 (주1회)",
+    "group": "휴식"
    }
   ],
   "calendar_events": [
    {
     "start": "2026-09-07",
     "end": "2026-09-09",
-    "title": "⚠ 2주년 여행·워터파크 (완전 오프)"
+    "title": "⚠ 2주년 여행·워터파크 (완전 오프) — 오늘 최종일"
    },
    {
     "start": "2026-09-23",
@@ -82,12 +82,12 @@
    {
     "start": "2026-10-07",
     "end": "2026-10-07",
-    "title": "⚠ 변시 원서 접수 08:00~09:00"
+    "title": "💳 변시 원서 접수 08:00~09:00 (기한 엄수)"
    },
    {
     "start": "2026-10-16",
     "end": "2026-10-20",
-    "title": "⚠ 10월 모의고사 (5일간)"
+    "title": "⚠ 10월 모의고사 (5일간) — 졸업시험"
    },
    {
     "start": "2027-01-12",
@@ -98,28 +98,6 @@
  },
  "study": {
   "daily_30d": [
-   {
-    "date": "2026-08-07",
-    "minutes": 96,
-    "hours": 1.6,
-    "subjects": [
-     {
-      "subject": "형법 복습",
-      "minutes": 96
-     }
-    ]
-   },
-   {
-    "date": "2026-08-09",
-    "minutes": 48,
-    "hours": 0.8,
-    "subjects": [
-     {
-      "subject": "형법 복습",
-      "minutes": 48
-     }
-    ]
-   },
    {
     "date": "2026-08-10",
     "minutes": 313,
@@ -422,18 +400,40 @@
    },
    {
     "date": "2026-09-05",
-    "minutes": 333,
-    "hours": 5.6,
+    "minutes": 441,
+    "hours": 7.4,
     "subjects": [
      {
       "subject": "형법 복습",
-      "minutes": 333
+      "minutes": 441
+     }
+    ]
+   },
+   {
+    "date": "2026-09-06",
+    "minutes": 372,
+    "hours": 6.2,
+    "subjects": [
+     {
+      "subject": "형법 복습",
+      "minutes": 258
+     }
+    ]
+   },
+   {
+    "date": "2026-09-09",
+    "minutes": 6,
+    "hours": 0.1,
+    "subjects": [
+     {
+      "subject": "헌법",
+      "minutes": 6
      }
     ]
    }
   ],
-  "avg_7d_minutes": 403,
-  "avg_30d_minutes": 300,
+  "avg_7d_minutes": 423,
+  "avg_30d_minutes": 324,
   "best_day": {
    "date": "2026-07-17",
    "minutes": 550,
@@ -992,12 +992,36 @@
     "kcal": 2135,
     "condition": null,
     "memo": "점심: 교촌 허니콤보 1/3, 저녁: 굽네 고추바사삭 순살+갈비천왕 순살 4인 나눔 [매크로] 지방98g 탄수148g 당43g 나트륨4550mg 포화지방28g"
+   },
+   {
+    "date": "2026-09-07",
+    "weight_kg": null,
+    "protein_g": 95,
+    "kcal": 2100,
+    "condition": null,
+    "memo": "여자친구 2주년 워터파크 1일차: 점심 우화 소고기무한리필 350g+매운우동+초콜릿아이스크림, 저녁 기념 케이크+와인 2잔"
+   },
+   {
+    "date": "2026-09-08",
+    "weight_kg": null,
+    "protein_g": 74,
+    "kcal": 1630,
+    "condition": null,
+    "memo": "워터파크 2일차: 점심 찜닭 반인분, 저녁 쿠락(감자녹말탕수육 감동, 짬뽕+짜장 나눔, 마운자로 여파로 절반씩 남김)+공차 초콜릿쿠키앤크림스무디M. 활동 2741kcal/9259보, 당류 75g(공차 대부분)"
+   },
+   {
+    "date": "2026-09-09",
+    "weight_kg": null,
+    "protein_g": 112,
+    "kcal": 2190,
+    "condition": null,
+    "memo": "워터파크 3일차 마지막날: 점심 클럽샌드위치2종+딸기라떼, 저녁 한솥 빅치킨마요(밥150g으로 감축+계란+치킨슬+스팸 옵션)+컴포즈 바닐라크림라떼. 당류 67g. 3일평균 단백질 94g으로 여행중 관리 성공"
    }
   ],
   "targets": {
    "weight_goal_kg": 92,
    "weight_goal_date": "2026-11-30",
-   "days_to_goal": 85,
+   "days_to_goal": 82,
    "maintenance_switch_date": "2026-12-15",
    "protein_goal_g": 150,
    "kcal_goal": 1800
@@ -1007,7 +1031,7 @@
    "weight_date": "2026-09-06",
    "weight_slope_kg_per_week": null,
    "required_slope_kg_per_week": 0.4,
-   "recent_mean_kcal": 2135,
+   "recent_mean_kcal": 2014,
    "tdee_estimate": null,
    "cut_mode": false,
    "cut_mode_meaning": "감량 모드에서는 근력 정체·볼륨 소폭 감소가 정상이며 프로그램 실패가 아님. 판정 지표는 e1RM이 아니라 제지방 보존(단백질 목표 달성률)."
@@ -1036,10 +1060,76 @@
     "protein_g": 95,
     "kcal": 1690,
     "used": 1
+   },
+   {
+    "name": "저녁 기념 케이크+와인 2잔",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "워터파크 2일차: 점심 찜닭 반인분",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "저녁 쿠락(감자녹말탕수육 감동",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "짬뽕+짜장 나눔",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "9259보",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "당류 75g(공차 대부분)",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "한솥 빅치킨마요(밥150g)",
+    "protein_g": 25,
+    "kcal": 570,
+    "used": 1
+   },
+   {
+    "name": "한솥 빅치킨마요 풀옵션(계란+치킨슬+스팸)",
+    "protein_g": 44,
+    "kcal": 820,
+    "used": 1
+   },
+   {
+    "name": "컴포즈 바닐라크림라떼",
+    "protein_g": 5,
+    "kcal": 200,
+    "used": 1
+   },
+   {
+    "name": "공차 초콜릿쿠키앤크림스무디 M",
+    "protein_g": 6,
+    "kcal": 400,
+    "used": 1
+   },
+   {
+    "name": "우화 무한리필 소고기 1인분(350g)",
+    "protein_g": 77,
+    "kcal": 910,
+    "used": 1
    }
   ],
   "records_count": {
-   "entries": 2,
+   "entries": 5,
    "sleep": 2
   }
  },
