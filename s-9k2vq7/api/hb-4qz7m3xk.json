@@ -1,12 +1,12 @@
 {
  "schema": "sejik-study-health-bridge/1",
- "generated_at": "2026-09-11T00:13:55.506+09:00",
+ "generated_at": "2026-09-11T14:11:17.435+09:00",
  "timezone": "Asia/Seoul",
  "note": "변시 학습 대시보드의 읽기 전용 스냅샷. 본인이 deploy_now.bat 을 실행할 때 갱신됨. 의료 일정 제목은 의도적으로 가려져 있음.",
  "exam": {
   "name": "제16회 변호사시험",
   "date": "2027-01-12",
-  "dday": 124
+  "dday": 123
  },
  "schedule": {
   "current_phase": [
@@ -69,11 +69,6 @@
    }
   ],
   "calendar_events": [
-   {
-    "start": "2026-09-07",
-    "end": "2026-09-09",
-    "title": "⚠ 2주년 여행·워터파크 (완전 오프) — 오늘 최종일"
-   },
    {
     "start": "2026-09-23",
     "end": "2026-09-23",
@@ -990,6 +985,14 @@
     "kcal": 2190,
     "condition": null,
     "memo": "워터파크 3일차 마지막날: 점심 클럽샌드위치2종+딸기라떼, 저녁 한솥 빅치킨마요(밥150g으로 감축+계란+치킨슬+스팸 옵션)+컴포즈 바닐라크림라떼. 당류 67g. 3일평균 단백질 94g으로 여행중 관리 성공"
+   },
+   {
+    "date": "2026-09-10",
+    "weight_kg": null,
+    "protein_g": 105,
+    "kcal": 2180,
+    "condition": null,
+    "memo": "맥시카나 반반 1/4, 대명한우갈비살 한우구이 약 400g + 밥 반공기, 앨리스 애플망고빙수 1/4"
    }
   ],
   "targets": {
@@ -1005,7 +1008,7 @@
    "weight_date": "2026-09-06",
    "weight_slope_kg_per_week": null,
    "required_slope_kg_per_week": 0.4,
-   "recent_mean_kcal": 2014,
+   "recent_mean_kcal": 2047,
    "tdee_estimate": null,
    "cut_mode": false,
    "cut_mode_meaning": "감량 모드에서는 근력 정체·볼륨 소폭 감소가 정상이며 프로그램 실패가 아님. 판정 지표는 e1RM이 아니라 제지방 보존(단백질 목표 달성률)."
@@ -1100,10 +1103,40 @@
     "protein_g": 77,
     "kcal": 910,
     "used": 1
+   },
+   {
+    "name": "맥시카나 반반 1",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "앨리스 애플망고빙수 1",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "한우 구이용 100g",
+    "protein_g": 18,
+    "kcal": 280,
+    "used": 1
+   },
+   {
+    "name": "맥시카나 반반 1/4마리",
+    "protein_g": 25,
+    "kcal": 520,
+    "used": 1
+   },
+   {
+    "name": "애플망고 빙수 1/4인분",
+    "protein_g": 5,
+    "kcal": 290,
+    "used": 1
    }
   ],
   "records_count": {
-   "entries": 5,
+   "entries": 6,
    "sleep": 2
   }
  },
