@@ -1,6 +1,6 @@
 {
  "schema": "sejik-study-health-bridge/1",
- "generated_at": "2026-09-11T14:11:17.435+09:00",
+ "generated_at": "2026-09-11T20:07:42.266+09:00",
  "timezone": "Asia/Seoul",
  "note": "변시 학습 대시보드의 읽기 전용 스냅샷. 본인이 deploy_now.bat 을 실행할 때 갱신됨. 의료 일정 제목은 의도적으로 가려져 있음.",
  "exam": {
