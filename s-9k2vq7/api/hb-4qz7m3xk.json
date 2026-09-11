@@ -1,6 +1,6 @@
 {
  "schema": "sejik-study-health-bridge/1",
- "generated_at": "2026-09-11T23:15:02.091+09:00",
+ "generated_at": "2026-09-11T23:40:43.693+09:00",
  "timezone": "Asia/Seoul",
  "note": "변시 학습 대시보드의 읽기 전용 스냅샷. 본인이 deploy_now.bat 을 실행할 때 갱신됨. 의료 일정 제목은 의도적으로 가려져 있음.",
  "exam": {
@@ -421,12 +421,12 @@
    },
    {
     "date": "2026-09-11",
-    "minutes": 430,
-    "hours": 7.2,
+    "minutes": 456,
+    "hours": 7.6,
     "subjects": [
      {
       "subject": "헌법",
-      "minutes": 430
+      "minutes": 456
      }
     ]
    }
