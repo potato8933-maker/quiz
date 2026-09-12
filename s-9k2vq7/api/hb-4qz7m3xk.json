@@ -1,24 +1,15 @@
 {
  "schema": "sejik-study-health-bridge/1",
- "generated_at": "2026-09-11T23:40:43.693+09:00",
+ "generated_at": "2026-09-13T02:03:23.393+09:00",
  "timezone": "Asia/Seoul",
  "note": "변시 학습 대시보드의 읽기 전용 스냅샷. 본인이 deploy_now.bat 을 실행할 때 갱신됨. 의료 일정 제목은 의도적으로 가려져 있음.",
  "exam": {
   "name": "제16회 변호사시험",
   "date": "2027-01-12",
-  "dday": 123
+  "dday": 121
  },
  "schedule": {
   "current_phase": [
-   {
-    "start": "2026-09-10",
-    "end": "2026-09-11",
-    "title": "[7h] ★★용도 교체 — 형사 최판 잔여분(구 마커③) → 공법 선행회독 2일(14h). 9/6에 형사 최판이 종결되므로 이 구간이 통째로 회수됨. ★★이 배치가 9/12~15 병목의 구조적 해소다: 종전 '공법 4일'에 선행회독 14h가 포함인지 별도인지가 미확인 리스크(별도면 2일 부족)였는데, 선행회독을 앞으로 빼면서 9/12~15 4일을 최판 15",
-    "group": "PhaseA 최판+선행회독"
-   }
-  ],
-  "final_start": "2026-11-10",
-  "upcoming": [
    {
     "start": "2026-09-12",
     "end": "2026-09-15",
@@ -30,7 +21,10 @@
     "end": "2026-09-13",
     "title": "휴식 (주1회)",
     "group": "휴식"
-   },
+   }
+  ],
+  "final_start": "2026-11-10",
+  "upcoming": [
    {
     "start": "2026-09-16",
     "end": "2026-09-23",
@@ -66,6 +60,18 @@
     "end": "2026-10-14",
     "title": "이정엽 상법 진모 6회차 / 6일(본인 지정 — 어음·수표 때문에 압축 불가). 10/8~10/14 중 10/11 휴식 제외 6 작업일. ★상법만 최판 투입 0(7/6 확정) → 진모가 유일 인풋. 상법 최판은 11월 이정엽 파이널에 포함",
     "group": "진모"
+   },
+   {
+    "start": "2026-10-11",
+    "end": "2026-10-11",
+    "title": "휴식 (주1회)",
+    "group": "휴식"
+   },
+   {
+    "start": "2026-10-15",
+    "end": "2026-10-15",
+    "title": "총복기 1일 (10모 전날만 확보 — 본인 방침 8/17, 기존 6일에서 5일 회수하여 상법 진모 3일·민소 진모 2일로 재배치)",
+    "group": "총복기"
    }
   ],
   "calendar_events": [
@@ -93,28 +99,6 @@
  },
  "study": {
   "daily_30d": [
-   {
-    "date": "2026-08-12",
-    "minutes": 4,
-    "hours": 0.1,
-    "subjects": [
-     {
-      "subject": "민법 복습",
-      "minutes": 4
-     }
-    ]
-   },
-   {
-    "date": "2026-08-13",
-    "minutes": 105,
-    "hours": 1.8,
-    "subjects": [
-     {
-      "subject": "민법 복습",
-      "minutes": 105
-     }
-    ]
-   },
    {
     "date": "2026-08-14",
     "minutes": 151,
@@ -421,18 +405,33 @@
    },
    {
     "date": "2026-09-11",
-    "minutes": 456,
+    "minutes": 457,
     "hours": 7.6,
     "subjects": [
      {
       "subject": "헌법",
-      "minutes": 456
+      "minutes": 457
+     }
+    ]
+   },
+   {
+    "date": "2026-09-12",
+    "minutes": 488,
+    "hours": 8.1,
+    "subjects": [
+     {
+      "subject": "헌법",
+      "minutes": 345
+     },
+     {
+      "subject": "행정법",
+      "minutes": 143
      }
     ]
    }
   ],
-  "avg_7d_minutes": 398,
-  "avg_30d_minutes": 330,
+  "avg_7d_minutes": 396,
+  "avg_30d_minutes": 362,
   "best_day": {
    "date": "2026-07-17",
    "minutes": 550,
@@ -1028,7 +1027,7 @@
   "targets": {
    "weight_goal_kg": 92,
    "weight_goal_date": "2026-11-30",
-   "days_to_goal": 80,
+   "days_to_goal": 78,
    "maintenance_switch_date": "2026-12-15",
    "protein_goal_g": 150,
    "kcal_goal": 1800
@@ -1037,7 +1036,7 @@
    "weight_kg": 97.1,
    "weight_date": "2026-09-06",
    "weight_slope_kg_per_week": null,
-   "required_slope_kg_per_week": 0.4,
+   "required_slope_kg_per_week": 0.5,
    "recent_mean_kcal": 2047,
    "tdee_estimate": null,
    "cut_mode": false,
