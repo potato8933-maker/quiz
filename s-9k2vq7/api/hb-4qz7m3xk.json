@@ -1,6 +1,6 @@
 {
  "schema": "sejik-study-health-bridge/1",
- "generated_at": "2026-09-15T01:28:15.503+09:00",
+ "generated_at": "2026-09-15T01:28:50.018+09:00",
  "timezone": "Asia/Seoul",
  "note": "변시 학습 대시보드의 읽기 전용 스냅샷. 본인이 deploy_now.bat 을 실행할 때 갱신됨. 의료 일정 제목은 의도적으로 가려져 있음.",
  "exam": {
@@ -394,8 +394,8 @@
    },
    {
     "date": "2026-09-12",
-    "minutes": 488,
-    "hours": 8.1,
+    "minutes": 490,
+    "hours": 8.2,
     "subjects": [
      {
       "subject": "헌법",
@@ -403,13 +403,43 @@
      },
      {
       "subject": "행정법",
-      "minutes": 143
+      "minutes": 145
+     }
+    ]
+   },
+   {
+    "date": "2026-09-13",
+    "minutes": 420,
+    "hours": 7,
+    "subjects": [
+     {
+      "subject": "행정법",
+      "minutes": 420
+     },
+     {
+      "subject": "헌법",
+      "minutes": 0
+     }
+    ]
+   },
+   {
+    "date": "2026-09-14",
+    "minutes": 358,
+    "hours": 6,
+    "subjects": [
+     {
+      "subject": "민법 복습",
+      "minutes": 207
+     },
+     {
+      "subject": "행정법",
+      "minutes": 151
      }
     ]
    }
   ],
-  "avg_7d_minutes": 396,
-  "avg_30d_minutes": 378,
+  "avg_7d_minutes": 386,
+  "avg_30d_minutes": 379,
   "best_day": {
    "date": "2026-07-17",
    "minutes": 550,
