@@ -1,402 +1,193 @@
 {
  "schema": "sejik-study-health-bridge/1",
- "generated_at": "2026-09-30T02:46:59.022+09:00",
+ "generated_at": "2026-10-30T01:19:36.104+09:00",
  "timezone": "Asia/Seoul",
  "note": "변시 학습 대시보드의 읽기 전용 스냅샷. 본인이 deploy_now.bat 을 실행할 때 갱신됨. 의료 일정 제목은 의도적으로 가려져 있음.",
  "exam": {
   "name": "제16회 변호사시험",
   "date": "2027-01-12",
-  "dday": 104
+  "dday": 74
  },
  "schedule": {
   "current_phase": [
    {
-    "start": "2026-09-21",
-    "end": "2026-10-15",
-    "title": "★★★확정(9/20 본인) — 10모 전 목표 = 객관식 공법 1회독 + 형사법 2회독 둘 다 종결.━━ 산수(9/22 실측 반영판) ━━ ★★계측 단위 교정: 정지문은 '쪽'이 아니라 '지문'으로 잰다. 지문 수 정본 = 행정 1,237 · 헌법 1,597(본인 실측). 쪽당 밀도 행정 4.95 vs 헌법 6.55(+32%) ⇒ 쪽 기준(244지문 기준으",
-    "group": "객관식"
+    "start": "2026-10-24",
+    "end": "2026-11-04",
+    "title": "★★파이널 1바퀴 · 공법 10일(10/24~11/4) — 10/24 본인 확정 구성: 행정 TRS(정지문 쟁점명→핵지총 재풀이) · 헌법 TRS C안 826(정지문→핵지총) · 금동흠 5개년 92선 · 류준세 5개년 행정 최판 OX · 공법 6·8·10모 세트 · 헌법 일반론 암기.· 류정모 공법 진모 = 드롭(10모 공법 사례 123.5로 상승·선택형 ",
+    "group": "파이널"
    },
    {
-    "start": "2026-09-30",
-    "end": "2026-10-02",
-    "title": "★★★민소 자습 — 3일로 축소(9/30~10/2). 진모 전면 드롭은 9/25 확정대로 유지하되, 상법이 9/29를 먹어 4일 → 3일이 됐습니다.★★배치 = 본인 지정 역순(9/30 확정) — 민법 진모 물권 선행(9/14)과 같은 패턴입니다.· 9/30(수) 민소 병합~끝까지 예습 + 사례집 풀이 + 행정법 OX ⚠멜라토닌 당근 직거래 외출로 가용시간",
-    "group": "진모"
+    "start": "2026-10-28",
+    "end": "2026-11-06",
+    "title": "🎧법전협 제3차 모의(10모) 공동강평 — Zoom 19:00~21:00(본인 10/27 선택 8개): 10/28(수) 공법 기록형 · 10/29(목) 형사 사례 1문 · 10/30(금) 형사 기록형 · 11/2(월) 민사 사례 1문 · 11/3(화) 민사 사례 2문 · 11/4(수) 민사 사례 3문 · 11/5(목) 민사 기록형 · 11/6(금) 형사 ",
+    "group": "강평"
    }
   ],
   "final_start": "2026-11-10",
   "upcoming": [
    {
-    "start": "2026-10-03",
-    "end": "2026-10-10",
-    "title": "★허정 형사 진모 12회차 / 7 작업일(10/3·5·6·7·8·9·10, 10/4 휴식) — 배분 2·2·1·2·2·2·1. 강의는 9/29까지 전량 공개(대기 0). 객관식 = 김기용 형사 OX 2회독(오답 표시분 ≈2,760문). 강평 2배속.",
-    "group": "진모"
-   },
-   {
-    "start": "2026-10-04",
-    "end": "2026-10-04",
-    "title": "휴식 (주1회) — 컷 금지",
-    "group": "휴식"
-   },
-   {
-    "start": "2026-10-11",
-    "end": "2026-10-15",
-    "title": "★★공법 객관식 5일 · 가용 31h(10/11 휴식 삭제 — 모의고사 직전 예외). ★용도 변경(9/20 본인): 종전 '정지문 잔여 + 핵지총 X제외분'에서 핵지총 1회독 전용으로. 정지문 1독은 9/21~9/28에 선행 종결하므로 이 5일은 핵지총(행정 1,200 + 헌법 1,500 = 2,700문)이 들어옵니다 — 정지문에서 친 X가 1:1로 이식되",
-    "group": "공법"
-   },
-   {
-    "start": "2026-10-16",
-    "end": "2026-10-20",
-    "title": "★ 10월 모의고사 (목표: 객 105) — 전 과목을 공부한 상태로 응시 = 파이널 1바퀴 드레스 리허설. 산출물은 점수뿐 아니라 1바퀴 실소요일 실측.",
-    "group": "모의고사"
-   },
-   {
-    "start": "2026-10-21",
-    "end": "2026-10-23",
-    "title": "★10모 직후 오프 3일 — 컷 금지. ⚠10/5~10/15 11일 연속 + 10모 5일 = 16일 연속 부하 직후이므로, 10/10 저녁 상태 점검에서 저하 시 오프 4일로 확장(파이널 착수 10/25, 여유 −1일로 상계).",
-    "group": "휴식"
-   },
-   {
-    "start": "2026-10-24",
-    "end": "2026-10-24",
-    "title": "★★파이널 착수 (D-80) — 4회독 목표. 학습 69일 − 국거 23h(3.3일) = 회독 가용 65.7일. 1바퀴 21.4~22.4일(★공법 몫은 류정모 진모 12회 사례+강의로 갈음 = 38.0h·5.4일, 갈음 비용 0.4~1.4일) → 2바퀴 12 → 3바퀴 12 → 4바퀴 9 = 54.4~55.4일, 여유 10.3~11.3일. ⚠여유는 자유 예",
-    "group": "파이널"
-   },
-   {
-    "start": "2026-10-25",
-    "end": "2026-10-25",
+    "start": "2026-11-01",
+    "end": "2026-11-01",
     "title": "휴식 (주1회)",
     "group": "휴식"
    },
    {
-    "start": "2026-11-01",
-    "end": "2026-11-01",
+    "start": "2026-11-05",
+    "end": "2026-11-14",
+    "title": "★파이널 1바퀴 · 형사 7일(11/5~11/14) — 형사 최판 1회(시작)·2회(끝) · 형법→형소 암기장 + OX △·×만 · 형소 진모 9~12회 목차형 · 허정 기록 진모 쟁점 추출 3회 · 형사 진모 객관식 5h(나머지 2바퀴). 11/7 국거특강 09:30~14:00. ★11/12 밤 점검· ★10/27 갱신(본인): 11/7(토)·11/9(월",
+    "group": "파이널"
+   },
+   {
+    "start": "2026-11-08",
+    "end": "2026-11-08",
+    "title": "휴식 (주1회)",
+    "group": "휴식"
+   },
+   {
+    "start": "2026-11-16",
+    "end": "2026-11-26",
+    "title": "★파이널 1바퀴 · 민사 10일(11/16~11/26) — 민사 최판 1·2회 · 민법 객관식 2회독(△·×, 약 20h) · 가족법·민법의 맥 · 이정엽 상법 파이널 9강 + 어음수표·보험 + 상법 암기장 · 송영곤 민소 OX(체크 지문) + 파노2 1부·4부 · 박승수 암기장 · 민집(송영곤 발췌 강의 + 정리, 10/27 공법 블록에서 이동)· ★10",
+    "group": "파이널"
+   },
+   {
+    "start": "2026-11-15",
+    "end": "2026-11-15",
+    "title": "휴식 (주1회)",
+    "group": "휴식"
+   },
+   {
+    "start": "2026-11-22",
+    "end": "2026-11-22",
+    "title": "휴식 (주1회)",
+    "group": "휴식"
+   },
+   {
+    "start": "2026-11-27",
+    "end": "2026-12-14",
+    "title": "파이널 2바퀴(잠정) · 15일 — 공법 11/27~12/3(류정모 공법 파이널 24강 업로드 순 + 객관식 2회차, 7·8회차는 3바퀴 공법 첫날) → 형사 12/4~12/9(허정 파이널) → 민사 12/10~14. 일별 배치는 1바퀴 실측 후 확정",
+    "group": "파이널"
+   },
+   {
+    "start": "2026-11-29",
+    "end": "2026-11-29",
     "title": "휴식 (주1회)",
     "group": "휴식"
    }
   ],
   "calendar_events": [
    {
-    "start": "2026-10-07",
-    "end": "2026-10-07",
-    "title": "💳 변시 원서 접수 08:00~09:00 (기한 엄수)"
+    "start": "2026-11-07",
+    "end": "2026-11-07",
+    "title": "국거특강 09:30~14:00"
    },
    {
-    "start": "2026-10-16",
-    "end": "2026-10-20",
-    "title": "⚠ 10모 (졸업시험)"
+    "start": "2026-11-21",
+    "end": "2026-11-21",
+    "title": "⚠ 형재실 기말 14:00~18:00"
    },
    {
-    "start": "2026-10-21",
-    "end": "2026-10-21",
-    "title": "🏥 병원 일정 (내용 비공개)"
+    "start": "2026-12-08",
+    "end": "2026-12-08",
+    "title": "⚠ 상변실 기말 14:30~15:30"
    }
   ]
  },
  "study": {
   "daily_30d": [
    {
-    "date": "2026-09-01",
-    "minutes": 337,
-    "hours": 5.6,
+    "date": "2026-09-30",
+    "minutes": 430,
+    "hours": 7.2,
     "subjects": [
      {
-      "subject": "형법 복습",
-      "minutes": 290
-     },
-     {
-      "subject": "민법 복습",
-      "minutes": 46
-     }
-    ]
-   },
-   {
-    "date": "2026-09-02",
-    "minutes": 451,
-    "hours": 7.5,
-    "subjects": [
-     {
-      "subject": "형법 복습",
-      "minutes": 278
-     },
-     {
-      "subject": "민법 복습",
-      "minutes": 174
-     }
-    ]
-   },
-   {
-    "date": "2026-09-03",
-    "minutes": 503,
-    "hours": 8.4,
-    "subjects": [
-     {
-      "subject": "형법 복습",
-      "minutes": 253
-     },
-     {
-      "subject": "민법 복습",
-      "minutes": 250
-     }
-    ]
-   },
-   {
-    "date": "2026-09-04",
-    "minutes": 415,
-    "hours": 6.9,
-    "subjects": [
-     {
-      "subject": "형법 복습",
-      "minutes": 415
-     }
-    ]
-   },
-   {
-    "date": "2026-09-05",
-    "minutes": 441,
-    "hours": 7.4,
-    "subjects": [
-     {
-      "subject": "형법 복습",
-      "minutes": 441
-     }
-    ]
-   },
-   {
-    "date": "2026-09-06",
-    "minutes": 372,
-    "hours": 6.2,
-    "subjects": [
-     {
-      "subject": "형법 복습",
-      "minutes": 258
-     }
-    ]
-   },
-   {
-    "date": "2026-09-09",
-    "minutes": 204,
-    "hours": 3.4,
-    "subjects": [
-     {
-      "subject": "민법 복습",
-      "minutes": 174
-     },
-     {
-      "subject": "헌법",
-      "minutes": 31
-     }
-    ]
-   },
-   {
-    "date": "2026-09-10",
-    "minutes": 398,
-    "hours": 6.6,
-    "subjects": [
-     {
-      "subject": "헌법",
-      "minutes": 206
-     },
-     {
-      "subject": "형법 복습",
-      "minutes": 192
+      "subject": "민소",
+      "minutes": 423
      },
      {
       "subject": "행정법",
+      "minutes": 7
+     },
+     {
+      "subject": "상법",
       "minutes": 0
      }
     ]
    },
    {
-    "date": "2026-09-11",
-    "minutes": 457,
-    "hours": 7.6,
+    "date": "2026-10-01",
+    "minutes": 291,
+    "hours": 4.9,
     "subjects": [
+     {
+      "subject": "민소",
+      "minutes": 256
+     },
      {
       "subject": "헌법",
-      "minutes": 457
-     }
-    ]
-   },
-   {
-    "date": "2026-09-12",
-    "minutes": 490,
-    "hours": 8.2,
-    "subjects": [
-     {
-      "subject": "헌법",
-      "minutes": 345
+      "minutes": 35
      },
      {
-      "subject": "행정법",
-      "minutes": 143
+      "subject": "국거",
+      "minutes": 0
      }
     ]
    },
    {
-    "date": "2026-09-13",
-    "minutes": 420,
-    "hours": 7,
+    "date": "2026-10-02",
+    "minutes": 283,
+    "hours": 4.7,
     "subjects": [
      {
-      "subject": "행정법",
-      "minutes": 420
+      "subject": "민소",
+      "minutes": 283
      }
     ]
    },
    {
-    "date": "2026-09-14",
-    "minutes": 380,
-    "hours": 6.3,
-    "subjects": [
-     {
-      "subject": "민법 복습",
-      "minutes": 229
-     },
-     {
-      "subject": "행정법",
-      "minutes": 151
-     }
-    ]
-   },
-   {
-    "date": "2026-09-15",
-    "minutes": 683,
-    "hours": 11.4,
-    "subjects": [
-     {
-      "subject": "민법 복습",
-      "minutes": 339
-     },
-     {
-      "subject": "민기록",
-      "minutes": 188
-     },
-     {
-      "subject": "상법",
-      "minutes": 156
-     }
-    ]
-   },
-   {
-    "date": "2026-09-16",
-    "minutes": 388,
-    "hours": 6.5,
-    "subjects": [
-     {
-      "subject": "민법 복습",
-      "minutes": 388
-     }
-    ]
-   },
-   {
-    "date": "2026-09-17",
-    "minutes": 577,
+    "date": "2026-10-03",
+    "minutes": 575,
     "hours": 9.6,
     "subjects": [
      {
-      "subject": "민법 복습",
-      "minutes": 388
-     },
-     {
-      "subject": "공기록",
-      "minutes": 188
-     }
-    ]
-   },
-   {
-    "date": "2026-09-18",
-    "minutes": 421,
-    "hours": 7,
-    "subjects": [
-     {
-      "subject": "민법 복습",
-      "minutes": 421
-     }
-    ]
-   },
-   {
-    "date": "2026-09-19",
-    "minutes": 418,
-    "hours": 7,
-    "subjects": [
-     {
-      "subject": "민법 복습",
-      "minutes": 418
-     }
-    ]
-   },
-   {
-    "date": "2026-09-20",
-    "minutes": 137,
-    "hours": 2.3,
-    "subjects": [
-     {
-      "subject": "행정법",
-      "minutes": 137
-     }
-    ]
-   },
-   {
-    "date": "2026-09-21",
-    "minutes": 524,
-    "hours": 8.7,
-    "subjects": [
-     {
-      "subject": "민법 복습",
-      "minutes": 524
-     }
-    ]
-   },
-   {
-    "date": "2026-09-22",
-    "minutes": 425,
-    "hours": 7.1,
-    "subjects": [
-     {
-      "subject": "민법 복습",
-      "minutes": 414
-     },
-     {
-      "subject": "행정법",
-      "minutes": 11
-     }
-    ]
-   },
-   {
-    "date": "2026-09-23",
-    "minutes": 333,
-    "hours": 5.6,
-    "subjects": [
-     {
-      "subject": "민법 복습",
-      "minutes": 320
-     },
-     {
-      "subject": "헌법",
-      "minutes": 14
-     }
-    ]
-   },
-   {
-    "date": "2026-09-24",
-    "minutes": 604,
-    "hours": 10.1,
-    "subjects": [
-     {
-      "subject": "상법",
-      "minutes": 404
+      "subject": "형법 복습",
+      "minutes": 309
      },
      {
       "subject": "민기록",
-      "minutes": 196
-     },
+      "minutes": 266
+     }
+    ]
+   },
+   {
+    "date": "2026-10-04",
+    "minutes": 263,
+    "hours": 4.4,
+    "subjects": [
      {
-      "subject": "헌법",
-      "minutes": 5
-     },
+      "subject": "형법 복습",
+      "minutes": 263
+     }
+    ]
+   },
+   {
+    "date": "2026-10-05",
+    "minutes": 185,
+    "hours": 3.1,
+    "subjects": [
      {
-      "subject": "민소",
-      "minutes": 0
+      "subject": "형법 복습",
+      "minutes": 185
+     }
+    ]
+   },
+   {
+    "date": "2026-10-06",
+    "minutes": 590,
+    "hours": 9.8,
+    "subjects": [
+     {
+      "subject": "형법 복습",
+      "minutes": 590
      },
      {
       "subject": "민법 복습",
@@ -405,84 +196,301 @@
     ]
    },
    {
-    "date": "2026-09-25",
-    "minutes": 552,
+    "date": "2026-10-07",
+    "minutes": 544,
+    "hours": 9.1,
+    "subjects": [
+     {
+      "subject": "형법 복습",
+      "minutes": 544
+     }
+    ]
+   },
+   {
+    "date": "2026-10-08",
+    "minutes": 435,
+    "hours": 7.3,
+    "subjects": [
+     {
+      "subject": "형법 복습",
+      "minutes": 435
+     }
+    ]
+   },
+   {
+    "date": "2026-10-09",
+    "minutes": 551,
     "hours": 9.2,
     "subjects": [
      {
-      "subject": "상법",
-      "minutes": 552
+      "subject": "형객",
+      "minutes": 467
+     },
+     {
+      "subject": "형법 복습",
+      "minutes": 84
      }
     ]
    },
    {
-    "date": "2026-09-26",
-    "minutes": 565,
-    "hours": 9.4,
+    "date": "2026-10-10",
+    "minutes": 544,
+    "hours": 9.1,
     "subjects": [
      {
+      "subject": "형객",
+      "minutes": 333
+     },
+     {
+      "subject": "형법 복습",
+      "minutes": 210
+     }
+    ]
+   },
+   {
+    "date": "2026-10-11",
+    "minutes": 540,
+    "hours": 9,
+    "subjects": [
+     {
+      "subject": "행정법",
+      "minutes": 483
+     },
+     {
       "subject": "상법",
+      "minutes": 57
+     }
+    ]
+   },
+   {
+    "date": "2026-10-12",
+    "minutes": 528,
+    "hours": 8.8,
+    "subjects": [
+     {
+      "subject": "행정법",
+      "minutes": 528
+     }
+    ]
+   },
+   {
+    "date": "2026-10-13",
+    "minutes": 575,
+    "hours": 9.6,
+    "subjects": [
+     {
+      "subject": "행정법",
       "minutes": 427
      },
      {
-      "subject": "행정법",
-      "minutes": 138
-     },
-     {
-      "subject": "헌법",
-      "minutes": 0
+      "subject": "공기록",
+      "minutes": 148
      }
     ]
    },
    {
-    "date": "2026-09-28",
+    "date": "2026-10-14",
+    "minutes": 360,
+    "hours": 6,
+    "subjects": [
+     {
+      "subject": "행정법",
+      "minutes": 360
+     }
+    ]
+   },
+   {
+    "date": "2026-10-15",
+    "minutes": 480,
+    "hours": 8,
+    "subjects": [
+     {
+      "subject": "행정법",
+      "minutes": 458
+     },
+     {
+      "subject": "헌법",
+      "minutes": 22
+     }
+    ]
+   },
+   {
+    "date": "2026-10-16",
+    "minutes": 687,
+    "hours": 11.5,
+    "subjects": [
+     {
+      "subject": "행정법",
+      "minutes": 206
+     },
+     {
+      "subject": "헌법",
+      "minutes": 203
+     },
+     {
+      "subject": "공기록",
+      "minutes": 163
+     },
+     {
+      "subject": "형객",
+      "minutes": 66
+     },
+     {
+      "subject": "형법 복습",
+      "minutes": 49
+     }
+    ]
+   },
+   {
+    "date": "2026-10-17",
+    "minutes": 698,
+    "hours": 11.6,
+    "subjects": [
+     {
+      "subject": "형법 복습",
+      "minutes": 370
+     },
+     {
+      "subject": "형객",
+      "minutes": 328
+     }
+    ]
+   },
+   {
+    "date": "2026-10-18",
+    "minutes": 354,
+    "hours": 5.9,
+    "subjects": [
+     {
+      "subject": "상법",
+      "minutes": 235
+     },
+     {
+      "subject": "민법 복습",
+      "minutes": 119
+     }
+    ]
+   },
+   {
+    "date": "2026-10-19",
+    "minutes": 659,
+    "hours": 11,
+    "subjects": [
+     {
+      "subject": "민법 복습",
+      "minutes": 290
+     },
+     {
+      "subject": "민기록",
+      "minutes": 257
+     },
+     {
+      "subject": "상법",
+      "minutes": 88
+     },
+     {
+      "subject": "민소",
+      "minutes": 23
+     }
+    ]
+   },
+   {
+    "date": "2026-10-20",
+    "minutes": 515,
+    "hours": 8.6,
+    "subjects": [
+     {
+      "subject": "민법 복습",
+      "minutes": 274
+     },
+     {
+      "subject": "국거",
+      "minutes": 137
+     },
+     {
+      "subject": "민소",
+      "minutes": 104
+     }
+    ]
+   },
+   {
+    "date": "2026-10-24",
     "minutes": 224,
     "hours": 3.7,
     "subjects": [
      {
-      "subject": "상법",
-      "minutes": 159
-     },
-     {
       "subject": "행정법",
-      "minutes": 65
+      "minutes": 224
      }
     ]
    },
    {
-    "date": "2026-09-29",
-    "minutes": 643,
-    "hours": 10.7,
+    "date": "2026-10-25",
+    "minutes": 394,
+    "hours": 6.6,
     "subjects": [
      {
-      "subject": "상법",
-      "minutes": 489
+      "subject": "행정법",
+      "minutes": 394
+     }
+    ]
+   },
+   {
+    "date": "2026-10-26",
+    "minutes": 244,
+    "hours": 4.1,
+    "subjects": [
+     {
+      "subject": "행정법",
+      "minutes": 244
+     }
+    ]
+   },
+   {
+    "date": "2026-10-27",
+    "minutes": 398,
+    "hours": 6.6,
+    "subjects": [
+     {
+      "subject": "행정법",
+      "minutes": 398
      },
      {
-      "subject": "공기록",
-      "minutes": 154
+      "subject": "형법 복습",
+      "minutes": 0
+     }
+    ]
+   },
+   {
+    "date": "2026-10-29",
+    "minutes": 425,
+    "hours": 7.1,
+    "subjects": [
+     {
+      "subject": "민기록",
+      "minutes": 276
+     },
+     {
+      "subject": "행정법",
+      "minutes": 148
      }
     ]
    }
   ],
-  "avg_7d_minutes": 478,
-  "avg_30d_minutes": 437,
+  "avg_7d_minutes": 408,
+  "avg_30d_minutes": 453,
   "best_day": {
-   "date": "2026-09-15",
-   "minutes": 683,
+   "date": "2026-10-17",
+   "minutes": 698,
    "source": "YPT 자동",
    "subjects": [
     {
-     "subject": "민법 복습",
-     "minutes": 339
+     "subject": "형법 복습",
+     "minutes": 370
     },
     {
-     "subject": "민기록",
-     "minutes": 188
-    },
-    {
-     "subject": "상법",
-     "minutes": 156
+     "subject": "형객",
+     "minutes": 328
     }
    ]
   },
@@ -1082,7 +1090,7 @@
   "targets": {
    "weight_goal_kg": 92,
    "weight_goal_date": "2026-11-30",
-   "days_to_goal": 61,
+   "days_to_goal": 31,
    "maintenance_switch_date": "2026-12-15",
    "protein_goal_g": 150,
    "kcal_goal": 1800
@@ -1091,7 +1099,7 @@
    "weight_kg": 95.84,
    "weight_date": "2026-09-19",
    "weight_slope_kg_per_week": null,
-   "required_slope_kg_per_week": 0.4,
+   "required_slope_kg_per_week": 0.9,
    "recent_mean_kcal": 1806,
    "tdee_estimate": null,
    "cut_mode": false,
@@ -1312,20 +1320,12 @@
    "parts": "공법199.5+형사186+민사369+국거86"
   },
   {
-   "exam": "2026 8모",
-   "score": 910,
-   "max": 1660,
-   "pct": 54.8,
-   "kind": "목표",
-   "parts": "객관식 95개(+27.5점)+서술 +10점"
-  },
-  {
    "exam": "2026 10모",
-   "score": 950,
+   "score": 930.8,
    "max": 1660,
-   "pct": 57.2,
-   "kind": "목표",
-   "parts": "객관식 105개(+52.5점)+서술 +25점"
+   "pct": 56.1,
+   "kind": "추정 (첨삭 보정, 실채점 전)",
+   "parts": "공법228.1+형사207.7+민사397.5+국거97.5 (첨삭 보정 추정)"
   },
   {
    "exam": "2027 변시",
