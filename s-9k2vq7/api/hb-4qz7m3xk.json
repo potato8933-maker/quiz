@@ -1,12 +1,12 @@
 {
  "schema": "sejik-study-health-bridge/1",
- "generated_at": "2026-11-11T00:11:58.909+09:00",
+ "generated_at": "2026-11-11T00:23:42.876+09:00",
  "timezone": "Asia/Seoul",
  "note": "변시 학습 대시보드의 읽기 전용 스냅샷. 본인이 deploy_now.bat 을 실행할 때 갱신됨. 의료 일정 제목은 의도적으로 가려져 있음.",
  "exam": {
   "name": "제16회 변호사시험",
   "date": "2027-01-12",
-  "dday": 63
+  "dday": 62
  },
  "schedule": {
   "current_phase": [
@@ -22,7 +22,7 @@
    {
     "start": "2026-11-13",
     "end": "2026-11-13",
-    "title": "휴식 (주1회) — 형사 1바퀴 종료 직후 · 컷 금지",
+    "title": "휴식 (주1회) — 형사 1바퀴 종료 직후 · 밀리면 저녁에만 잔여분(11/11 본인)",
     "group": "휴식"
    },
    {
@@ -461,18 +461,22 @@
    },
    {
     "date": "2026-11-10",
-    "minutes": 173,
-    "hours": 2.9,
+    "minutes": 343,
+    "hours": 5.7,
     "subjects": [
      {
       "subject": "형법 복습",
-      "minutes": 173
+      "minutes": 262
+     },
+     {
+      "subject": "공기록",
+      "minutes": 81
      }
     ]
    }
   ],
-  "avg_7d_minutes": 368,
-  "avg_30d_minutes": 425,
+  "avg_7d_minutes": 393,
+  "avg_30d_minutes": 431,
   "best_day": {
    "date": "2026-10-17",
    "minutes": 698,
@@ -1077,88 +1081,7 @@
   }
  },
  "health": {
-  "daily_90d": [
-   {
-    "date": "2026-09-04",
-    "weight_kg": null,
-    "protein_g": null,
-    "kcal": null,
-    "condition": null,
-    "memo": null,
-    "sleep_h": null,
-    "steps": 7420,
-    "active_kcal": null,
-    "sleep_source": "HealthSync"
-   },
-   {
-    "date": "2026-09-05",
-    "weight_kg": 97.1,
-    "protein_g": null,
-    "kcal": null,
-    "condition": null,
-    "memo": null,
-    "sleep_h": null,
-    "steps": 5337,
-    "active_kcal": null,
-    "sleep_source": "HealthSync"
-   },
-   {
-    "date": "2026-09-06",
-    "weight_kg": 97.1,
-    "protein_g": 137,
-    "kcal": 2135,
-    "condition": null,
-    "memo": "점심: 교촌 허니콤보 1/3, 저녁: 굽네 고추바사삭 순살+갈비천왕 순살 4인 나눔 [매크로] 지방98g 탄수148g 당43g 나트륨4550mg 포화지방28g"
-   },
-   {
-    "date": "2026-09-07",
-    "weight_kg": null,
-    "protein_g": 95,
-    "kcal": 2100,
-    "condition": null,
-    "memo": "여자친구 2주년 워터파크 1일차: 점심 우화 소고기무한리필 350g+매운우동+초콜릿아이스크림, 저녁 기념 케이크+와인 2잔"
-   },
-   {
-    "date": "2026-09-08",
-    "weight_kg": null,
-    "protein_g": 74,
-    "kcal": 1630,
-    "condition": null,
-    "memo": "워터파크 2일차: 점심 찜닭 반인분, 저녁 쿠락(감자녹말탕수육 감동, 짬뽕+짜장 나눔, 마운자로 여파로 절반씩 남김)+공차 초콜릿쿠키앤크림스무디M. 활동 2741kcal/9259보, 당류 75g(공차 대부분)"
-   },
-   {
-    "date": "2026-09-09",
-    "weight_kg": null,
-    "protein_g": 112,
-    "kcal": 2190,
-    "condition": null,
-    "memo": "워터파크 3일차 마지막날: 점심 클럽샌드위치2종+딸기라떼, 저녁 한솥 빅치킨마요(밥150g으로 감축+계란+치킨슬+스팸 옵션)+컴포즈 바닐라크림라떼. 당류 67g. 3일평균 단백질 94g으로 여행중 관리 성공"
-   },
-   {
-    "date": "2026-09-10",
-    "weight_kg": null,
-    "protein_g": 105,
-    "kcal": 2180,
-    "condition": null,
-    "memo": "맥시카나 반반 1/4, 대명한우갈비살 한우구이 약 400g + 밥 반공기, 앨리스 애플망고빙수 1/4"
-   },
-   {
-    "date": "2026-09-19",
-    "weight_kg": 95.84,
-    "protein_g": 51,
-    "kcal": 1310,
-    "condition": null,
-    "memo": "마운자로10mg, 맘스터치 싸이버거+화이트갈릭싸이버거(점심·밤 나눠서)"
-   },
-   {
-    "date": "2026-09-22",
-    "weight_kg": null,
-    "protein_g": 128,
-    "kcal": 1100,
-    "condition": null,
-    "memo": "아침 미기록 / 점심 랩노쉬 2병 / 저녁 부대찌개"
-   }
-  ],
+  "daily_90d": [],
   "targets": {
    "weight_goal_kg": 92,
    "weight_goal_date": "2026-11-30",
@@ -1168,194 +1091,19 @@
    "kcal_goal": 1800
   },
   "current": {
-   "weight_kg": 95.84,
-   "weight_date": "2026-09-19",
+   "weight_kg": null,
+   "weight_date": null,
    "weight_slope_kg_per_week": null,
-   "required_slope_kg_per_week": 1.4,
-   "recent_mean_kcal": 1806,
+   "required_slope_kg_per_week": null,
+   "recent_mean_kcal": null,
    "tdee_estimate": null,
    "cut_mode": false,
    "cut_mode_meaning": "감량 모드에서는 근력 정체·볼륨 소폭 감소가 정상이며 프로그램 실패가 아님. 판정 지표는 e1RM이 아니라 제지방 보존(단백질 목표 달성률)."
   },
-  "menu_library": [
-   {
-    "name": "점심: 교촌 허니콤보 1",
-    "protein_g": null,
-    "kcal": null,
-    "used": 2
-   },
-   {
-    "name": "교촌 허니콤보 1마리",
-    "protein_g": 105,
-    "kcal": 1935,
-    "used": 1
-   },
-   {
-    "name": "굽네 고추바사삭 순살 1마리",
-    "protein_g": 108,
-    "kcal": 1285,
-    "used": 1
-   },
-   {
-    "name": "굽네 갈비천왕 순살 1마리",
-    "protein_g": 95,
-    "kcal": 1690,
-    "used": 1
-   },
-   {
-    "name": "저녁 기념 케이크+와인 2잔",
-    "protein_g": null,
-    "kcal": null,
-    "used": 1
-   },
-   {
-    "name": "워터파크 2일차: 점심 찜닭 반인분",
-    "protein_g": null,
-    "kcal": null,
-    "used": 1
-   },
-   {
-    "name": "저녁 쿠락(감자녹말탕수육 감동",
-    "protein_g": null,
-    "kcal": null,
-    "used": 1
-   },
-   {
-    "name": "짬뽕+짜장 나눔",
-    "protein_g": null,
-    "kcal": null,
-    "used": 1
-   },
-   {
-    "name": "9259보",
-    "protein_g": null,
-    "kcal": null,
-    "used": 1
-   },
-   {
-    "name": "당류 75g(공차 대부분)",
-    "protein_g": null,
-    "kcal": null,
-    "used": 1
-   },
-   {
-    "name": "한솥 빅치킨마요(밥150g)",
-    "protein_g": 25,
-    "kcal": 570,
-    "used": 1
-   },
-   {
-    "name": "한솥 빅치킨마요 풀옵션(계란+치킨슬+스팸)",
-    "protein_g": 44,
-    "kcal": 820,
-    "used": 1
-   },
-   {
-    "name": "컴포즈 바닐라크림라떼",
-    "protein_g": 5,
-    "kcal": 200,
-    "used": 1
-   },
-   {
-    "name": "공차 초콜릿쿠키앤크림스무디 M",
-    "protein_g": 6,
-    "kcal": 400,
-    "used": 1
-   },
-   {
-    "name": "우화 무한리필 소고기 1인분(350g)",
-    "protein_g": 77,
-    "kcal": 910,
-    "used": 1
-   },
-   {
-    "name": "맥시카나 반반 1",
-    "protein_g": null,
-    "kcal": null,
-    "used": 1
-   },
-   {
-    "name": "앨리스 애플망고빙수 1",
-    "protein_g": null,
-    "kcal": null,
-    "used": 1
-   },
-   {
-    "name": "한우 구이용 100g",
-    "protein_g": 18,
-    "kcal": 280,
-    "used": 1
-   },
-   {
-    "name": "맥시카나 반반 1/4마리",
-    "protein_g": 25,
-    "kcal": 520,
-    "used": 1
-   },
-   {
-    "name": "애플망고 빙수 1/4인분",
-    "protein_g": 5,
-    "kcal": 290,
-    "used": 1
-   },
-   {
-    "name": "마운자로10mg",
-    "protein_g": null,
-    "kcal": null,
-    "used": 1
-   },
-   {
-    "name": "맘스터치 싸이버거+화이트갈릭싸이버거(점심",
-    "protein_g": null,
-    "kcal": null,
-    "used": 1
-   },
-   {
-    "name": "밤 나눠서)",
-    "protein_g": null,
-    "kcal": null,
-    "used": 1
-   },
-   {
-    "name": "맘스터치 싸이버거",
-    "protein_g": 25,
-    "kcal": 594,
-    "used": 1
-   },
-   {
-    "name": "맘스터치 화이트갈릭싸이버거",
-    "protein_g": 26,
-    "kcal": 720,
-    "used": 1
-   },
-   {
-    "name": "아침 미기록",
-    "protein_g": null,
-    "kcal": null,
-    "used": 1
-   },
-   {
-    "name": "점심 랩노쉬 2병",
-    "protein_g": null,
-    "kcal": null,
-    "used": 1
-   },
-   {
-    "name": "저녁 부대찌개",
-    "protein_g": null,
-    "kcal": null,
-    "used": 1
-   },
-   {
-    "name": "부대찌개",
-    "protein_g": 35,
-    "kcal": 700,
-    "used": 1
-   }
-  ],
+  "menu_library": [],
   "records_count": {
-   "entries": 8,
-   "sleep": 2
+   "entries": 0,
+   "sleep": 0
   }
  },
  "exams_history": [
@@ -1393,11 +1141,11 @@
   },
   {
    "exam": "2026 10모",
-   "score": 930.8,
+   "score": 1035,
    "max": 1660,
-   "pct": 56.1,
-   "kind": "추정 (첨삭 보정, 실채점 전)",
-   "parts": "공법228.1+형사207.7+민사397.5+국거97.5 (첨삭 보정 추정)"
+   "pct": 62.3,
+   "kind": "부분 실채 (11/11)",
+   "parts": "공법241+형사237+민사437+국거120 (형기록·민사례는 첨삭치)"
   },
   {
    "exam": "2027 변시",
