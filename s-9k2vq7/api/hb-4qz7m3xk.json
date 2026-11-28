@@ -1,83 +1,78 @@
 {
  "schema": "sejik-study-health-bridge/1",
- "generated_at": "2026-11-11T00:23:42.876+09:00",
+ "generated_at": "2026-11-28T21:16:14.695+09:00",
  "timezone": "Asia/Seoul",
  "note": "변시 학습 대시보드의 읽기 전용 스냅샷. 본인이 deploy_now.bat 을 실행할 때 갱신됨. 의료 일정 제목은 의도적으로 가려져 있음.",
  "exam": {
   "name": "제16회 변호사시험",
   "date": "2027-01-12",
-  "dday": 62
+  "dday": 45
  },
  "schedule": {
   "current_phase": [
    {
-    "start": "2026-11-04",
-    "end": "2026-11-12",
-    "title": "★파이널 1바퀴 · 형사 (11/4~6 · 11/7밤 · 11/9~12) — 11/12 종료 — ★★11/7 갱신(본인): 11/5(민기록)·11/6(카공 후 휴식) 결손분을 국거 날이던 11/7 밤·11/9로 메움 → 형소 11/9 종료(OX 211쪽~ 잔여 188쪽 + 진모 사례 3~6회 목차형 + 해설강의) → 형법 11/10~12(11/12 목 기록",
+    "start": "2026-11-18",
+    "end": "2026-11-29",
+    "title": "★11/27: 민소 암기장 전범위 완주 + 민집 특강 1~7강 완강(순공 550분) · 11/28 민집 복습 1h → 민집 21문항 → 상법 파이널 · 11/29 상법★11/26: 민소 파노2 제3부 완주 · 11/27 암기장 앞부분+민집 6강 · 11/28~29 상법(11/29 휴식→공부일 전환) · 민법은 여행 손실분만큼 축소(민법 객관식은 유지 권고)",
     "group": "파이널"
    }
   ],
   "final_start": "2026-11-10",
   "upcoming": [
    {
-    "start": "2026-11-13",
-    "end": "2026-11-13",
-    "title": "휴식 (주1회) — 형사 1바퀴 종료 직후 · 밀리면 저녁에만 잔여분(11/11 본인)",
-    "group": "휴식"
-   },
-   {
-    "start": "2026-11-14",
-    "end": "2026-11-15",
-    "title": "📘[공법] 금동흠 최종병기K 1회독 + 강의 11강 (11/14~15, 2일) — 11/8 본인: 형사 종료 직후 11/13 휴식 → K는 11/14~15 · 이후 K 4회독(12월 기출 실전과 병행 → 3바퀴 → 직전 1/10~11) · 금동흠 92선 2회차·공법 실전세트는 K 강의 후",
-    "group": "파이널"
-   },
-   {
-    "start": "2026-11-16",
-    "end": "2026-11-16",
-    "title": "🌐국제거래법 전일 — 국제사법 인강(국제사법 부분만) + 사례집 변시 기출(3~5개년) 착수 · 11/7 결정: 국거특강 불참 → 인강·사례집으로 전환, '너무 미루면 불안'하므로 민사 시작 전 배치 · 사례집 11/7 주문 필요 · 10모 첨삭 TOP3(불법행위 준거법 5단계·제12조 부적절한 법정지·CISG 적용 체크리스트) 우선",
-    "group": "파이널"
-   },
-   {
-    "start": "2026-11-17",
-    "end": "2026-11-27",
-    "title": "★파이널 1바퀴 · 민사 10일(11/17~11/27) — 민사 최판 1·2회 · 민법 객관식 2회독(△·×, 약 20h) · 가족법·민법의 맥 · 이정엽 상법 파이널 9강 + 어음수표·보험 + 상법 암기장 · 송영곤 민소 OX(체크 지문) + 파노2 1부·4부 · 박승수 암기장 · 민집(송영곤 발췌 강의 + 정리, 10/27 공법 블록에서 이동)· ★10",
-    "group": "파이널"
-   },
-   {
-    "start": "2026-11-22",
-    "end": "2026-11-22",
-    "title": "휴식 (주1회)",
-    "group": "휴식"
-   },
-   {
-    "start": "2026-11-28",
-    "end": "2026-12-15",
-    "title": "파이널 2바퀴(잠정) · 15일 (11/28~12/15) — 공법 11/28~12/4(류정모 공법 파이널 24강: 11/27 현강 → 11/28 업로드부터 순서대로 + 객관식 2회차, 최종병기K 2회독) → 형사 12/5~12/10(허정 파이널 인강 형법 12/1~3·형소 12/4~6·기록 12/8 업로드) → 민사 12/11~15 · 11/29·12/6·",
-    "group": "파이널"
-   },
-   {
     "start": "2026-11-29",
     "end": "2026-11-29",
-    "title": "휴식 (주1회)",
+    "title": "11/29(일) 공부일로 전환 — 이번 주 주1휴식은 11/30~ 일본 여행이 대신(11/26 결정) · 상법",
+    "group": "파이널"
+   },
+   {
+    "start": "2026-11-30",
+    "end": "2026-12-03",
+    "title": "✈️일본 여행(후쿠오카·유후인) — 11/30 출발 · 12/1 완전 휴식 · 12/2 점심 후~20시 장소 바꿔 공부 · 12/3 10:30 귀국 → 오후 복귀(D-40) · 교수님 처방 '더 늦기 전에 확 놀기' · 3박4일(12/2 공부일 — 장소는 정해 둠, 공부 재료 결정 대기)",
     "group": "휴식"
+   },
+   {
+    "start": "2026-12-03",
+    "end": "2026-12-16",
+    "title": "★11/26: 11/30~12/3 일본 여행으로 2바퀴 실착수 12/3 오후(D-40) — 일별 배치·과목별 3/4회독 차등은 복귀 전 재산정파이널 2바퀴(잠정) · 15일 (11/30~12/16) — 공법 11/30~12/5(류정모 공법 파이널 24강: 11/28 업로드분부터 + 객관식 2회차 ×·△, 최종병기K 2회독) → 형사 12/7~12/11(허정",
+    "group": "파이널"
    },
    {
     "start": "2026-12-06",
     "end": "2026-12-06",
     "title": "휴식 (주1회)",
     "group": "휴식"
+   },
+   {
+    "start": "2026-12-13",
+    "end": "2026-12-13",
+    "title": "휴식 (주1회)",
+    "group": "휴식"
+   },
+   {
+    "start": "2026-12-17",
+    "end": "2026-12-30",
+    "title": "파이널 3바퀴(잠정) · 12일 (12/17~12/30) — 12/20·12/27 휴식 · 과목 배분은 2바퀴 실측 후 확정 · 매일 객관식 기출 원본 실전(40문 60분 목표, 10/30 본인) · 최종병기K 3회독 · ★11/13: 1일 순연",
+    "group": "파이널"
+   },
+   {
+    "start": "2026-12-20",
+    "end": "2026-12-20",
+    "title": "휴식 (주1회)",
+    "group": "휴식"
+   },
+   {
+    "start": "2026-12-27",
+    "end": "2026-12-27",
+    "title": "휴식 (주1회) — 직전 2주 무휴 진입 전 마지막 휴식",
+    "group": "휴식"
    }
   ],
   "calendar_events": [
    {
-    "start": "2026-11-09",
-    "end": "2026-11-09",
-    "title": "로비 19:00~20:00"
-   },
-   {
-    "start": "2026-11-21",
-    "end": "2026-11-21",
-    "title": "⚠ 형재실 기말 14:00~18:00"
+    "start": "2026-11-26",
+    "end": "2026-11-26",
+    "title": "지도학생모임(오찬) 11:50~13:00 · 로스쿨 로비"
    },
    {
     "start": "2026-12-08",
@@ -88,205 +83,6 @@
  },
  "study": {
   "daily_30d": [
-   {
-    "date": "2026-10-12",
-    "minutes": 528,
-    "hours": 8.8,
-    "subjects": [
-     {
-      "subject": "행정법",
-      "minutes": 528
-     }
-    ]
-   },
-   {
-    "date": "2026-10-13",
-    "minutes": 575,
-    "hours": 9.6,
-    "subjects": [
-     {
-      "subject": "행정법",
-      "minutes": 427
-     },
-     {
-      "subject": "공기록",
-      "minutes": 148
-     }
-    ]
-   },
-   {
-    "date": "2026-10-14",
-    "minutes": 360,
-    "hours": 6,
-    "subjects": [
-     {
-      "subject": "행정법",
-      "minutes": 360
-     }
-    ]
-   },
-   {
-    "date": "2026-10-15",
-    "minutes": 480,
-    "hours": 8,
-    "subjects": [
-     {
-      "subject": "행정법",
-      "minutes": 458
-     },
-     {
-      "subject": "헌법",
-      "minutes": 22
-     }
-    ]
-   },
-   {
-    "date": "2026-10-16",
-    "minutes": 687,
-    "hours": 11.5,
-    "subjects": [
-     {
-      "subject": "행정법",
-      "minutes": 206
-     },
-     {
-      "subject": "헌법",
-      "minutes": 203
-     },
-     {
-      "subject": "공기록",
-      "minutes": 163
-     },
-     {
-      "subject": "형객",
-      "minutes": 66
-     },
-     {
-      "subject": "형법 복습",
-      "minutes": 49
-     }
-    ]
-   },
-   {
-    "date": "2026-10-17",
-    "minutes": 698,
-    "hours": 11.6,
-    "subjects": [
-     {
-      "subject": "형법 복습",
-      "minutes": 370
-     },
-     {
-      "subject": "형객",
-      "minutes": 328
-     }
-    ]
-   },
-   {
-    "date": "2026-10-18",
-    "minutes": 354,
-    "hours": 5.9,
-    "subjects": [
-     {
-      "subject": "상법",
-      "minutes": 235
-     },
-     {
-      "subject": "민법 복습",
-      "minutes": 119
-     }
-    ]
-   },
-   {
-    "date": "2026-10-19",
-    "minutes": 659,
-    "hours": 11,
-    "subjects": [
-     {
-      "subject": "민법 복습",
-      "minutes": 290
-     },
-     {
-      "subject": "민기록",
-      "minutes": 257
-     },
-     {
-      "subject": "상법",
-      "minutes": 88
-     },
-     {
-      "subject": "민소",
-      "minutes": 23
-     }
-    ]
-   },
-   {
-    "date": "2026-10-20",
-    "minutes": 515,
-    "hours": 8.6,
-    "subjects": [
-     {
-      "subject": "민법 복습",
-      "minutes": 274
-     },
-     {
-      "subject": "국거",
-      "minutes": 137
-     },
-     {
-      "subject": "민소",
-      "minutes": 104
-     }
-    ]
-   },
-   {
-    "date": "2026-10-24",
-    "minutes": 224,
-    "hours": 3.7,
-    "subjects": [
-     {
-      "subject": "행정법",
-      "minutes": 224
-     }
-    ]
-   },
-   {
-    "date": "2026-10-25",
-    "minutes": 394,
-    "hours": 6.6,
-    "subjects": [
-     {
-      "subject": "행정법",
-      "minutes": 394
-     }
-    ]
-   },
-   {
-    "date": "2026-10-26",
-    "minutes": 244,
-    "hours": 4.1,
-    "subjects": [
-     {
-      "subject": "행정법",
-      "minutes": 244
-     }
-    ]
-   },
-   {
-    "date": "2026-10-27",
-    "minutes": 398,
-    "hours": 6.6,
-    "subjects": [
-     {
-      "subject": "행정법",
-      "minutes": 398
-     },
-     {
-      "subject": "형법 복습",
-      "minutes": 0
-     }
-    ]
-   },
    {
     "date": "2026-10-29",
     "minutes": 475,
@@ -461,22 +257,241 @@
    },
    {
     "date": "2026-11-10",
-    "minutes": 343,
-    "hours": 5.7,
+    "minutes": 346,
+    "hours": 5.8,
     "subjects": [
      {
       "subject": "형법 복습",
-      "minutes": 262
+      "minutes": 265
      },
      {
       "subject": "공기록",
       "minutes": 81
      }
     ]
+   },
+   {
+    "date": "2026-11-11",
+    "minutes": 402,
+    "hours": 6.7,
+    "subjects": [
+     {
+      "subject": "형법 복습",
+      "minutes": 402
+     }
+    ]
+   },
+   {
+    "date": "2026-11-12",
+    "minutes": 402,
+    "hours": 6.7,
+    "subjects": [
+     {
+      "subject": "형법 복습",
+      "minutes": 402
+     }
+    ]
+   },
+   {
+    "date": "2026-11-14",
+    "minutes": 366,
+    "hours": 6.1,
+    "subjects": [
+     {
+      "subject": "형법 복습",
+      "minutes": 366
+     }
+    ]
+   },
+   {
+    "date": "2026-11-15",
+    "minutes": 444,
+    "hours": 7.4,
+    "subjects": [
+     {
+      "subject": "형법 복습",
+      "minutes": 249
+     },
+     {
+      "subject": "헌법",
+      "minutes": 195
+     }
+    ]
+   },
+   {
+    "date": "2026-11-16",
+    "minutes": 440,
+    "hours": 7.3,
+    "subjects": [
+     {
+      "subject": "헌법",
+      "minutes": 426
+     },
+     {
+      "subject": "형법 복습",
+      "minutes": 15
+     }
+    ]
+   },
+   {
+    "date": "2026-11-17",
+    "minutes": 335,
+    "hours": 5.6,
+    "subjects": [
+     {
+      "subject": "헌법",
+      "minutes": 255
+     },
+     {
+      "subject": "국거",
+      "minutes": 80
+     }
+    ]
+   },
+   {
+    "date": "2026-11-18",
+    "minutes": 450,
+    "hours": 7.5,
+    "subjects": [
+     {
+      "subject": "국거",
+      "minutes": 450
+     }
+    ]
+   },
+   {
+    "date": "2026-11-19",
+    "minutes": 334,
+    "hours": 5.6,
+    "subjects": [
+     {
+      "subject": "민기록",
+      "minutes": 222
+     },
+     {
+      "subject": "국거",
+      "minutes": 63
+     },
+     {
+      "subject": "민소",
+      "minutes": 49
+     }
+    ]
+   },
+   {
+    "date": "2026-11-20",
+    "minutes": 92,
+    "hours": 1.5,
+    "subjects": [
+     {
+      "subject": "민소",
+      "minutes": 92
+     }
+    ]
+   },
+   {
+    "date": "2026-11-21",
+    "minutes": 108,
+    "hours": 1.8,
+    "subjects": [
+     {
+      "subject": "형법 복습",
+      "minutes": 57
+     },
+     {
+      "subject": "민소",
+      "minutes": 51
+     }
+    ]
+   },
+   {
+    "date": "2026-11-22",
+    "minutes": 260,
+    "hours": 4.3,
+    "subjects": [
+     {
+      "subject": "민소",
+      "minutes": 260
+     }
+    ]
+   },
+   {
+    "date": "2026-11-23",
+    "minutes": 366,
+    "hours": 6.1,
+    "subjects": [
+     {
+      "subject": "민소",
+      "minutes": 366
+     }
+    ]
+   },
+   {
+    "date": "2026-11-24",
+    "minutes": 564,
+    "hours": 9.4,
+    "subjects": [
+     {
+      "subject": "민소",
+      "minutes": 244
+     },
+     {
+      "subject": "상법",
+      "minutes": 193
+     },
+     {
+      "subject": "공기록",
+      "minutes": 127
+     }
+    ]
+   },
+   {
+    "date": "2026-11-25",
+    "minutes": 309,
+    "hours": 5.2,
+    "subjects": [
+     {
+      "subject": "민소",
+      "minutes": 309
+     }
+    ]
+   },
+   {
+    "date": "2026-11-26",
+    "minutes": 426,
+    "hours": 7.1,
+    "subjects": [
+     {
+      "subject": "민소",
+      "minutes": 426
+     }
+    ]
+   },
+   {
+    "date": "2026-11-27",
+    "minutes": 550,
+    "hours": 9.2,
+    "subjects": [
+     {
+      "subject": "민소",
+      "minutes": 550
+     }
+    ]
+   },
+   {
+    "date": "2026-11-28",
+    "minutes": 232,
+    "hours": 3.9,
+    "subjects": [
+     {
+      "subject": "민소",
+      "minutes": 232
+     }
+    ]
    }
   ],
-  "avg_7d_minutes": 393,
-  "avg_30d_minutes": 431,
+  "avg_7d_minutes": 369,
+  "avg_30d_minutes": 378,
   "best_day": {
    "date": "2026-10-17",
    "minutes": 698,
@@ -1081,29 +1096,329 @@
   }
  },
  "health": {
-  "daily_90d": [],
+  "daily_90d": [
+   {
+    "date": "2026-09-04",
+    "weight_kg": null,
+    "protein_g": null,
+    "kcal": null,
+    "condition": null,
+    "memo": null,
+    "sleep_h": null,
+    "steps": 7420,
+    "active_kcal": null,
+    "sleep_source": "HealthSync"
+   },
+   {
+    "date": "2026-09-05",
+    "weight_kg": 97.1,
+    "protein_g": null,
+    "kcal": null,
+    "condition": null,
+    "memo": null,
+    "sleep_h": null,
+    "steps": 5337,
+    "active_kcal": null,
+    "sleep_source": "HealthSync"
+   },
+   {
+    "date": "2026-09-06",
+    "weight_kg": 97.1,
+    "protein_g": 137,
+    "kcal": 2135,
+    "condition": null,
+    "memo": "점심: 교촌 허니콤보 1/3, 저녁: 굽네 고추바사삭 순살+갈비천왕 순살 4인 나눔 [매크로] 지방98g 탄수148g 당43g 나트륨4550mg 포화지방28g"
+   },
+   {
+    "date": "2026-09-07",
+    "weight_kg": null,
+    "protein_g": 95,
+    "kcal": 2100,
+    "condition": null,
+    "memo": "여자친구 2주년 워터파크 1일차: 점심 우화 소고기무한리필 350g+매운우동+초콜릿아이스크림, 저녁 기념 케이크+와인 2잔"
+   },
+   {
+    "date": "2026-09-08",
+    "weight_kg": null,
+    "protein_g": 74,
+    "kcal": 1630,
+    "condition": null,
+    "memo": "워터파크 2일차: 점심 찜닭 반인분, 저녁 쿠락(감자녹말탕수육 감동, 짬뽕+짜장 나눔, 마운자로 여파로 절반씩 남김)+공차 초콜릿쿠키앤크림스무디M. 활동 2741kcal/9259보, 당류 75g(공차 대부분)"
+   },
+   {
+    "date": "2026-09-09",
+    "weight_kg": null,
+    "protein_g": 112,
+    "kcal": 2190,
+    "condition": null,
+    "memo": "워터파크 3일차 마지막날: 점심 클럽샌드위치2종+딸기라떼, 저녁 한솥 빅치킨마요(밥150g으로 감축+계란+치킨슬+스팸 옵션)+컴포즈 바닐라크림라떼. 당류 67g. 3일평균 단백질 94g으로 여행중 관리 성공"
+   },
+   {
+    "date": "2026-09-10",
+    "weight_kg": null,
+    "protein_g": 105,
+    "kcal": 2180,
+    "condition": null,
+    "memo": "맥시카나 반반 1/4, 대명한우갈비살 한우구이 약 400g + 밥 반공기, 앨리스 애플망고빙수 1/4"
+   },
+   {
+    "date": "2026-09-19",
+    "weight_kg": 95.84,
+    "protein_g": 51,
+    "kcal": 1310,
+    "condition": null,
+    "memo": "마운자로10mg, 맘스터치 싸이버거+화이트갈릭싸이버거(점심·밤 나눠서)"
+   },
+   {
+    "date": "2026-09-22",
+    "weight_kg": null,
+    "protein_g": 128,
+    "kcal": 1100,
+    "condition": null,
+    "memo": "아침 미기록 / 점심 랩노쉬 2병 / 저녁 부대찌개"
+   },
+   {
+    "date": "2026-11-10",
+    "weight_kg": null,
+    "protein_g": 80,
+    "kcal": 1370,
+    "condition": null,
+    "memo": "규카츠200g(버터)+소스+밥반공기, 팥붕어빵2, 어묵0.5꼬치, 카페라떼, 셀렉스프로핏1, 귤1 [매크로] 탄수147g 당48g 지방51g"
+   }
+  ],
   "targets": {
    "weight_goal_kg": 92,
    "weight_goal_date": "2026-11-30",
-   "days_to_goal": 19,
+   "days_to_goal": 2,
    "maintenance_switch_date": "2026-12-15",
    "protein_goal_g": 150,
    "kcal_goal": 1800
   },
   "current": {
-   "weight_kg": null,
-   "weight_date": null,
+   "weight_kg": 95.84,
+   "weight_date": "2026-09-19",
    "weight_slope_kg_per_week": null,
-   "required_slope_kg_per_week": null,
-   "recent_mean_kcal": null,
+   "required_slope_kg_per_week": 13.4,
+   "recent_mean_kcal": 1752,
    "tdee_estimate": null,
    "cut_mode": false,
    "cut_mode_meaning": "감량 모드에서는 근력 정체·볼륨 소폭 감소가 정상이며 프로그램 실패가 아님. 판정 지표는 e1RM이 아니라 제지방 보존(단백질 목표 달성률)."
   },
-  "menu_library": [],
+  "menu_library": [
+   {
+    "name": "점심: 교촌 허니콤보 1",
+    "protein_g": null,
+    "kcal": null,
+    "used": 2
+   },
+   {
+    "name": "교촌 허니콤보 1마리",
+    "protein_g": 105,
+    "kcal": 1935,
+    "used": 1
+   },
+   {
+    "name": "굽네 고추바사삭 순살 1마리",
+    "protein_g": 108,
+    "kcal": 1285,
+    "used": 1
+   },
+   {
+    "name": "굽네 갈비천왕 순살 1마리",
+    "protein_g": 95,
+    "kcal": 1690,
+    "used": 1
+   },
+   {
+    "name": "저녁 기념 케이크+와인 2잔",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "워터파크 2일차: 점심 찜닭 반인분",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "저녁 쿠락(감자녹말탕수육 감동",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "짬뽕+짜장 나눔",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "9259보",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "당류 75g(공차 대부분)",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "한솥 빅치킨마요(밥150g)",
+    "protein_g": 25,
+    "kcal": 570,
+    "used": 1
+   },
+   {
+    "name": "한솥 빅치킨마요 풀옵션(계란+치킨슬+스팸)",
+    "protein_g": 44,
+    "kcal": 820,
+    "used": 1
+   },
+   {
+    "name": "컴포즈 바닐라크림라떼",
+    "protein_g": 5,
+    "kcal": 200,
+    "used": 1
+   },
+   {
+    "name": "공차 초콜릿쿠키앤크림스무디 M",
+    "protein_g": 6,
+    "kcal": 400,
+    "used": 1
+   },
+   {
+    "name": "우화 무한리필 소고기 1인분(350g)",
+    "protein_g": 77,
+    "kcal": 910,
+    "used": 1
+   },
+   {
+    "name": "맥시카나 반반 1",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "앨리스 애플망고빙수 1",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "한우 구이용 100g",
+    "protein_g": 18,
+    "kcal": 280,
+    "used": 1
+   },
+   {
+    "name": "맥시카나 반반 1/4마리",
+    "protein_g": 25,
+    "kcal": 520,
+    "used": 1
+   },
+   {
+    "name": "애플망고 빙수 1/4인분",
+    "protein_g": 5,
+    "kcal": 290,
+    "used": 1
+   },
+   {
+    "name": "마운자로10mg",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "맘스터치 싸이버거+화이트갈릭싸이버거(점심",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "밤 나눠서)",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "맘스터치 싸이버거",
+    "protein_g": 25,
+    "kcal": 594,
+    "used": 1
+   },
+   {
+    "name": "맘스터치 화이트갈릭싸이버거",
+    "protein_g": 26,
+    "kcal": 720,
+    "used": 1
+   },
+   {
+    "name": "아침 미기록",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "점심 랩노쉬 2병",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "저녁 부대찌개",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "부대찌개",
+    "protein_g": 35,
+    "kcal": 700,
+    "used": 1
+   },
+   {
+    "name": "규카츠200g(버터)+소스+밥반공기",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "팥붕어빵2",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "어묵0.5꼬치",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "카페라떼",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "셀렉스프로핏1",
+    "protein_g": null,
+    "kcal": null,
+    "used": 1
+   },
+   {
+    "name": "셀렉스 프로핏 드링크 250ml",
+    "protein_g": 20,
+    "kcal": 105,
+    "used": 1
+   }
+  ],
   "records_count": {
-   "entries": 0,
-   "sleep": 0
+   "entries": 9,
+   "sleep": 2
   }
  },
  "exams_history": [
@@ -1141,11 +1456,11 @@
   },
   {
    "exam": "2026 10모",
-   "score": 1035,
+   "score": 1022.5,
    "max": 1660,
-   "pct": 62.3,
-   "kind": "부분 실채 (11/11)",
-   "parts": "공법241+형사237+민사437+국거120 (형기록·민사례는 첨삭치)"
+   "pct": 61.6,
+   "kind": "실측 (공식성적표 11/19)",
+   "parts": "공법241+형사238.5+민사423+국거120"
   },
   {
    "exam": "2027 변시",
